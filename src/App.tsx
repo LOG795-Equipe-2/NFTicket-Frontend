@@ -4,7 +4,7 @@ import './App.css';
 
 function App() {
   return (
-    <div className="App">
+    <div title="NFTicket App" className="App">
       Landing page
     </div>
   );
