@@ -3,7 +3,7 @@ import './App.css';
 
 function App() {
   return (
-    <div title="NFTicket" className="App">
+    <div title="NFTicket App" className="App">
       Landing page
     </div>
   );
