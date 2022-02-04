@@ -1,4 +1,4 @@
-import { TextField } from "@mui/material";
+import { Link, TextField } from "@mui/material";
 import { alpha, styled } from "@mui/material/styles";
 import { Box } from "@mui/material";
 import { ConfirmationNumber, Search } from "@mui/icons-material";
@@ -12,9 +12,8 @@ function Navigation() {
       color: alpha(theme.palette.primary.light, 0.5),
     },
     "& .MuiOutlinedInput-root": {
-      '& .MuiButtonBase-root': {
-        color: theme.palette.secondary.main,
-        paddingRight: 0
+      "& .MuiButtonBase-root": {
+        color: theme.palette.secondary.main
       },
       "& .MuiOutlinedInput-input": {
         color: theme.palette.primary.light,
@@ -28,7 +27,15 @@ function Navigation() {
       "&.Mui-focused fieldset": {
         borderColor: theme.palette.secondary.main,
       },
-    },
+    }
+  }));
+  const CssLink = styled(Link)(({theme}) => ({
+    "&.MuiLink-root": {
+      color: theme.palette.secondary.main,
+      "&:hover": {
+        color: theme.palette.primary.light
+      }
+    }
   }));
   return (
     <Box sx={{ bgcolor: "primary.dark" }} className="navbar">
@@ -50,12 +57,21 @@ function Navigation() {
                     <Search />
                   </IconButton>
                 </InputAdornment>
-              )
+              ),
             }}
           />
         </Box>
       </div>
-      <div className="navbar__right">right</div>
+      <div className="navbar__right">
+        <div className="navbar__right__my_tickets">
+          <CssLink href="tickets" underline="none">
+            Mes billets
+          </CssLink>
+          <CssLink href="login" underline="none">
+            Connexion/Inscription
+          </CssLink>
+        </div>
+      </div>
     </Box>
   );
 }
