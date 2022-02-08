@@ -1,8 +1,14 @@
 .home {
     margin-top: 60px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     &__splashScreen {
         width: 100%;
         height: 500px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
 
         &__title {
             padding: 50px 0;
@@ -15,7 +21,7 @@
         }
 
         &__featuredEvents {
-            margin: 0 100px;
+            width: min(80%, 1800px);
             &__title {
                 svg {
                     margin-right: 5px;
@@ -26,7 +32,8 @@
         }
     }
     &__search {
-        margin: 20px 100px;
+        width: min(80%, 1800px);
+        margin: 20px 0;
         &__title {
             font-size: 30px;
             font-weight: 600;
