@@ -1,0 +1,41 @@
+.home-searchbox {
+  display: flex;
+  flex-direction: row;
+  margin: 20px 0;
+  justify-content: center;
+  &__date {
+    .MuiInputBase-root {
+      border-radius: 4px 0 0 4px;
+    }
+  }
+  &__location {
+    width: 350px;
+    .MuiInputBase-root {
+      border-radius: 0;
+    }
+    .MuiAutocomplete-root:not(.Mui-focused):not(:hover) {
+      .MuiOutlinedInput-notchedOutline {
+        border-left: 0;
+      }
+    }
+  }
+  &__keyword {
+    width: 500px;
+    .MuiInputBase-root {
+      border-radius: 0 4px 4px 0;
+    }
+    .MuiAutocomplete-root:not(.Mui-focused):not(:hover) {
+      .MuiOutlinedInput-notchedOutline {
+        border-left: 0;
+      }
+    }
+  }
+  &__button {
+    height: 56px;
+    margin: 0 30px;
+
+    .MuiButton-root {
+      height: 100%;
+    }
+  }
+}
