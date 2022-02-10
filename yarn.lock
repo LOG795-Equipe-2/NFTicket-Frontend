@@ -2652,7 +2652,7 @@ anchor-link-browser-transport@^3.2.5:
 
 anchor-link@^3.3.5:
   version "3.3.5"
-  resolved "https://registry.npmjs.org/anchor-link/-/anchor-link-3.3.5.tgz"
+  resolved "https://registry.yarnpkg.com/anchor-link/-/anchor-link-3.3.5.tgz#aa987e32bca4b9316d4cb0b0f8b5bf79a5f5a729"
   integrity sha512-zZZ7MiF+L0/hIcH5+yf9Saur9jYxp2kGAyggjXMLW4ofRuA9mQrA3o1CFEjj0DviIVL+JLHOxoR2hOG7WnXBEg==
   dependencies:
     "@greymass/eosio" "^0.5.0"
