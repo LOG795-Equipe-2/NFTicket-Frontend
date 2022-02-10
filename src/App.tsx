@@ -11,16 +11,16 @@ const theme = createTheme(Theme);
 function App() {
   return (
     <ThemeProvider theme={theme}>
-      <BrowserRouter>
-        <div title="NFTicket App" className="App">
-          <Navigation></Navigation>
-        </div>
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/tickets">tickets</Route>
-          <Route path="/login">login</Route>
-        </Routes>
-      </BrowserRouter>
+      <div title="NFTicket App" className="App">
+        <Navigation></Navigation>
+        <BrowserRouter>
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/tickets">tickets</Route>
+            <Route path="/login">login</Route>
+          </Routes>
+        </BrowserRouter>
+      </div>
     </ThemeProvider>
   );
 }
