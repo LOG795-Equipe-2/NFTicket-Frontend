@@ -55,9 +55,9 @@ function App() {
 
   return (
     <ThemeProvider theme={theme}>
-      <button onClick={() => manager.login()}>Login</button>
+      {/* <button onClick={() => manager.login()}>Login</button>
       <button onClick={() => performTransaction(manager)}>perform trx</button>
-      <button onClick={() => manager.logout()}>logout</button>
+      <button onClick={() => manager.logout()}>logout</button> */}
       <div title="NFTicket App" className="App">
         <Navigation></Navigation>
         <BrowserRouter>
