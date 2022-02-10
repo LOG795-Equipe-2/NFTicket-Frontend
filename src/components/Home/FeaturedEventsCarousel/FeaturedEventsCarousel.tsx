@@ -8,7 +8,7 @@ import { Box } from "@mui/material";
 
 function FeaturedEventsCarousel() {
   return (
-    <Carousel navButtonsAlwaysVisible animation="slide">
+    <Carousel interval={10000} navButtonsAlwaysVisible animation="slide">
       <Box sx={{ display: "flex", flexDirection: "row", justifyContent: "center", margin: "30px 40px" }}>
         <EventCard imageLink={image1}></EventCard>
         <EventCard imageLink={image2}></EventCard>
