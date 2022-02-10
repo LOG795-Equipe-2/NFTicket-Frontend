@@ -54,21 +54,20 @@ function App() {
   
 
   return (
-    <ThemeProvider theme={theme}> 
-      <button onClick={() => manager.login()}>Login</button>
+    <ThemeProvider theme={theme}>
+      {/* <button onClick={() => manager.login()}>Login</button>
       <button onClick={() => performTransaction(manager)}>perform trx</button>
-      <button onClick={() => manager.logout()}>logout</button>
-
-      <BrowserRouter>
-        <div title="NFTicket App" className="App">
-          <Navigation></Navigation>
-        </div>
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/tickets">tickets</Route>
-          <Route path="/login">login</Route>
-        </Routes>
-      </BrowserRouter>
+      <button onClick={() => manager.logout()}>logout</button> */}
+      <div title="NFTicket App" className="App">
+        <Navigation></Navigation>
+        <BrowserRouter>
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/tickets">tickets</Route>
+            <Route path="/login">login</Route>
+          </Routes>
+        </BrowserRouter>
+      </div>
     </ThemeProvider>
   );
 } export default App;

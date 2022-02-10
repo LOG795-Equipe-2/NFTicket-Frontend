@@ -1,0 +1,45 @@
+.home {
+    margin-top: 60px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    &__splashScreen {
+        width: 100%;
+        padding-bottom: 30px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+
+        &__title {
+            padding: 50px 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            &__main {
+                font-size: 50px;
+            }
+        }
+
+        &__featuredEvents {
+            width: min(80%, 1800px);
+            &__title {
+                svg {
+                    margin-right: 5px;
+                }
+                font-size: 30px;
+                font-weight: 600;
+            }
+        }
+    }
+    &__search {
+        width: min(80%, 1800px);
+        margin: 20px 0;
+        &__title {
+            font-size: 30px;
+            font-weight: 600;
+        }
+    }
+    &__closeByEvents {
+        height: 400px;
+    }
+}

@@ -4,6 +4,8 @@ import { Box } from "@mui/material";
 import { ConfirmationNumber, Search } from "@mui/icons-material";
 import IconButton from "@mui/material/IconButton";
 import InputAdornment from "@mui/material/InputAdornment";
+import AccountCircleOutlinedIcon from '@mui/icons-material/AccountCircleOutlined';
+import BookOnlineOutlinedIcon from '@mui/icons-material/BookOnlineOutlined';
 import "./Navigation.scss";
 
 function Navigation() {
@@ -13,7 +15,7 @@ function Navigation() {
     },
     "& .MuiOutlinedInput-root": {
       "& .MuiButtonBase-root": {
-        color: theme.palette.secondary.main
+        color: theme.palette.secondary.main,
       },
       "& .MuiOutlinedInput-input": {
         color: theme.palette.primary.light,
@@ -27,23 +29,28 @@ function Navigation() {
       "&.Mui-focused fieldset": {
         borderColor: theme.palette.secondary.main,
       },
-    }
+    },
   }));
-  const CssLink = styled(Link)(({theme}) => ({
+  const CssLink = styled(Link)(({ theme }) => ({
     "&.MuiLink-root": {
       color: theme.palette.secondary.main,
       "&:hover": {
-        color: theme.palette.primary.light
-      }
-    }
+        color: theme.palette.primary.light,
+      },
+    },
   }));
   return (
     <Box sx={{ bgcolor: "primary.dark" }} className="navbar">
       <div className="navbar__left">
-        <Box className="page-title" sx={{ color: "secondary.main" }}>
-          <ConfirmationNumber sx={{ marginRight: "10px" }}></ConfirmationNumber>
-          NFTicket
-        </Box>
+        <Link href="/" underline="none">
+          <Box className="page-title" sx={{ color: "secondary.main" }}>
+            <ConfirmationNumber
+              sx={{ marginRight: "10px" }}
+            ></ConfirmationNumber>
+            NFTicket
+          </Box>
+        </Link>
+
         <Box className="navbar__left__searchBox">
           <CssTextField
             fullWidth
@@ -63,12 +70,17 @@ function Navigation() {
         </Box>
       </div>
       <div className="navbar__right">
-        <div className="navbar__right__my_tickets">
+        <div className="navbar__right__my-tickets">
           <CssLink href="tickets" underline="none">
             Mes billets
+            <BookOnlineOutlinedIcon></BookOnlineOutlinedIcon>
           </CssLink>
-          <CssLink href="login" underline="none">
+          
+        </div>
+        <div className="navbar__right__login">
+        <CssLink href="login" underline="none">
             Connexion/Inscription
+            <AccountCircleOutlinedIcon></AccountCircleOutlinedIcon>
           </CssLink>
         </div>
       </div>

@@ -7,7 +7,12 @@
       "contrastText": "#F9F7F7"
     },
     "secondary": {
-      "main": "#bb9c50"
+      "main": "#bb9c50",
+      "light": "#b9994c"
+    },
+    "success": {
+      "main": "#bb9c50",
+      "contrastText": "#F9F7F7"
     }
   }
 }
