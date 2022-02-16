@@ -22,6 +22,8 @@
     "anchor-link-browser-transport": "^3.2.5",
     "buffer": "^6.0.3",
     "crypto-browserify": "^3.12.0",
+    "eosjs": "^22.1.0",
+    "eosjs-account-name": "^2.2.1",
     "process": "^0.11.10",
     "react": "^17.0.2",
     "react-app-rewired": "^2.1.11",
