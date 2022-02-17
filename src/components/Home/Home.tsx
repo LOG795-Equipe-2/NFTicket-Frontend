@@ -1,8 +1,11 @@
-import { Box, styled } from "@mui/material";
+import { Box, Button, styled, Typography } from "@mui/material";
 import "./Home.scss";
 import SearchBox from "./SearchBox/SearchBox";
 import StarIcon from "@mui/icons-material/Star";
 import FeaturedEventsCarousel from "./FeaturedEventsCarousel/FeaturedEventsCarousel";
+import NearbyEventsCarousel from "./NearbyEventsCarousel/NearbyEventsCarousel";
+import ConfirmationNumber from "@mui/icons-material/ConfirmationNumber";
+import { NavLink } from "react-router-dom";
 
 function Home() {
   const CssBox = styled(Box)(({ theme }) => ({
@@ -21,6 +24,16 @@ function Home() {
         },
       },
       "&__search": {
+        "&__title": {
+          color: theme.palette.primary.dark,
+        },
+      },
+      "&__nearbyEvents": {
+        "&__title": {
+          color: theme.palette.primary.dark,
+        },
+      },
+      "&__createEvent": {
         "&__title": {
           color: theme.palette.primary.dark,
         },
@@ -48,7 +61,29 @@ function Home() {
         <div className="home__search__title">Recherche d'évenements</div>
         <SearchBox />
       </div>
-      <div className="home__closeByEvents"></div>
+      <div className="home__nearbyEvents">
+        <div className="home__nearbyEvents__title">Évenements à proximité</div>
+        <NearbyEventsCarousel />
+      </div>
+      <div className="home__createEvent">
+        <div className="home__createEvent__title">Créer un évenement</div>
+
+        <div className="home__createEvent__subtitle">
+          <Typography variant="body2" color="text.secondary">
+            Hébergez votre évenement sur NFTicket et offrez à votre public des
+            billets uniques. Vos plus grands fans pourront collectionner vos
+            billets et obtenir des récompenses.
+          </Typography>
+        </div>
+        <div className="home__createEvent__content">
+          <NavLink to="create">
+            <Button color="success" variant="contained">
+              Créer votre évenement
+              <ConfirmationNumber />
+            </Button>
+          </NavLink>
+        </div>
+      </div>
     </CssBox>
   );
 }

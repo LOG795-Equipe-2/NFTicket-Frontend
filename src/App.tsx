@@ -58,7 +58,7 @@ function App() {
       {/* <button onClick={() => manager.login()}>Login</button>
       <button onClick={() => performTransaction(manager)}>perform trx</button>
       <button onClick={() => manager.logout()}>logout</button> */}
-      <div title="NFTicket App" className="App">
+      <div className="App">
         <Navigation></Navigation>
         <BrowserRouter>
           <Routes>
