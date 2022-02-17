@@ -6,9 +6,9 @@ import {
   CardActions,
   Button,
 } from "@mui/material";
-import PropTypes from "prop-types";
+import EventType from "../../interfaces/Event";
 
-function EventCard({ event }: { event: any}) {
+function EventCard({ event }: { event: EventType}) {
   return (
     <Card sx={{ maxWidth: 350, margin: "0 20px" }}>
       <CardMedia
@@ -31,9 +31,5 @@ function EventCard({ event }: { event: any}) {
     </Card>
   );
 }
-
-EventCard.propTypes = {
-  event: PropTypes.any
-};
 
 export default EventCard;
