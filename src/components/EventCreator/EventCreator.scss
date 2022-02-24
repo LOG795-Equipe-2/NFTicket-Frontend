@@ -3,15 +3,41 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+  position: relative;
+  overflow-x: clip;
+  .carousel {
+    position: unset;
+    > div:first-child {
+      position: unset;
+    }
+    > div:last-child {
+      visibility: hidden;
+    }
+  }
   form {
     width: min(80%, 1800px);
   }
   &__title {
-    font-size: 30px;
-    font-weight: 600;
     width: min(80%, 1800px);
     margin-top: 50px;
     margin-bottom: 10px;
+    .text {
+      font-size: 30px;
+      font-weight: 400;
+      opacity: 1;
+      transition: opacity 0.15s 0s ease-in-out;
+      &.previous {
+        opacity: 0.5;
+        cursor: pointer;
+        &:hover {
+          opacity: 1;
+        }
+      }
+    }
+
+    .MuiBreadcrumbs-separator {
+      font-size: 20px;
+    }
   }
   &__form {
     display: flex;
@@ -43,7 +69,7 @@
       margin-left: 50px;
       flex-direction: column;
       .error-helper-text {
-        font-family: "Roboto","Helvetica","Arial",sans-serif;
+        font-family: "Roboto", "Helvetica", "Arial", sans-serif;
         font-weight: 400;
         font-size: 0.75rem;
         line-height: 1.66;
@@ -102,6 +128,9 @@
     display: flex;
     justify-content: center;
     margin: 50px 0;
-    width: min(80%, 1800px);
+    width: 100%;
+  }
+
+  &__customizeTickets {
   }
 }

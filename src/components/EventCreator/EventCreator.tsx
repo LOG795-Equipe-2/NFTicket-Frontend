@@ -1,14 +1,10 @@
 import {
   Box,
-  FormControl,
-  FormGroup,
-  InputLabel,
   TextField,
   styled,
   Typography,
-  Input,
-  IconButton,
   Button,
+  Breadcrumbs,
 } from "@mui/material";
 import React from "react";
 import "./EventCreator.scss";
@@ -17,12 +13,16 @@ import AddIcon from "@mui/icons-material/Add";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import DeleteIcon from "@mui/icons-material/Delete";
 import ReactDOM from "react-dom";
+import CircularProgress from "@mui/material/CircularProgress";
+import Carousel from "react-material-ui-carousel";
 
 type EventCreatorProps = {};
 type EventCreatorState = {
   tickets: TicketType[];
   eventImage: string;
   errors: any;
+  isSubmitting: boolean;
+  currentStep: number;
 };
 type TicketType = {
   type: string;
@@ -32,7 +32,7 @@ type TicketType = {
 
 const CssBox = styled(Box)(({ theme }) => ({
   ".EventCreator": {
-    "&__title": {
+    "&__title .text": {
       color: theme.palette.primary.dark,
     },
     "&__form": {
@@ -60,6 +60,13 @@ const CssBox = styled(Box)(({ theme }) => ({
         },
       },
     },
+    "&__submitContainer": {
+      ".MuiButton-root": {
+        ".MuiCircularProgress-root": {
+          color: theme.palette.primary.main,
+        },
+      },
+    },
   },
 }));
 class EventCreator extends React.Component<
@@ -67,6 +74,7 @@ class EventCreator extends React.Component<
   EventCreatorState
 > {
   imageUploadContainerRef = React.createRef<any>();
+  isSubmitting = false;
 
   handleEventSubmit(e: React.SyntheticEvent) {
     e.preventDefault();
@@ -112,7 +120,17 @@ class EventCreator extends React.Component<
     if (hasErrors) {
       this.setState({ errors });
     } else {
-      // submit
+      this.setState({ isSubmitting: true });
+      // Valider que le code est unique
+      let nextButton = document.querySelector(
+        '[aria-label="carousel indicator 2"]'
+      ) as HTMLElement;
+      if (nextButton) {
+        setTimeout(() => {
+          this.setState({ currentStep: 1, isSubmitting: false });
+          nextButton.click();
+        }, 2000);
+      }
     }
   }
 
@@ -127,8 +145,10 @@ class EventCreator extends React.Component<
 
   removeTicketType(index: number) {
     let tickets = [...this.state.tickets];
+    const errors = this.state.errors;
     tickets.splice(index, 1);
-    this.setState({ tickets });
+    errors.tickets.splice(index, 1);
+    this.setState({ tickets, errors });
   }
 
   handleTicketTypeChange(
@@ -159,7 +179,7 @@ class EventCreator extends React.Component<
       let fr = new FileReader();
       fr.onload = () => {
         if (!!fr.result) {
-          this.setState({ eventImage: fr.result as string, errors  });
+          this.setState({ eventImage: fr.result as string, errors });
         }
       };
       fr.readAsDataURL(target.files[0]);
@@ -170,7 +190,7 @@ class EventCreator extends React.Component<
     event.preventDefault();
     event.stopPropagation();
     const files = (event as any).dataTransfer.files;
-    if (files && files.length) {
+    if (files && files.length && !this.state.isSubmitting) {
       const errors = this.state.errors;
       errors["event-image"] = "";
       let fr = new FileReader();
@@ -201,9 +221,21 @@ class EventCreator extends React.Component<
     };
     const { errors } = this.state;
     if (target.value.length > 0) {
-      console.log(errors);
       errors[key] = "";
       this.setState({ errors });
+    }
+  }
+
+  setCurrentStep(step: number) {
+    if (step < this.state.currentStep) {
+      let previousButton = document.querySelector(
+        `[aria-label="carousel indicator ${step + 1}"]`
+      ) as HTMLElement;
+      if (previousButton) {
+        previousButton.click();
+      }
+      this.setState({ currentStep: step });
+      
     }
   }
 
@@ -215,162 +247,208 @@ class EventCreator extends React.Component<
       errors: {
         tickets: [{}],
       },
+      isSubmitting: false,
+      currentStep: 0,
     };
   }
   render() {
     return (
       <CssBox className="EventCreator">
-        <div className="EventCreator__title">Créer un événement</div>
-        <form id="event-form" onSubmit={(e) => this.handleEventSubmit(e)}>
-          <div className="EventCreator__form">
-            <div className="EventCreator__form__column">
-              <Typography variant="subtitle1">Détails</Typography>
-              <div className="EventCreator__form__input">
-                <TextField
-                  id="event-name"
-                  label="Nom de l'événement"
-                  name="name"
-                  helperText={this.state.errors["event-name"]}
-                  error={!!this.state.errors["event-name"]}
-                  onChange={(e) => this.handleEventInputChange(e, "event-name")}
-                />
-              </div>
-              <div className="EventCreator__form__input">
-                <TextField
-                  id="event-code"
-                  label="Code de l'événement (doit être unique)"
-                  name="code"
-                  helperText={this.state.errors["event-code"]}
-                  error={!!this.state.errors["event-code"]}
-                  onChange={(e) => this.handleEventInputChange(e, "event-code")}
-                />
-              </div>
-              <div className="EventCreator__form__input">
-                <TextField
-                  id="event-description"
-                  minRows={3}
-                  maxRows={3}
-                  multiline
-                  label="Description"
-                  name="description"
-                  helperText={this.state.errors["event-description"]}
-                  error={!!this.state.errors["event-description"]}
-                  onChange={(e) =>
-                    this.handleEventInputChange(e, "event-description")
-                  }
-                />
-              </div>
-              <Typography
-                className="EventCreator__form__sectionHeader"
-                variant="subtitle1"
-              >
-                Billets
-              </Typography>
-              <div className="EventCreator__form__tickets">
-                {this.state.tickets.map((ticket, index) => (
-                  <div className="EventCreator__form__input" key={index}>
-                    <TextField
-                      className="small"
-                      label="Catégorie"
-                      name="type"
-                      onChange={(e) =>
-                        this.handleTicketTypeChange(index, e, "type")
-                      }
-                      value={ticket.type}
-                      helperText={this.state.errors.tickets[index].type}
-                      error={this.state.errors.tickets[index].type}
-                    />
-                    <TextField
-                      value={ticket.price}
-                      className="small"
-                      label="Prix"
-                      type="number"
-                      name="price"
-                      InputProps={{ inputProps: { min: 0 } }}
-                      onChange={(e) =>
-                        this.handleTicketTypeChange(index, e, "price")
-                      }
-                    />
-                    <TextField
-                      className="small"
-                      label="Quantité"
-                      type="number"
-                      value={ticket.amount}
-                      name="amount"
-                      InputProps={{ inputProps: { min: 1 } }}
-                      onChange={(e) =>
-                        this.handleTicketTypeChange(index, e, "amount")
-                      }
-                    />
-                    {index === 0 ? (
-                      <div style={{ width: "64px" }} />
-                    ) : (
-                      <Button
-                        onClick={() => this.removeTicketType(index)}
-                        variant="outlined"
-                        className="EventCreator__form__tickets__remove"
-                      >
-                        <DeleteIcon />
-                      </Button>
-                    )}
-                  </div>
-                ))}
+        <div className="EventCreator__title">
+          <Breadcrumbs separator=">">
+            <div onClick={() => this.setCurrentStep(0)} className={`text ${this.state.currentStep > 0 && "previous"}`}>
+              Créer un événement
+            </div>
+            {this.state.currentStep > 0 && (
+              <div className="text">Personnaliser les billets</div>
+            )}
+          </Breadcrumbs>
+        </div>
+        <Carousel
+          sx={{ width: "min(80%, 1800px)" }}
+          className="carousel"
+          animation="slide"
+          navButtonsAlwaysInvisible
+          indicators={true}
+          autoPlay={false}
+          swipe={false}
+        >
+          <form
+            key="section-0"
+            id="event-form"
+            onSubmit={(e) => this.handleEventSubmit(e)}
+          >
+            <div className="EventCreator__form">
+              <div className="EventCreator__form__column">
+                <Typography variant="subtitle1">Détails</Typography>
+                <div className="EventCreator__form__input">
+                  <TextField
+                    id="event-name"
+                    label="Nom de l'événement"
+                    name="name"
+                    helperText={this.state.errors["event-name"]}
+                    error={!!this.state.errors["event-name"]}
+                    onChange={(e) =>
+                      this.handleEventInputChange(e, "event-name")
+                    }
+                    disabled={this.state.isSubmitting}
+                  />
+                </div>
+                <div className="EventCreator__form__input">
+                  <TextField
+                    id="event-code"
+                    label="Code de l'événement (doit être unique)"
+                    name="code"
+                    helperText={this.state.errors["event-code"]}
+                    error={!!this.state.errors["event-code"]}
+                    onChange={(e) =>
+                      this.handleEventInputChange(e, "event-code")
+                    }
+                    disabled={this.state.isSubmitting}
+                  />
+                </div>
+                <div className="EventCreator__form__input">
+                  <TextField
+                    id="event-description"
+                    minRows={3}
+                    maxRows={3}
+                    multiline
+                    label="Description"
+                    name="description"
+                    helperText={this.state.errors["event-description"]}
+                    error={!!this.state.errors["event-description"]}
+                    onChange={(e) =>
+                      this.handleEventInputChange(e, "event-description")
+                    }
+                    disabled={this.state.isSubmitting}
+                  />
+                </div>
+                <Typography
+                  className="EventCreator__form__sectionHeader"
+                  variant="subtitle1"
+                >
+                  Billets
+                </Typography>
+                <div className="EventCreator__form__tickets">
+                  {this.state.tickets.map((ticket, index) => (
+                    <div className="EventCreator__form__input" key={index}>
+                      <TextField
+                        className="small"
+                        label="Catégorie"
+                        name="type"
+                        onChange={(e) =>
+                          this.handleTicketTypeChange(index, e, "type")
+                        }
+                        value={ticket.type}
+                        helperText={this.state.errors.tickets[index].type}
+                        error={!!this.state.errors.tickets[index].type}
+                        disabled={this.state.isSubmitting}
+                      />
+                      <TextField
+                        value={ticket.price}
+                        className="small"
+                        label="Prix"
+                        type="number"
+                        name="price"
+                        InputProps={{ inputProps: { min: 0 } }}
+                        onChange={(e) =>
+                          this.handleTicketTypeChange(index, e, "price")
+                        }
+                        disabled={this.state.isSubmitting}
+                      />
+                      <TextField
+                        className="small"
+                        label="Quantité"
+                        type="number"
+                        value={ticket.amount}
+                        name="amount"
+                        InputProps={{ inputProps: { min: 1 } }}
+                        onChange={(e) =>
+                          this.handleTicketTypeChange(index, e, "amount")
+                        }
+                        disabled={this.state.isSubmitting}
+                      />
+                      {index === 0 ? (
+                        <div style={{ width: "64px" }} />
+                      ) : (
+                        <Button
+                          onClick={() => this.removeTicketType(index)}
+                          variant="outlined"
+                          className="EventCreator__form__tickets__remove"
+                          disabled={this.state.isSubmitting}
+                        >
+                          <DeleteIcon />
+                        </Button>
+                      )}
+                    </div>
+                  ))}
 
-                <div className="EventCreator__form__tickets__add">
-                  <Button
-                    onClick={() => this.addTicketType()}
-                    variant="outlined"
-                  >
-                    <AddIcon />
-                  </Button>
+                  <div className="EventCreator__form__tickets__add">
+                    <Button
+                      onClick={() => this.addTicketType()}
+                      variant="outlined"
+                      disabled={this.state.isSubmitting}
+                    >
+                      <AddIcon />
+                    </Button>
+                  </div>
                 </div>
               </div>
+              <div className="EventCreator__form__column">
+                <Box className="EventCreator__form__imageUpload">
+                  <label
+                    ref={this.imageUploadContainerRef}
+                    htmlFor="event-image"
+                    onDragOver={(e) => this.handleImageUploadDragOver(e)}
+                    onDragLeave={() => this.handleImageUploadDragLeave()}
+                    onDrop={(e) => this.handleImageUploadDragDrop(e)}
+                    className={
+                      "image-upload-container " +
+                      (this.state.errors["event-image"] ? "error" : "")
+                    }
+                    style={{
+                      borderWidth: this.state.eventImage === "" ? "2px" : "0px",
+                    }}
+                  >
+                    {this.state.eventImage === "" ? (
+                      <AddAPhotoIcon />
+                    ) : (
+                      <img src={this.state.eventImage} />
+                    )}
+                  </label>
+                  <input
+                    id="event-image"
+                    type="file"
+                    accept="image/png, image/jpeg"
+                    onChange={(e) => this.handleImageUpload(e)}
+                    disabled={this.state.isSubmitting}
+                  />
+                  <p className="error-helper-text">
+                    {this.state.errors["event-image"]}
+                  </p>
+                </Box>
+              </div>
             </div>
-            <div className="EventCreator__form__column">
-              <Box className="EventCreator__form__imageUpload">
-                <label
-                  ref={this.imageUploadContainerRef}
-                  htmlFor="event-image"
-                  onDragOver={(e) => this.handleImageUploadDragOver(e)}
-                  onDragLeave={() => this.handleImageUploadDragLeave()}
-                  onDrop={(e) => this.handleImageUploadDragDrop(e)}
-                  className={
-                    "image-upload-container " +
-                    (this.state.errors["event-image"] ? "error" : "")
-                  }
-                  style={{
-                    borderWidth: this.state.eventImage === "" ? "2px" : "0px",
-                  }}
-                >
-                  {this.state.eventImage === "" ? (
-                    <AddAPhotoIcon />
-                  ) : (
-                    <img src={this.state.eventImage} />
-                  )}
-                </label>
-                <input
-                  id="event-image"
-                  type="file"
-                  accept="image/png, image/jpeg"
-                  onChange={(e) => this.handleImageUpload(e)}
-                />
-                <p className="error-helper-text">
-                  {this.state.errors["event-image"]}
-                </p>
-              </Box>
+            <div className="EventCreator__submitContainer">
+              <Button
+                color="success"
+                type="submit"
+                variant="contained"
+                form="event-form"
+                disabled={this.state.isSubmitting}
+              >
+                {this.state.isSubmitting ? (
+                  <CircularProgress size={20} />
+                ) : (
+                  <React.Fragment>
+                    Confirmer <ChevronRightIcon />
+                  </React.Fragment>
+                )}
+              </Button>
             </div>
-          </div>
-        </form>
-        <div className="EventCreator__submitContainer">
-          <Button
-            color="success"
-            type="submit"
-            variant="contained"
-            form="event-form"
-          >
-            Confirmer <ChevronRightIcon />
-          </Button>
-        </div>
+          </form>
+          <div key="section-1">billets</div>
+        </Carousel>
       </CssBox>
     );
   }
