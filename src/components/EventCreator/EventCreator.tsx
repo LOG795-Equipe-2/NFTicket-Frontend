@@ -4,7 +4,9 @@ import {
   styled,
   Typography,
   Button,
-  Breadcrumbs,
+  Stepper,
+  Step,
+  StepLabel,
 } from "@mui/material";
 import React from "react";
 import "./EventCreator.scss";
@@ -32,7 +34,7 @@ type TicketType = {
 
 const CssBox = styled(Box)(({ theme }) => ({
   ".EventCreator": {
-    "&__title .text": {
+    "&__title .text .MuiStepLabel-label": {
       color: theme.palette.primary.dark,
     },
     "&__form": {
@@ -113,6 +115,7 @@ class EventCreator extends React.Component<
 
     tickets.forEach((ticket, index) => {
       if (ticket.type.length === 0) {
+        hasErrors = true;
         errors.tickets[index].type = "La catégorie du billet est requise";
       }
     });
@@ -235,7 +238,6 @@ class EventCreator extends React.Component<
         previousButton.click();
       }
       this.setState({ currentStep: step });
-      
     }
   }
 
@@ -255,14 +257,27 @@ class EventCreator extends React.Component<
     return (
       <CssBox className="EventCreator">
         <div className="EventCreator__title">
-          <Breadcrumbs separator=">">
-            <div onClick={() => this.setCurrentStep(0)} className={`text ${this.state.currentStep > 0 && "previous"}`}>
-              Créer un événement
-            </div>
-            {this.state.currentStep > 0 && (
-              <div className="text">Personnaliser les billets</div>
-            )}
-          </Breadcrumbs>
+          <Stepper activeStep={this.state.currentStep}>
+            <Step>
+              <div
+                onClick={() => this.setCurrentStep(0)}
+                className={`text ${this.state.currentStep > 0 && "previous"}`}
+              >
+                <StepLabel>Créer un événement</StepLabel>
+              </div>
+            </Step>
+
+            <Step>
+              <div className="text">
+                <StepLabel>Personnaliser les billets</StepLabel>
+              </div>
+            </Step>
+            <Step>
+              <div className="text">
+                <StepLabel>Confirmer</StepLabel>
+              </div>
+            </Step>
+          </Stepper>
         </div>
         <Carousel
           sx={{ width: "min(80%, 1800px)" }}
@@ -448,6 +463,7 @@ class EventCreator extends React.Component<
             </div>
           </form>
           <div key="section-1">billets</div>
+          <div key="section-2">autre chose</div>
         </Carousel>
       </CssBox>
     );
