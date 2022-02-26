@@ -7,6 +7,11 @@ import {
   Stepper,
   Step,
   StepLabel,
+  List,
+  ListItemText,
+  ListItemButton,
+  Card,
+  Divider,
 } from "@mui/material";
 import React from "react";
 import "./EventCreator.scss";
@@ -25,6 +30,7 @@ type EventCreatorState = {
   errors: any;
   isSubmitting: boolean;
   currentStep: number;
+  currentTicketSelected: number;
 };
 type TicketType = {
   type: string;
@@ -251,6 +257,7 @@ class EventCreator extends React.Component<
       },
       isSubmitting: false,
       currentStep: 0,
+      currentTicketSelected: 0
     };
   }
   render() {
@@ -462,7 +469,24 @@ class EventCreator extends React.Component<
               </Button>
             </div>
           </form>
-          <div key="section-1">billets</div>
+          <div className="EventCreator__customizeTickets" key="section-1">
+            <div className="EventCreator__customizeTickets__menu">
+              <Card>
+                <List>
+                  {this.state.tickets.map((ticket, index) => (
+                    <React.Fragment>
+                      {index !== 0 && (
+                        <Divider/>
+                      )}
+                      <ListItemButton onClick={() => this.setState({ currentTicketSelected: index })} selected={index === this.state.currentTicketSelected} >
+                        <ListItemText primary={ticket.type}></ListItemText>
+                      </ListItemButton>
+                    </React.Fragment>
+                  ))}
+                </List>
+              </Card>
+            </div>
+          </div>
           <div key="section-2">autre chose</div>
         </Carousel>
       </CssBox>

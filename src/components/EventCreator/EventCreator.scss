@@ -16,6 +16,7 @@
   }
   form {
     width: min(80%, 1800px);
+    margin-top: 20px;
   }
   &__title {
     width: min(80%, 1800px);
@@ -134,5 +135,12 @@
   }
 
   &__customizeTickets {
+    &__menu {
+      margin-top: 20px;
+      width: 300px;
+      .MuiList-root {
+        padding: 0;
+      }
+    }
   }
 }
