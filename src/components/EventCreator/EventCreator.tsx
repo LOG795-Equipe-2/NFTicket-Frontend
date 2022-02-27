@@ -22,6 +22,8 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import ReactDOM from "react-dom";
 import CircularProgress from "@mui/material/CircularProgress";
 import Carousel from "react-material-ui-carousel";
+import Ticket3DVisualiser from "../Ticket3DVisualiser/Ticket3DVisualiser";
+import TicketVisualiser from "../TicketVisualiser/TicketVisualiser";
 
 type EventCreatorProps = {};
 type EventCreatorState = {
@@ -136,7 +138,11 @@ class EventCreator extends React.Component<
       ) as HTMLElement;
       if (nextButton) {
         setTimeout(() => {
-          this.setState({ currentStep: 1, isSubmitting: false });
+          this.setState({
+            currentStep: 1,
+            isSubmitting: false,
+            currentTicketSelected: 0,
+          });
           nextButton.click();
         }, 2000);
       }
@@ -257,7 +263,7 @@ class EventCreator extends React.Component<
       },
       isSubmitting: false,
       currentStep: 0,
-      currentTicketSelected: 0
+      currentTicketSelected: 0,
     };
   }
   render() {
@@ -474,11 +480,14 @@ class EventCreator extends React.Component<
               <Card>
                 <List>
                   {this.state.tickets.map((ticket, index) => (
-                    <React.Fragment>
-                      {index !== 0 && (
-                        <Divider/>
-                      )}
-                      <ListItemButton onClick={() => this.setState({ currentTicketSelected: index })} selected={index === this.state.currentTicketSelected} >
+                    <React.Fragment key={"ticket-menu-item-" + index}>
+                      {index !== 0 && <Divider />}
+                      <ListItemButton
+                        onClick={() =>
+                          this.setState({ currentTicketSelected: index })
+                        }
+                        selected={index === this.state.currentTicketSelected}
+                      >
                         <ListItemText primary={ticket.type}></ListItemText>
                       </ListItemButton>
                     </React.Fragment>
@@ -486,8 +495,11 @@ class EventCreator extends React.Component<
                 </List>
               </Card>
             </div>
+            <div className="EventCreator__customizeTickets__canvas">
+              <TicketVisualiser />
+            </div>
           </div>
-          <div key="section-2">autre chose</div>
+          <div key="section-2"></div>
         </Carousel>
       </CssBox>
     );

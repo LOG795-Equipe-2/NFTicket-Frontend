@@ -35,6 +35,9 @@
         &:hover {
           opacity: 1;
         }
+        .MuiStepLabel-label.Mui-completed {
+          font-weight: 400;
+        }
       }
     }
 
@@ -135,12 +138,17 @@
   }
 
   &__customizeTickets {
+    display: flex;
+    flex-direction: row;
+    margin-top: 20px;
     &__menu {
-      margin-top: 20px;
       width: 300px;
       .MuiList-root {
         padding: 0;
       }
+    }
+    &__canvas {
+      margin-left: 50px;
     }
   }
 }
