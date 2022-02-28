@@ -14,7 +14,7 @@ const theme = createTheme(Theme);
 function App() {
   return (
     <ThemeProvider theme={theme}>
-      <div title="NFTicket App" className="App">
+      <div className="App">
         <Navigation></Navigation>
         <BrowserRouter>
           <Routes>
