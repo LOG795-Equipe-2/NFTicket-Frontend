@@ -94,11 +94,13 @@ export class AnchorBrowserManager{
      */
      async performTransactions(actions:any[]) {
         if(this.isUserLogged()){
+            let transactionId
             actions.forEach((element) => {
                 element.authorization = [this.session!.auth]
             })
             await this.session!.transact({ actions }).then(({transaction}) => {
                 console.log(`transation broadcast! Id: ${transaction.id}`);
+                transactionId = transaction.id
             }).catch((err) => {
                 console.log(err);
                 console.log(err.response);
@@ -108,7 +110,7 @@ export class AnchorBrowserManager{
       
                 throw err;
              });
-            
+            return transactionId
         } else {
             throw new Error("User is not logged in");
         }
