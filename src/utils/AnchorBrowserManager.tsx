@@ -12,6 +12,7 @@
 import AnchorLink, { LinkSession } from 'anchor-link'
 import AnchorLinkBrowserTransport from 'anchor-link-browser-transport'
 import AuthService from './AuthService';
+const { RpcError } = require('eosjs');
 
 export class AnchorBrowserManager{
     link: AnchorLink;
@@ -43,6 +44,10 @@ export class AnchorBrowserManager{
 
     isUserLogged(){
         return this.session !== null && typeof(this.session) !== "undefined";
+    }
+
+    getAccountName(){
+        return this.session?.auth.actor
     }
 
     /**
@@ -89,14 +94,22 @@ export class AnchorBrowserManager{
      * Ask for the user to log in and sign the transaction in the Anchor wallet.
      * The function will validate the authorization for the user with the session auth.
      */
-    performTransactions(actions:any[]) {
+     async performTransactions(actions:any[]) {
         if(this.isUserLogged()){
             actions.forEach((element) => {
                 element.authorization = [this.session!.auth]
             })
-            this.session!.transact({ actions }).then(({transaction}) => {
+            await this.session!.transact({ actions }).then(({transaction}) => {
                 console.log(`transation broadcast! Id: ${transaction.id}`);
-            }).catch((err) => {console.log(err)});
+            }).catch((err) => {
+                console.log(err);
+                console.log(err.response);
+                console.log(err.response.data)
+                if (err instanceof RpcError)
+                  console.log(JSON.stringify(err.json, null, 2));
+      
+                throw err;
+             });
             
         } else {
             throw new Error("User is not logged in");

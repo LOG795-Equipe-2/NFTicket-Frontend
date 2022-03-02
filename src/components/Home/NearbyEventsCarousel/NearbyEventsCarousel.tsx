@@ -3,8 +3,8 @@ import EventCard from "../../EventCard/EventCard";
 import { Box } from "@mui/material";
 import eventService from "../../../services/EventService";
 
-function FeaturedEventsCarousel() {
-  const eventGroups = eventService.getCurrentFeaturedEvents(4, 12);
+function NearbyEventsCarousel() {
+  const eventGroups = eventService.getNearbyEvents(4, 12, "x1x1x1");
   console.log(eventGroups)
   return (
     <Carousel interval={10000} navButtonsAlwaysVisible animation="slide">
@@ -27,4 +27,4 @@ function FeaturedEventsCarousel() {
   );
 }
 
-export default FeaturedEventsCarousel;
+export default NearbyEventsCarousel;

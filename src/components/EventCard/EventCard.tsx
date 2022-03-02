@@ -6,24 +6,23 @@ import {
   CardActions,
   Button,
 } from "@mui/material";
-import PropTypes from "prop-types";
+import EventType from "../../interfaces/Event";
 
-function EventCard({ imageLink }: { imageLink: string }) {
+function EventCard({ event }: { event: EventType}) {
   return (
     <Card sx={{ maxWidth: 350, margin: "0 20px" }}>
       <CardMedia
         component={"img"}
         height="200"
-        image={imageLink}
-        alt="something"
+        image={process.env.PUBLIC_URL + event.image}
+        alt={event.name}
       />
       <CardContent>
         <Typography gutterBottom variant="h5" component="div">
-          Lizard
+          {event.name}
         </Typography>
         <Typography variant="body2" color="text.secondary">
-          Lizards are a widespread group of squamate reptiles, with over 6,000
-          species, ranging across all continents except Antarctica
+          {event.description}
         </Typography>
       </CardContent>
       <CardActions>
@@ -32,9 +31,5 @@ function EventCard({ imageLink }: { imageLink: string }) {
     </Card>
   );
 }
-
-EventCard.propTypes = {
-  imageLink: PropTypes.string,
-};
 
 export default EventCard;
