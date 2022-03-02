@@ -11,6 +11,7 @@
 
 import AnchorLink, { LinkSession } from 'anchor-link'
 import AnchorLinkBrowserTransport from 'anchor-link-browser-transport'
+import AuthService from './AuthService';
 
 export class AnchorBrowserManager{
     link: AnchorLink;
@@ -54,6 +55,7 @@ export class AnchorBrowserManager{
           // Save the session within your application for future use
           this.session = identity.session
           console.log(`Logged in as ${this.session.auth}`)
+          AuthService.saveAnchorLinkInfosForCurrentSession();
         }).catch((err) => {
           // User has cancelled log in.
         });
@@ -101,4 +103,6 @@ export class AnchorBrowserManager{
         }
     }
     
-} export default AnchorBrowserManager
+} 
+
+export default new AnchorBrowserManager('5d5bbe6bb403e5ca8b087d382946807246b4dee094c7f5961e2bebd88f8c9c51', 'http://eos1.anthonybrochu.com:8888/', 'NFTicket');

@@ -7,7 +7,7 @@ import Theme from "./theme.json";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Home from "./components/Home/Home";
 
-import AnchorBrowserManager from './utils/AnchorBrowserManager';
+import anchorBrowserManager, { AnchorBrowserManager } from './utils/AnchorBrowserManager';
 
 const theme = createTheme(Theme);
 
