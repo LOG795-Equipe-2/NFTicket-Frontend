@@ -48,6 +48,15 @@ const CssBox = styled(Box)(({ theme }) => ({
         },
       },
     },
+    "&__customizeTickets": {
+      "&__editor": {
+        "&__fields": {
+          ".MuiTypography-root": {
+            color: theme.palette.primary.main,
+          },
+        },
+      },
+    },
   },
 }));
 class EventCreator extends React.Component<
@@ -57,25 +66,13 @@ class EventCreator extends React.Component<
   imageUploadContainerRef = React.createRef<any>();
 
   setCurrentStep(step: number) {
-    if (step < this.state.currentStep) {
-      let previousButton = document.querySelector(
-        `[aria-label="carousel indicator ${step + 1}"]`
-      ) as HTMLElement;
-      if (previousButton) {
-        previousButton.click();
-      }
-      this.setState({ currentStep: step });
-    }
-  }
-
-  moveToConfirm() {
-    let nextButton = document.querySelector(
-      '[aria-label="carousel indicator 2"]'
+    let button = document.querySelector(
+      `[aria-label="carousel indicator ${step + 1}"]`
     ) as HTMLElement;
-    if (nextButton) {
-      nextButton.click();
+    if (button) {
+      button.click();
     }
-    console.log('hello')
+    this.setState({ currentStep: step });
   }
 
   handleEventFormSubmit(event: Event) {
@@ -111,6 +108,7 @@ class EventCreator extends React.Component<
     };
     this.handleEventFormSubmit = this.handleEventFormSubmit.bind(this);
     this.updateTicketStyling = this.updateTicketStyling.bind(this);
+    this.setCurrentStep = this.setCurrentStep.bind(this);
   }
   render() {
     return (
@@ -126,7 +124,10 @@ class EventCreator extends React.Component<
               </div>
             </Step>
             <Step>
-              <div className="text">
+              <div
+                onClick={() => this.setCurrentStep(1)}
+                className={`text ${this.state.currentStep > 1 && "previous"}`}
+              >
                 <StepLabel>Personnaliser les billets</StepLabel>
               </div>
             </Step>
@@ -148,11 +149,11 @@ class EventCreator extends React.Component<
         >
           <EventForm moveToNextStep={this.handleEventFormSubmit} />
           <TicketCustomizer
-            confirmTicketStyling={this.moveToConfirm}
+            confirmTicketStyling={this.setCurrentStep}
             updateTicketStyling={this.updateTicketStyling}
             event={this.state.event}
           />
-          <div key="section-2">hello</div>
+          <div key="section-2">Confirm</div>
         </Carousel>
       </CssBox>
     );

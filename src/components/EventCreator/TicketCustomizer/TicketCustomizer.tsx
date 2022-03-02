@@ -100,6 +100,8 @@ class TicketCustomizer extends React.Component<
           <Button
             color="success"
             variant="contained"
+            onClick={() => this.props.confirmTicketStyling(2)}
+            id="confirm-styling"
           >
             Confirmer <ChevronRightIcon />
           </Button>
