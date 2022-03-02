@@ -5,8 +5,8 @@ FROM node:16.14 AS builder
 
 WORKDIR /app
 
-# Copy package.json to only restart that step when there are changes to the packages instead of the whole codebase.
-COPY ["package.json", "package-lock.json*", "./"]
+# Copy yarn.lock to only restart that step when there are changes to the packages instead of the whole codebase.
+COPY ["yarn.lock", "./"]
 RUN yarn
 
 # Copy source code
