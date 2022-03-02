@@ -1,21 +1,15 @@
-import {
-  Box,
-  styled,
-  Stepper,
-  Step,
-  StepLabel,
-} from "@mui/material";
+import { Box, styled, Stepper, Step, StepLabel } from "@mui/material";
 import React from "react";
 import "./EventCreator.scss";
 import Carousel from "react-material-ui-carousel";
 import EventForm from "./EventForm/EventForm";
-import Ticket from "../../interfaces/Ticket";
 import TicketCustomizer from "./TicketCustomizer/TicketCustomizer";
+import Event from "../../interfaces/Event";
 
 type EventCreatorProps = {};
 type EventCreatorState = {
   currentStep: number;
-  tickets: Ticket[];
+  event: Event;
 };
 const CssBox = styled(Box)(({ theme }) => ({
   ".EventCreator": {
@@ -74,8 +68,18 @@ class EventCreator extends React.Component<
     }
   }
 
-  handleEventFormSubmit(tickets: Ticket[]) {
-    this.setState({ tickets, currentStep: 1 });
+  moveToConfirm() {
+    let nextButton = document.querySelector(
+      '[aria-label="carousel indicator 2"]'
+    ) as HTMLElement;
+    if (nextButton) {
+      nextButton.click();
+    }
+    console.log('hello')
+  }
+
+  handleEventFormSubmit(event: Event) {
+    this.setState({ event, currentStep: 1 });
     let nextButton = document.querySelector(
       '[aria-label="carousel indicator 2"]'
     ) as HTMLElement;
@@ -84,13 +88,29 @@ class EventCreator extends React.Component<
     }
   }
 
+  updateTicketStyling(index: number, ticketStyling: any) {
+    const event = this.state.event;
+    const ticket = event.tickets[index];
+    if (ticket) {
+      ticket.styling = ticketStyling;
+    }
+    this.setState({ event });
+  }
+
   constructor(props: {}) {
     super(props);
     this.state = {
-      tickets: [],
+      event: {
+        id: "",
+        name: "",
+        description: "",
+        image: "",
+        tickets: [],
+      },
       currentStep: 0,
     };
     this.handleEventFormSubmit = this.handleEventFormSubmit.bind(this);
+    this.updateTicketStyling = this.updateTicketStyling.bind(this);
   }
   render() {
     return (
@@ -127,8 +147,12 @@ class EventCreator extends React.Component<
           swipe={false}
         >
           <EventForm moveToNextStep={this.handleEventFormSubmit} />
-          <TicketCustomizer tickets={this.state.tickets} />
-          <div key="section-2"></div>
+          <TicketCustomizer
+            confirmTicketStyling={this.moveToConfirm}
+            updateTicketStyling={this.updateTicketStyling}
+            event={this.state.event}
+          />
+          <div key="section-2">hello</div>
         </Carousel>
       </CssBox>
     );

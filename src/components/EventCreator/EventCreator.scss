@@ -147,8 +147,41 @@
         padding: 0;
       }
     }
-    &__canvas {
+    &__editor {
       margin-left: 50px;
+      &__fields {
+        margin-top: 30px;
+
+        .MuiTypography-root {
+          margin: 10px 0;
+        }
+
+        .MuiSwitch-root {
+          margin-top: -10px;
+        }
+
+        .row {
+          width: 100%;
+          display: flex;
+          justify-content: space-between;
+
+          .MuiFormControl-root {
+            width: inherit;
+            &:not(:last-child) {
+              margin-right: 15px;
+            }
+          }
+        }
+        .single-input {
+          width: 323px;
+        }
+      }
+      &__confirm {
+        display: flex;
+        justify-content: center;
+        margin-top: 30px;
+        margin-bottom: 10px;
+      }
     }
   }
 }

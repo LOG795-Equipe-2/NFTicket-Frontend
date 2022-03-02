@@ -12,6 +12,7 @@ import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import DeleteIcon from "@mui/icons-material/Delete";
 import CircularProgress from "@mui/material/CircularProgress";
 import Ticket from "../../../interfaces/Ticket";
+import Event from "../../../interfaces/Event";
 
 
 type EventFormProps = {
@@ -30,7 +31,7 @@ class EventForm extends React.Component<EventFormProps, EventFormState> {
   constructor(props: EventFormProps) {
     super(props);
     this.state = {
-      tickets: [{ type: "", price: 0, amount: 1 }],
+      tickets: [{ type: "", price: 0, amount: 1, styling: { primaryColor: "#FFFFFF", secondaryColor: "#FFFFFF", backgroundColor: "#000000", backgroundImage: "", useBorder: false } }],
       eventImage: "",
       errors: {
         tickets: [{}],
@@ -43,7 +44,7 @@ class EventForm extends React.Component<EventFormProps, EventFormState> {
     const { tickets, errors } = this.state;
     errors.tickets.push({});
     this.setState({
-      tickets: [...tickets, { type: "", price: 0, amount: 1 }],
+      tickets: [...tickets, { type: "", price: 0, amount: 1, styling: { primaryColor: "#FFFFFF", secondaryColor: "#FFFFFF", backgroundColor: "#000000", backgroundImage: "", useBorder: false } }],
       errors,
     });
   }
@@ -186,7 +187,8 @@ class EventForm extends React.Component<EventFormProps, EventFormState> {
           this.setState({
             isSubmitting: false,
           });
-          this.props.moveToNextStep(this.state.tickets);
+          const event: Event = { id: code, name, description, image, tickets: this.state.tickets }
+          this.props.moveToNextStep(event);
           nextButton.click();
         }, 2000);
       }
