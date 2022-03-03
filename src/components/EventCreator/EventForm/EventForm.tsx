@@ -1,10 +1,5 @@
 import React from "react";
-import {
-  Box,
-  TextField,
-  Typography,
-  Button,
-} from "@mui/material";
+import { Box, TextField, Typography, Button } from "@mui/material";
 import AddAPhotoIcon from "@mui/icons-material/AddAPhoto";
 import ReactDOM from "react-dom";
 import AddIcon from "@mui/icons-material/Add";
@@ -14,15 +9,14 @@ import CircularProgress from "@mui/material/CircularProgress";
 import Ticket from "../../../interfaces/Ticket";
 import Event from "../../../interfaces/Event";
 
-
 type EventFormProps = {
-  moveToNextStep: Function
+  moveToNextStep: Function;
 };
 type EventFormState = {
   tickets: Ticket[];
   errors: any;
   eventImage: string;
-  isSubmitting: boolean
+  isSubmitting: boolean;
 };
 
 class EventForm extends React.Component<EventFormProps, EventFormState> {
@@ -31,12 +25,25 @@ class EventForm extends React.Component<EventFormProps, EventFormState> {
   constructor(props: EventFormProps) {
     super(props);
     this.state = {
-      tickets: [{ type: "", price: 0, amount: 1, styling: { primaryColor: "#FFFFFF", secondaryColor: "#FFFFFF", backgroundColor: "#000000", backgroundImage: "", useBorder: false } }],
+      tickets: [
+        {
+          type: "",
+          price: 0,
+          amount: 1,
+          styling: {
+            primaryColor: "#FFFFFF",
+            secondaryColor: "#FFFFFF",
+            backgroundColor: "#000000",
+            backgroundImage: "",
+            useBorder: false,
+          },
+        },
+      ],
       eventImage: "",
       errors: {
         tickets: [{}],
       },
-      isSubmitting: false
+      isSubmitting: false,
     };
   }
 
@@ -44,7 +51,21 @@ class EventForm extends React.Component<EventFormProps, EventFormState> {
     const { tickets, errors } = this.state;
     errors.tickets.push({});
     this.setState({
-      tickets: [...tickets, { type: "", price: 0, amount: 1, styling: { primaryColor: "#FFFFFF", secondaryColor: "#FFFFFF", backgroundColor: "#000000", backgroundImage: "", useBorder: false } }],
+      tickets: [
+        ...tickets,
+        {
+          type: "",
+          price: 0,
+          amount: 1,
+          styling: {
+            primaryColor: "#FFFFFF",
+            secondaryColor: "#FFFFFF",
+            backgroundColor: "#000000",
+            backgroundImage: "",
+            useBorder: false,
+          },
+        },
+      ],
       errors,
     });
   }
@@ -65,9 +86,14 @@ class EventForm extends React.Component<EventFormProps, EventFormState> {
     event.preventDefault();
     const target = event.target as typeof event.target & {
       value: any;
+      valueAsNumber: number;
     };
     let tickets = this.state.tickets;
-    (tickets[index] as any)[name] = target.value;
+    if (name === "price" || name == "amount") {
+      (tickets[index] as any)[name] = target.valueAsNumber;
+    } else {
+      (tickets[index] as any)[name] = target.value;
+    }
     if (target.value.length > 0) {
       const errors = this.state.errors;
       errors.tickets[index].type = "";
@@ -136,7 +162,7 @@ class EventForm extends React.Component<EventFormProps, EventFormState> {
     e.preventDefault();
     const target = e.target as typeof e.target & {
       name: { value: string };
-      code: { value: string };
+      location: { value: string };
       description: { value: string };
     };
     let errors = this.state.errors;
@@ -147,10 +173,10 @@ class EventForm extends React.Component<EventFormProps, EventFormState> {
       errors["event-name"] = "Le nom de l'événement est requis";
     }
 
-    const code = target.code.value;
-    if (code.length === 0) {
+    const location = target.location.value;
+    if (location.length === 0) {
       hasErrors = true;
-      errors["event-code"] = "Le code de l'événement est requis";
+      errors["event-location"] = "L'endroit de l'événement est requis";
     }
 
     const description = target.description.value;
@@ -178,7 +204,7 @@ class EventForm extends React.Component<EventFormProps, EventFormState> {
       this.setState({ errors });
     } else {
       this.setState({ isSubmitting: true });
-      // Valider que le code est unique
+      // Valider que le location est unique
       let nextButton = document.querySelector(
         '[aria-label="carousel indicator 2"]'
       ) as HTMLElement;
@@ -187,7 +213,13 @@ class EventForm extends React.Component<EventFormProps, EventFormState> {
           this.setState({
             isSubmitting: false,
           });
-          const event: Event = { id: code, name, description, image, tickets: this.state.tickets }
+          const event: Event = {
+            location: location,
+            name,
+            description,
+            image,
+            tickets: this.state.tickets,
+          };
           this.props.moveToNextStep(event);
           nextButton.click();
         }, 2000);
@@ -218,12 +250,12 @@ class EventForm extends React.Component<EventFormProps, EventFormState> {
             </div>
             <div className="EventCreator__form__input">
               <TextField
-                id="event-code"
-                label="Code de l'événement (doit être unique)"
-                name="code"
-                helperText={this.state.errors["event-code"]}
-                error={!!this.state.errors["event-code"]}
-                onChange={(e) => this.handleEventInputChange(e, "event-code")}
+                id="event-location"
+                label="Endroit"
+                name="location"
+                helperText={this.state.errors["event-location"]}
+                error={!!this.state.errors["event-location"]}
+                onChange={(e) => this.handleEventInputChange(e, "event-location")}
                 disabled={this.state.isSubmitting}
               />
             </div>

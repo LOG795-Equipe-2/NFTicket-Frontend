@@ -5,6 +5,7 @@ import Carousel from "react-material-ui-carousel";
 import EventForm from "./EventForm/EventForm";
 import TicketCustomizer from "./TicketCustomizer/TicketCustomizer";
 import Event from "../../interfaces/Event";
+import EventConfirmation from "./EventConfirmation/EventConfirmation";
 
 type EventCreatorProps = {};
 type EventCreatorState = {
@@ -94,11 +95,15 @@ class EventCreator extends React.Component<
     this.setState({ event });
   }
 
+  createEvent() {
+    // TODO: Create the event
+  }
+
   constructor(props: {}) {
     super(props);
     this.state = {
       event: {
-        id: "",
+        location: "",
         name: "",
         description: "",
         image: "",
@@ -109,6 +114,7 @@ class EventCreator extends React.Component<
     this.handleEventFormSubmit = this.handleEventFormSubmit.bind(this);
     this.updateTicketStyling = this.updateTicketStyling.bind(this);
     this.setCurrentStep = this.setCurrentStep.bind(this);
+    this.createEvent = this.createEvent.bind(this);
   }
   render() {
     return (
@@ -153,7 +159,9 @@ class EventCreator extends React.Component<
             updateTicketStyling={this.updateTicketStyling}
             event={this.state.event}
           />
-          <div key="section-2">Confirm</div>
+          <div key="section-2">
+            <EventConfirmation createEvent={this.createEvent} event={this.state.event} />
+          </div>
         </Carousel>
       </CssBox>
     );

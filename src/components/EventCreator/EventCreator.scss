@@ -184,4 +184,41 @@
       }
     }
   }
+  .EventConfirmation {
+    &__event {
+      .MuiPaper-root {
+        margin: 0;
+      }
+    }
+    &__tickets {
+      .ticket {
+        margin-bottom: 20px;
+        display: flex;
+        flex-direction: row;
+        &__description {
+          display: flex;
+          flex-direction: row;
+          &__item {
+            margin-left: 20px;
+          }
+        }
+      }
+    }
+    &__confirm {
+      display: flex;
+      justify-content: center;
+      margin-top: 30px;
+      margin-bottom: 10px;
+      svg {
+        margin-left: 10px;
+      }
+    }
+    .subtitle {
+      margin-top: 10px;
+    }
+    .header {
+      margin-top: 10px;
+      margin-bottom: 5px;
+    }
+  }
 }

@@ -8,7 +8,13 @@ import {
 } from "@mui/material";
 import EventType from "../../interfaces/Event";
 
-function EventCard({ event }: { event: EventType}) {
+function EventCard({
+  event,
+  showLink,
+}: {
+  event: EventType;
+  showLink: boolean;
+}) {
   return (
     <Card sx={{ maxWidth: 350, margin: "0 20px" }}>
       <CardMedia
@@ -25,9 +31,11 @@ function EventCard({ event }: { event: EventType}) {
           {event.description}
         </Typography>
       </CardContent>
-      <CardActions>
-        <Button size="small">Voir les billets</Button>
-      </CardActions>
+      {showLink && (
+        <CardActions>
+          <Button size="small">Voir les billets</Button>
+        </CardActions>
+      )}
     </Card>
   );
 }

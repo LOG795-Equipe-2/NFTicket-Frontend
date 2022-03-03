@@ -1,7 +1,7 @@
 import Ticket from "./Ticket";
 
 export default interface Event {
-    id: string,
+    location: string,
     name: string,
     description: string,
     image: string,

@@ -3,16 +3,11 @@
   background-position: center!important;
   border-style: solid;
   &__content {
-    height: 368px;
     display: flex;
     flex-direction: row;
     align-items: center;
-    padding: 16px;
 
     .ticket-code {
-      margin-left: -16px;
-      width: 180px;
-      height: 180px;
       margin-top: 10px;
       mask: url(https://upload.wikimedia.org/wikipedia/commons/thumb/d/d0/QR_code_for_mobile_English_Wikipedia.svg/1280px-QR_code_for_mobile_English_Wikipedia.svg.png) no-repeat center / contain;
     }
