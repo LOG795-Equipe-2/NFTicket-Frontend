@@ -10,7 +10,7 @@ class EventService {
         let separatorCtr = 0;
         let accumulator = [];
         for (let i = 0; i < maxEvents; i++) {
-            accumulator.push(fetchedData[i] as Event);
+            accumulator.push(fetchedData[i] as any);
             separatorCtr++;
             if (separatorCtr % separator === 0) {
                 events.push(accumulator);
@@ -27,7 +27,7 @@ class EventService {
         let separatorCtr = 0;
         let accumulator = [];
         for (let i = 0; i < maxEvents; i++) {
-            accumulator.push(fetchedData[i] as Event);
+            accumulator.push(fetchedData[i] as any);
             separatorCtr++;
             if (separatorCtr % separator === 0) {
                 events.push(accumulator);

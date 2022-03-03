@@ -1,0 +1,224 @@
+.EventCreator {
+  margin-top: 60px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  overflow-x: clip;
+  .carousel {
+    position: unset;
+    > div:first-child {
+      position: unset;
+    }
+    > div:last-child {
+      visibility: hidden;
+    }
+  }
+  form {
+    width: min(80%, 1800px);
+    margin-top: 20px;
+  }
+  &__title {
+    width: min(80%, 1800px);
+    margin-top: 50px;
+    margin-bottom: 10px;
+    .text {
+      .MuiStepLabel-label {
+        font-size: 30px;
+      }
+      font-weight: 400;
+      opacity: 1;
+      transition: opacity 0.15s 0s ease-in-out;
+      &.previous {
+        opacity: 0.5;
+        cursor: pointer;
+        &:hover {
+          opacity: 1;
+        }
+        .MuiStepLabel-label.Mui-completed {
+          font-weight: 400;
+        }
+      }
+    }
+
+    .MuiBreadcrumbs-separator {
+      font-size: 20px;
+    }
+  }
+  &__form {
+    display: flex;
+    flex-direction: row;
+    &__column {
+      display: flex;
+      flex-direction: column;
+    }
+    &__input {
+      margin: 10px 0;
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+
+      .MuiTextField-root {
+        &.small {
+          width: 230px;
+        }
+        width: 800px;
+      }
+    }
+
+    &__sectionHeader.MuiTypography-root {
+      margin-top: 50px;
+    }
+
+    &__imageUpload {
+      margin-top: 38px;
+      margin-left: 50px;
+      flex-direction: column;
+      .error-helper-text {
+        font-family: "Roboto", "Helvetica", "Arial", sans-serif;
+        font-weight: 400;
+        font-size: 0.75rem;
+        line-height: 1.66;
+        letter-spacing: 0.03333em;
+        text-align: left;
+        margin-top: 3px;
+        margin-right: 14px;
+        margin-bottom: 0;
+        margin-left: 14px;
+      }
+      .image-upload-container {
+        width: 400px;
+        height: 250px;
+        border-radius: 4px;
+        border-style: dashed;
+        border-width: 2px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        cursor: pointer;
+        svg {
+          transition: opacity 0.3s 0s ease-in-out;
+        }
+
+        &.drag-over {
+          border-style: solid;
+          svg {
+            opacity: 0.1;
+          }
+        }
+
+        img {
+          object-fit: cover;
+          width: 100%;
+          height: 100%;
+          border-radius: 4px;
+        }
+      }
+
+      input {
+        display: none;
+      }
+    }
+    &__tickets {
+      &__add {
+        display: flex;
+        justify-content: center;
+        margin-top: 20px;
+      }
+      &__remove {
+        height: 56px;
+      }
+    }
+  }
+  &__submitContainer {
+    display: flex;
+    justify-content: center;
+    margin: 50px 0;
+    width: 100%;
+  }
+
+  &__customizeTickets {
+    display: flex;
+    flex-direction: row;
+    margin-top: 20px;
+    &__menu {
+      width: 300px;
+      .MuiList-root {
+        padding: 0;
+      }
+    }
+    &__editor {
+      margin-left: 50px;
+      &__fields {
+        margin-top: 30px;
+
+        .MuiTypography-root {
+          margin: 10px 0;
+        }
+
+        .MuiSwitch-root {
+          margin-top: -10px;
+        }
+
+        .row {
+          width: 100%;
+          display: flex;
+          justify-content: space-between;
+
+          .MuiFormControl-root {
+            width: inherit;
+            &:not(:last-child) {
+              margin-right: 15px;
+            }
+          }
+        }
+        .single-input {
+          width: 323px;
+        }
+      }
+      &__confirm {
+        display: flex;
+        justify-content: center;
+        margin-top: 30px;
+        margin-bottom: 10px;
+      }
+    }
+  }
+  .EventConfirmation {
+    &__event {
+      .MuiPaper-root {
+        margin: 0;
+      }
+    }
+    &__tickets {
+      .ticket {
+        margin-bottom: 20px;
+        display: flex;
+        flex-direction: row;
+        &__description {
+          display: flex;
+          flex-direction: row;
+          &__item {
+            margin-left: 20px;
+          }
+        }
+      }
+    }
+    &__confirm {
+      display: flex;
+      justify-content: center;
+      margin-top: 30px;
+      margin-bottom: 10px;
+      svg {
+        margin-left: 10px;
+      }
+    }
+    .subtitle {
+      margin-top: 10px;
+    }
+    .header {
+      margin-top: 10px;
+      margin-bottom: 5px;
+    }
+  }
+}

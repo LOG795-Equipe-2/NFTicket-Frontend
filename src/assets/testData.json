@@ -3,72 +3,84 @@
         "id": "1",
         "name": "Lorem ipsum dolor sit amet",
         "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam tincidunt laoreet pretium. Etiam rhoncus dui tellus, sed vestibulum tortor tempus sed. ",
-        "image": "placeholder/1.jpg"
+        "image": "placeholder/1.jpg",
+        "location": "Centre Bell"
     },
     {
         "id": "2",
         "name": "Lorem ipsum dolor sit amet",
         "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam tincidunt laoreet pretium. Etiam rhoncus dui tellus, sed vestibulum tortor tempus sed. ",
-        "image": "placeholder/2.jpg"
+        "image": "placeholder/2.jpg",
+        "location": "Centre Bell"
     },
     {
         "id": "3",
         "name": "Lorem ipsum dolor sit amet",
         "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam tincidunt laoreet pretium. Etiam rhoncus dui tellus, sed vestibulum tortor tempus sed. ",
-        "image": "placeholder/3.jpg"
+        "image": "placeholder/3.jpg",
+        "location": "Centre Bell"
     },
     {
         "id": "4",
         "name": "Lorem ipsum dolor sit amet",
         "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam tincidunt laoreet pretium. Etiam rhoncus dui tellus, sed vestibulum tortor tempus sed. ",
-        "image": "placeholder/4.jpg"
+        "image": "placeholder/4.jpg",
+        "location": "Centre Bell"
     },
     {
         "id": "5",
         "name": "Lorem ipsum dolor sit amet",
         "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam tincidunt laoreet pretium. Etiam rhoncus dui tellus, sed vestibulum tortor tempus sed. ",
-        "image": "placeholder/2.jpg"
+        "image": "placeholder/2.jpg",
+        "location": "Centre Bell"
     },
     {
         "id": "6",
         "name": "Lorem ipsum dolor sit amet",
         "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam tincidunt laoreet pretium. Etiam rhoncus dui tellus, sed vestibulum tortor tempus sed. ",
-        "image": "placeholder/1.jpg"
+        "image": "placeholder/1.jpg",
+        "location": "Centre Bell"
     },
     {
         "id": "7",
         "name": "Lorem ipsum dolor sit amet",
         "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam tincidunt laoreet pretium. Etiam rhoncus dui tellus, sed vestibulum tortor tempus sed. ",
-        "image": "placeholder/3.jpg"
+        "image": "placeholder/3.jpg",
+        "location": "Centre Bell"
     },
     {
         "id": "8",
         "name": "Lorem ipsum dolor sit amet",
         "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam tincidunt laoreet pretium. Etiam rhoncus dui tellus, sed vestibulum tortor tempus sed. ",
-        "image": "placeholder/4.jpg"
+        "image": "placeholder/4.jpg",
+        "location": "Centre Bell"
     },
     {
         "id": "9",
         "name": "Lorem ipsum dolor sit amet",
         "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam tincidunt laoreet pretium. Etiam rhoncus dui tellus, sed vestibulum tortor tempus sed. ",
-        "image": "placeholder/4.jpg"
+        "image": "placeholder/4.jpg",
+        "location": "Centre Bell"
     },
     {
         "id": "10",
         "name": "Lorem ipsum dolor sit amet",
         "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam tincidunt laoreet pretium. Etiam rhoncus dui tellus, sed vestibulum tortor tempus sed. ",
-        "image": "placeholder/2.jpg"
+        "image": "placeholder/2.jpg",
+        "location": "Centre Bell"
     },
     {
         "id": "11",
         "name": "Lorem ipsum dolor sit amet",
         "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam tincidunt laoreet pretium. Etiam rhoncus dui tellus, sed vestibulum tortor tempus sed. ",
-        "image": "placeholder/3.jpg"
+        "image": "placeholder/3.jpg",
+        "location": "Centre Bell"
     },
     {
         "id": "12",
         "name": "Lorem ipsum dolor sit amet",
         "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam tincidunt laoreet pretium. Etiam rhoncus dui tellus, sed vestibulum tortor tempus sed. ",
-        "image": "placeholder/1.jpg"
+        "image": "placeholder/1.jpg",
+        "location": "Centre Bell"
     }
 ]

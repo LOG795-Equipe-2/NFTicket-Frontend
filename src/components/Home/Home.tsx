@@ -52,25 +52,25 @@ function Home() {
         <div className="home__splashScreen__featuredEvents">
           <div className="home__splashScreen__featuredEvents__title">
             <StarIcon></StarIcon>
-            Évenements en vedette
+            Événements en vedette
           </div>
           <FeaturedEventsCarousel></FeaturedEventsCarousel>
         </div>
       </div>
       <div className="home__search">
-        <div className="home__search__title">Recherche d'évenements</div>
+        <div className="home__search__title">Recherche d'événements</div>
         <SearchBox />
       </div>
       <div className="home__nearbyEvents">
-        <div className="home__nearbyEvents__title">Évenements à proximité</div>
+        <div className="home__nearbyEvents__title">Événements à proximité</div>
         <NearbyEventsCarousel />
       </div>
       <div className="home__createEvent">
-        <div className="home__createEvent__title">Créer un évenement</div>
+        <div className="home__createEvent__title">Créer un événement</div>
 
         <div className="home__createEvent__subtitle">
           <Typography variant="body2" color="text.secondary">
-            Hébergez votre évenement sur NFTicket et offrez à votre public des
+            Hébergez votre événement sur NFTicket et offrez à votre public des
             billets uniques. Vos plus grands fans pourront collectionner vos
             billets et obtenir des récompenses.
           </Typography>
@@ -78,7 +78,7 @@ function Home() {
         <div className="home__createEvent__content">
           <NavLink to="create">
             <Button color="success" variant="contained">
-              Créer votre évenement
+              Créer votre événement
               <ConfirmationNumber />
             </Button>
           </NavLink>
