@@ -8,6 +8,7 @@ import './EventView.scss';
 import TicketVisualiser from '../TicketVisualiser/TicketVisualiser';
 import ConfirmationNumber from "@mui/icons-material/ConfirmationNumber";
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
+import React from 'react';
 
 const CssBox = styled(Box)(({ theme }) => ({
   ".EventView": {
@@ -100,24 +101,27 @@ function EventView() {
         <Typography className="header" variant="h3">Billets</Typography>
         {event.ticketCategories.map((ticketCategory) => (
           <div className="EventView__tickets__ticket" key={"ticketCategory-" + ticketCategory.type}>
-            <TicketVisualiser event={event} ticket={ticketCategory} size="small" />
-            <div className="rightSide">
-              <div className="description">
-                <div className="description__item">
-                  <Typography variant="h5">Type </Typography>{ticketCategory.type}
-                </div>
-                <div className="description__item">
-                  <Typography variant="h5">Prix </Typography>{ticketCategory.price.toFixed(2)} $
-                </div>
-              </div>
+            {ticketCategory.remainingAmount && ticketCategory.remainingAmount > 0 && (
+              <React.Fragment>
+                <TicketVisualiser event={event} ticket={ticketCategory} size="small" />
+                <div className="rightSide">
+                  <div className="description">
+                    <div className="description__item">
+                      <Typography variant="h5">Type </Typography>{ticketCategory.type}
+                    </div>
+                    <div className="description__item">
+                      <Typography variant="h5">Prix </Typography>{ticketCategory.price.toFixed(2)} $
+                    </div>
+                  </div>
 
-              {ticketCategory.id && (
-                <Link to={"buy/" + ticketCategory.id}>
-                  <Button variant="contained" color="primary">Acheter un billet <ConfirmationNumber /></Button>
-                </Link>
-              )}
-            </div>
-
+                  {ticketCategory.id && (
+                    <Link to={"buy/" + ticketCategory.id}>
+                      <Button className="buy-ticket" variant="outlined" color="primary">Acheter un billet <ConfirmationNumber /></Button>
+                    </Link>
+                  )}
+                </div>
+              </React.Fragment>
+            )}
           </div>
         ))}
       </div>
