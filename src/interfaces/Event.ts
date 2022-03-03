@@ -1,4 +1,5 @@
 import Ticket from "./TicketCategory";
+import { Models } from "appwrite";
 
 export default interface Event {
     locationName: string,
@@ -7,5 +8,16 @@ export default interface Event {
     name: string,
     description: string,
     image: string,
-    ticketCategories: Ticket[]
+    ticketCategories: Ticket[],
+}
+
+export interface EventModel extends Models.Document {
+    locationName: string,
+    locationAddress: string;
+    locationCity: string;
+    name: string,
+    description: string,
+    imageId: string,
+    userCreatorId: string,
+    eventTime: string
 }

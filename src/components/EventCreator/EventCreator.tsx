@@ -6,6 +6,7 @@ import EventForm from "./EventForm/EventForm";
 import TicketCustomizer from "./TicketCustomizer/TicketCustomizer";
 import Event from "../../interfaces/Event";
 import EventConfirmation from "./EventConfirmation/EventConfirmation";
+import EventService from "../../services/EventService";
 
 type EventCreatorProps = {};
 type EventCreatorState = {
@@ -96,7 +97,7 @@ class EventCreator extends React.Component<
   }
 
   createEvent() {
-    // TODO: Create the event
+    EventService.createNewEvent(this.state.event);
   }
 
   constructor(props: {}) {

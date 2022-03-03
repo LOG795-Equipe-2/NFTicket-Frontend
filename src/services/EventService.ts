@@ -1,7 +1,21 @@
 import testData from '../assets/testData.json';
-import Event from '../interfaces/Event';
+import Event, { EventModel } from '../interfaces/Event';
+import AuthService from '../utils/AuthService';
+import { Styling, TicketCategoryModel } from "../interfaces/TicketCategory";
+import { AppwriteException, Models } from "appwrite";
+
+import appwrite from "../utils/AppwriteInstance"
+import { id } from 'date-fns/locale';
+
+type TicketCategoryStyleModel = Styling & Models.Document;
 
 class EventService {
+
+    private readonly EVENTS_COLLECTION_ID: string = "62210e0672c9be723f8b";
+    private readonly TICKET_CATEGORY_STYLE_COLLECTION_ID: string = "622112b4efbb25929545";
+    private readonly TICKET_CATEGORIES_COLLECTION_ID: string = "622111bde1ca95a94544";
+    private readonly TICKET_COLLECTION_ID: string = "6221134c389c90325a38";
+
     getCurrentFeaturedEvents(separator: number, maxEvents: number): Array<Array<Event>> {
         // TODO:  Add call to back-end to fetch events based on criteria
         // This criteria could be the number of tickets sold in the past week, for example
@@ -36,6 +50,67 @@ class EventService {
             }
         }
         return events;
+    }
+
+    /**
+     * Creates a new event in Appwrite //TODO check if we need to do blockchain operations (and call backend endpoints) 
+     * @param event event Data
+     * @returns true if the operation succedded, false otherwise
+     */
+    async createNewEvent(event: Event): Promise<boolean> {
+        console.log(1)
+        if(!AuthService.account) // || !event.locationCity
+            return false;
+        console.log(2)
+        const eventData = {
+            locationName: event.locationName,
+            locationAddress: event.locationAddress,
+            locationCity: "testCity", // event.locationCity
+            name: event.name,
+            description: event.description,
+            imageId: "asd",
+            userCreatorId: AuthService.account.$id as string,
+            eventTime: "null" //TODO ask for event time when creating new events
+        };
+
+        try {
+
+            console.log(2.5)
+            console.log((await appwrite.database.listDocuments(this.EVENTS_COLLECTION_ID)))
+            const eventDoc = await appwrite.database.createDocument<EventModel>(this.EVENTS_COLLECTION_ID, 'unique()', eventData);
+            console.log(3)
+            event.ticketCategories.forEach(async c => {
+                const styleDoc = await appwrite.database.createDocument<TicketCategoryStyleModel>(this.TICKET_CATEGORY_STYLE_COLLECTION_ID, 'unique()', c.styling);
+                
+                const ticketCategory = {
+                    name: c.type,
+                    price: c.price,
+                    stylingId: styleDoc.$id,
+                    eventId: eventDoc.$id,
+                    initialQuantity: c.amount,
+                    remainingQuantity: c.amount
+                };
+
+                await appwrite.database.createDocument<TicketCategoryModel>(this.TICKET_CATEGORIES_COLLECTION_ID, 'unique()', ticketCategory);
+
+                for(let i = 1; i <= c.amount; i++) {
+                    const ticket = {
+                        ticketNumber: i,
+                        categoryId: c.type,
+                        eventId: eventDoc.$id
+                    }
+                    await appwrite.database.createDocument(this.TICKET_COLLECTION_ID, 'unique()', ticket);
+                }
+            })
+
+
+            console.log(4)
+        } catch (e) {
+            console.log("Error while creating new event. - " + (e as AppwriteException).message);
+            return false;
+        }
+
+        return true;
     }
 }
 
