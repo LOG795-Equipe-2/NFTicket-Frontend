@@ -39,11 +39,11 @@ class EventConfirmation extends React.Component<
             Billets
           </Typography>
 
-          {this.props.event.tickets.map((ticket) => (
-            <div className="ticket">
+          {this.props.event.ticketCategories.map((ticketCategory) => (
+            <div key={"confirm-" + ticketCategory.type} className="ticket">
               <TicketVisualiser
                 event={this.props.event}
-                ticket={ticket}
+                ticket={ticketCategory}
                 size="small"
               />
               <div className="ticket__description">
@@ -52,14 +52,14 @@ class EventConfirmation extends React.Component<
                     Prix
                   </Typography>
                   <Typography variant="body1">
-                    {ticket.price.toFixed(2)}$
+                    {ticketCategory.price.toFixed(2)}$
                   </Typography>
                 </div>
                 <div className="ticket__description__item">
                   <Typography className="description-header" variant="h5">
                     Quantité
                   </Typography>
-                  <Typography variant="body1">{ticket.amount}</Typography>
+                  <Typography variant="body1">{ticketCategory.amount}</Typography>
                 </div>
               </div>
             </div>

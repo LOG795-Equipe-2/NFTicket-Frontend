@@ -1,4 +1,4 @@
-export default interface Ticket {
+export default interface TicketCategory {
   type: string;
   price: number;
   amount: number;

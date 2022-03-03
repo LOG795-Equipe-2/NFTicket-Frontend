@@ -6,14 +6,14 @@ import AddIcon from "@mui/icons-material/Add";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import DeleteIcon from "@mui/icons-material/Delete";
 import CircularProgress from "@mui/material/CircularProgress";
-import Ticket from "../../../interfaces/Ticket";
+import TicketCategory from "../../../interfaces/TicketCategory";
 import Event from "../../../interfaces/Event";
 
 type EventFormProps = {
   moveToNextStep: Function;
 };
 type EventFormState = {
-  tickets: Ticket[];
+  ticketCategories: TicketCategory[];
   errors: any;
   eventImage: string;
   isSubmitting: boolean;
@@ -25,7 +25,7 @@ class EventForm extends React.Component<EventFormProps, EventFormState> {
   constructor(props: EventFormProps) {
     super(props);
     this.state = {
-      tickets: [
+      ticketCategories: [
         {
           type: "",
           price: 0,
@@ -48,11 +48,11 @@ class EventForm extends React.Component<EventFormProps, EventFormState> {
   }
 
   addTicketType() {
-    const { tickets, errors } = this.state;
+    const { ticketCategories, errors } = this.state;
     errors.tickets.push({});
     this.setState({
-      tickets: [
-        ...tickets,
+      ticketCategories: [
+        ...ticketCategories,
         {
           type: "",
           price: 0,
@@ -71,11 +71,11 @@ class EventForm extends React.Component<EventFormProps, EventFormState> {
   }
 
   removeTicketType(index: number) {
-    let tickets = [...this.state.tickets];
+    let ticketCategories = [...this.state.ticketCategories];
     const errors = this.state.errors;
-    tickets.splice(index, 1);
+    ticketCategories.splice(index, 1);
     errors.tickets.splice(index, 1);
-    this.setState({ tickets, errors });
+    this.setState({ ticketCategories, errors });
   }
 
   handleTicketTypeChange(
@@ -88,17 +88,17 @@ class EventForm extends React.Component<EventFormProps, EventFormState> {
       value: any;
       valueAsNumber: number;
     };
-    let tickets = this.state.tickets;
+    let ticketCategories = this.state.ticketCategories;
     if (name === "price" || name == "amount") {
-      (tickets[index] as any)[name] = target.valueAsNumber;
+      (ticketCategories[index] as any)[name] = target.valueAsNumber;
     } else {
-      (tickets[index] as any)[name] = target.value;
+      (ticketCategories[index] as any)[name] = target.value;
     }
     if (target.value.length > 0) {
       const errors = this.state.errors;
       errors.tickets[index].type = "";
     }
-    this.setState({ tickets });
+    this.setState({ ticketCategories });
   }
 
   handleImageUpload(event: React.SyntheticEvent) {
@@ -191,10 +191,10 @@ class EventForm extends React.Component<EventFormProps, EventFormState> {
       errors["event-image"] = "Une image pour l'événement est requise";
     }
 
-    const tickets = this.state.tickets;
+    const tickets = this.state.ticketCategories;
 
-    tickets.forEach((ticket, index) => {
-      if (ticket.type.length === 0) {
+    tickets.forEach((ticketCategory, index) => {
+      if (ticketCategory.type.length === 0) {
         hasErrors = true;
         errors.tickets[index].type = "La catégorie du billet est requise";
       }
@@ -218,7 +218,7 @@ class EventForm extends React.Component<EventFormProps, EventFormState> {
             name,
             description,
             image,
-            tickets: this.state.tickets,
+            ticketCategories: this.state.ticketCategories,
           };
           this.props.moveToNextStep(event);
           nextButton.click();
@@ -282,7 +282,7 @@ class EventForm extends React.Component<EventFormProps, EventFormState> {
               Billets
             </Typography>
             <div className="EventCreator__form__tickets">
-              {this.state.tickets.map((ticket, index) => (
+              {this.state.ticketCategories.map((ticketCategory, index) => (
                 <div className="EventCreator__form__input" key={index}>
                   <TextField
                     className="small"
@@ -291,13 +291,13 @@ class EventForm extends React.Component<EventFormProps, EventFormState> {
                     onChange={(e) =>
                       this.handleTicketTypeChange(index, e, "type")
                     }
-                    value={ticket.type}
+                    value={ticketCategory.type}
                     helperText={this.state.errors.tickets[index].type}
                     error={!!this.state.errors.tickets[index].type}
                     disabled={this.state.isSubmitting}
                   />
                   <TextField
-                    value={ticket.price}
+                    value={ticketCategory.price}
                     className="small"
                     label="Prix"
                     type="number"
@@ -312,7 +312,7 @@ class EventForm extends React.Component<EventFormProps, EventFormState> {
                     className="small"
                     label="Quantité"
                     type="number"
-                    value={ticket.amount}
+                    value={ticketCategory.amount}
                     name="amount"
                     InputProps={{ inputProps: { min: 1 } }}
                     onChange={(e) =>

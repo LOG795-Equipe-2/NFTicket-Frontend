@@ -1,5 +1,5 @@
 import React from "react";
-import Ticket from "../../interfaces/Ticket";
+import Ticket from "../../interfaces/TicketCategory";
 import { Card, Typography } from "@mui/material";
 import "./TicketVisualiser.scss";
 import Event from "../../interfaces/Event";
@@ -34,6 +34,15 @@ class TicketVisualiser extends React.Component<
         ticketTypeFont: '0.7rem',
         padding: '5px',
         borderSize: '2px'
+      },
+      "normal": {
+        width: '500px',
+        height: '200px',
+        qrSize: '90px',
+        eventNameFont: '1.5rem',
+        ticketTypeFont: '0.75rem',
+        padding: '8px',
+        borderSize: '3px'
       }
     }
     return this.props.ticket && this.props.event ? (

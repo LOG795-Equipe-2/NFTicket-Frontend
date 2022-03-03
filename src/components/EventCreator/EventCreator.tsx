@@ -88,7 +88,7 @@ class EventCreator extends React.Component<
 
   updateTicketStyling(index: number, ticketStyling: any) {
     const event = this.state.event;
-    const ticket = event.tickets[index];
+    const ticket = event.ticketCategories[index];
     if (ticket) {
       ticket.styling = ticketStyling;
     }
@@ -107,7 +107,7 @@ class EventCreator extends React.Component<
         name: "",
         description: "",
         image: "",
-        tickets: [],
+        ticketCategories: [],
       },
       currentStep: 0,
     };

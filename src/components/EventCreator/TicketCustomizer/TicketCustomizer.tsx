@@ -37,7 +37,7 @@ class TicketCustomizer extends React.Component<
 
   updateTicketStyling(key: string, value: any) {
     const ticketStyling =
-      this.props.event.tickets[this.state.currentTicketSelected].styling;
+      this.props.event.ticketCategories[this.state.currentTicketSelected].styling;
     switch (key) {
       case "backgroundImage":
         if (value && value.length) {
@@ -65,14 +65,15 @@ class TicketCustomizer extends React.Component<
   }
 
   render() {
+    const { innerWidth } = window;
     return this.props.event &&
-      this.props.event.tickets &&
-      this.props.event.tickets.length > 0 ? (
+      this.props.event.ticketCategories &&
+      this.props.event.ticketCategories.length > 0 ? (
       <div className="EventCreator__customizeTickets" key="section-1">
         <div className="EventCreator__customizeTickets__menu">
           <Card>
             <List>
-              {this.props.event.tickets.map((ticket, index) => (
+              {this.props.event.ticketCategories.map((ticketCategory, index) => (
                 <React.Fragment key={"ticket-menu-item-" + index}>
                   {index !== 0 && <Divider />}
                   <ListItemButton
@@ -81,7 +82,7 @@ class TicketCustomizer extends React.Component<
                     }
                     selected={index === this.state.currentTicketSelected}
                   >
-                    <ListItemText primary={ticket.type}></ListItemText>
+                    <ListItemText primary={ticketCategory.type}></ListItemText>
                   </ListItemButton>
                 </React.Fragment>
               ))}
@@ -90,9 +91,9 @@ class TicketCustomizer extends React.Component<
         </div>
         <div className="EventCreator__customizeTickets__editor">
           <TicketVisualiser
-            size="large"
+            size={innerWidth < 1500 ? "normal" : "large" }
             event={this.props.event}
-            ticket={this.props.event.tickets[this.state.currentTicketSelected]}
+            ticket={this.props.event.ticketCategories[this.state.currentTicketSelected]}
           />
           <div className="EventCreator__customizeTickets__editor__fields">
             <Typography variant="subtitle1">Couleurs</Typography>
@@ -102,7 +103,7 @@ class TicketCustomizer extends React.Component<
                   this.updateTicketStyling("primaryColor", e.target.value)
                 }
                 value={
-                  this.props.event.tickets[this.state.currentTicketSelected]
+                  this.props.event.ticketCategories[this.state.currentTicketSelected]
                     .styling.primaryColor
                 }
                 type="color"
@@ -113,7 +114,7 @@ class TicketCustomizer extends React.Component<
                   this.updateTicketStyling("secondaryColor", e.target.value)
                 }
                 value={
-                  this.props.event.tickets[this.state.currentTicketSelected]
+                  this.props.event.ticketCategories[this.state.currentTicketSelected]
                     .styling.secondaryColor
                 }
                 type="color"
@@ -124,7 +125,7 @@ class TicketCustomizer extends React.Component<
                   this.updateTicketStyling("backgroundColor", e.target.value)
                 }
                 value={
-                  this.props.event.tickets[this.state.currentTicketSelected]
+                  this.props.event.ticketCategories[this.state.currentTicketSelected]
                     .styling.backgroundColor
                 }
                 type="color"
@@ -140,7 +141,7 @@ class TicketCustomizer extends React.Component<
                 )
               }
               defaultValue={
-                this.props.event.tickets[this.state.currentTicketSelected]
+                this.props.event.ticketCategories[this.state.currentTicketSelected]
                   .styling.backgroundImage
               }
               className="single-input"
@@ -149,7 +150,7 @@ class TicketCustomizer extends React.Component<
             <Typography variant="subtitle1">Utiliser une bordure</Typography>
             <Switch
               value={
-                this.props.event.tickets[this.state.currentTicketSelected]
+                this.props.event.ticketCategories[this.state.currentTicketSelected]
                   .styling.useBorder
               }
               onChange={(e) =>
