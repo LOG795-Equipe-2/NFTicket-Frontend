@@ -2,23 +2,19 @@ import { AnchorBrowserManager } from '../utils/AnchorBrowserManager';
 
 export class Ticket {
     asset_id:string | null = null
-    name:string
-    date:string
-    hour:string
-    rowNo:string
-    seatNo:string
 
-    locationName:string
     eventName:string
+    locationName:string
+    originalDateTime:string
+    originalPrice:number
+    categoryName:string
 
-    constructor(name:string, date:string, hour:string, rowNo:string, seatNo:string, locationName:string, eventName:string){
-        this.name = name;
-        this.date = date
-        this.hour = hour
-        this.rowNo = rowNo;
-        this.seatNo = seatNo;
-        this.locationName = locationName;
+    constructor(eventName:string, locationName:string, originalDateTime:string, originalPrice:number, categoryName:string){
         this.eventName = eventName
+        this.locationName = locationName
+        this.originalDateTime = originalDateTime
+        this.originalPrice = originalPrice
+        this.categoryName = categoryName
     }
 
     getSchemaName(){
@@ -27,25 +23,21 @@ export class Ticket {
 
     returnPropertiesAsAttributeMap(): any{
         return [
-            {"name": "name", "type": "string" },
-            {"name": "date", "type": "string"},
-            {"name": "hour", "type": "string"},
-            {"name": "locationName", "type": "string"},
-            {"name": "eventName", "type": "string"},
-            {"name": "rowNo", "type": "string"},
-            {"name": "seatNo", "type": "string"}
+            { "name": "eventName", "type": "string" },
+            { "name": "locationName", "type": "string" },
+            { "name": "originalDateTime", "type": "string" },
+            { "name": "originalPrice", "type": "float" },
+            { "name": "categoryName", "type": "string" }
         ]
     }
 
     toJSON(): any{
         return {
-            "name": this.name,
-            "date": this.date,
-            "hour": this.hour,
-            "rowNo": this.rowNo,
-            "seatNo": this.seatNo,
+            "eventName": this.eventName,
             "locationName": this.locationName,
-            "eventName": this.eventName
+            "originalDateTime": this.originalDateTime,
+            "originalPrice": this.originalPrice,
+            "categoryName": this.categoryName
         }
     }
 }
@@ -102,7 +94,6 @@ class NFTicketTransactionService {
             // Receive chainId, server , and appName
             transactionToSign = data
         });
-
         return transactionToSign
     }
 
