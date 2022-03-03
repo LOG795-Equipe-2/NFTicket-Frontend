@@ -61,12 +61,15 @@
     }
 
     &__content {
-        margin: 20px;
-        display: flex;
-        justify-content: center;
-        svg {
-            margin-left: 10px;
-        }
+      a {
+        text-decoration: none;
+      }
+      margin: 20px;
+      display: flex;
+      justify-content: center;
+      svg {
+          margin-left: 10px;
+      }
     }
   }
 }
