@@ -23,6 +23,7 @@ export class AuthService {
 
     private readonly SEPARATOR: string = " ---- ";
     private readonly ANCHORINFO_COLLECTION_ID: string = "621fcb8641b53f76bc95";
+    private readonly ON_OAUTH_SUCCESS: string = "http://localhost:3000";
 
     /**
      * The account of the currently logged-in User
@@ -72,7 +73,7 @@ export class AuthService {
      * @param provider The Oauth provider, currently accepted: ["Google"]
      * @returns void
      */
-    loginWithOauth(provider: OauthProvider): void { appwrite.account.createOAuth2Session(provider, "http://localhost:3000") }
+    loginWithOauth(provider: OauthProvider): void { appwrite.account.createOAuth2Session(provider, this.ON_OAUTH_SUCCESS) }
 
     /**
      * Delete the current session of a User, will also delete any Anchor Data that was used to save sessions

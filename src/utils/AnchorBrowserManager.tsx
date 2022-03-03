@@ -118,4 +118,7 @@ export class AnchorBrowserManager{
     
 } 
 
-export default new AnchorBrowserManager('5d5bbe6bb403e5ca8b087d382946807246b4dee094c7f5961e2bebd88f8c9c51', 'http://eos1.anthonybrochu.com:8888/', 'NFTicket');
+export default new AnchorBrowserManager(
+    process.env.CHAIN_ID || '5d5bbe6bb403e5ca8b087d382946807246b4dee094c7f5961e2bebd88f8c9c51', 
+    process.env.NODE_URL || 'http://eos1.anthonybrochu.com:8888/', 
+    process.env.APP_NAME || 'NFTicket');
