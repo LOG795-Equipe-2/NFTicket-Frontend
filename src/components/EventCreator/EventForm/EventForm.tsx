@@ -164,6 +164,7 @@ class EventForm extends React.Component<EventFormProps, EventFormState> {
       name: { value: string };
       location: { value: string };
       description: { value: string };
+      address: { value: string };
     };
     let errors = this.state.errors;
     let hasErrors = false;
@@ -177,6 +178,12 @@ class EventForm extends React.Component<EventFormProps, EventFormState> {
     if (location.length === 0) {
       hasErrors = true;
       errors["event-location"] = "L'endroit de l'événement est requis";
+    }
+
+    const adress = target.address.value;
+    if (adress.length === 0) {
+      hasErrors = true;
+      errors["event-address"] = "L'endroit de l'événement est requis";
     }
 
     const description = target.description.value;
@@ -214,7 +221,8 @@ class EventForm extends React.Component<EventFormProps, EventFormState> {
             isSubmitting: false,
           });
           const event: Event = {
-            location: location,
+            locationName: location,
+            locationAddress: adress,
             name,
             description,
             image,
@@ -256,6 +264,17 @@ class EventForm extends React.Component<EventFormProps, EventFormState> {
                 helperText={this.state.errors["event-location"]}
                 error={!!this.state.errors["event-location"]}
                 onChange={(e) => this.handleEventInputChange(e, "event-location")}
+                disabled={this.state.isSubmitting}
+              />
+            </div>
+            <div className="EventCreator__form__input">
+              <TextField
+                id="event-address"
+                label="Adresse"
+                name="address"
+                helperText={this.state.errors["event-address"]}
+                error={!!this.state.errors["event-address"]}
+                onChange={(e) => this.handleEventInputChange(e, "event-address")}
                 disabled={this.state.isSubmitting}
               />
             </div>

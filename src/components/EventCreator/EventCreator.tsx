@@ -103,11 +103,12 @@ class EventCreator extends React.Component<
     super(props);
     this.state = {
       event: {
-        location: "",
+        locationName: "",
         name: "",
         description: "",
         image: "",
         ticketCategories: [],
+        locationAddress: ""
       },
       currentStep: 0,
     };

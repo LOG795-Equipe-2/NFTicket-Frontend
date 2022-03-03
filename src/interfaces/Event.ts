@@ -1,7 +1,9 @@
 import Ticket from "./TicketCategory";
 
 export default interface Event {
-    location: string,
+    locationName: string,
+    locationAddress: string;
+    locationCity?: string;
     name: string,
     description: string,
     image: string,
