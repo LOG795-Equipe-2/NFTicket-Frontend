@@ -35,8 +35,9 @@ function AnchorTests() {
               let dataTemplate = await fetch('http://localhost:3000/atomic-assets/templates/' + element.collection_name + '/' + element.template_id)
               .then(response => response.json())
 
+              element.immutable_serialized_data.eventName = dataTemplate.rows[0].immutable_serialized_data.name
               element.immutable_serialized_data.locationName = dataTemplate.rows[0].immutable_serialized_data.locationName
-              element.immutable_serialized_data.eventName = dataTemplate.rows[0].immutable_serialized_data.eventName
+              element.immutable_serialized_data.originalDateTime = dataTemplate.rows[0].immutable_serialized_data.originalDateTime
             }
         }
 
@@ -62,13 +63,11 @@ function AnchorTests() {
     async function performTransactionCreateTicketBackend(){
       let transactionObject = await serviceNFT.createTicketAndValidate(
         new Ticket(
-          "test",
-          "28 février",
-          "10h",
-          "2",
-          "b",
+          "Show des cowboys",
           "Centre Bell 1",
-          "Show des cowboys"
+          "2022-05-02T20:00:00",
+          20.96,
+          "VIP"
         )
       )
       getAssetsForUser().then((data) => setAssets(data))
@@ -87,13 +86,11 @@ function AnchorTests() {
                   <th>Asset Id</th>
                   <th>Collection Name</th>
                   <th>Schema Name</th>
-                  <th>Location Name</th>
                   <th>Event Name</th>
-                  <th>Ticket Name</th>
-                  <th>Date</th>
-                  <th>Hour</th>
-                  <th>Row No</th>
-                  <th>Seat Row</th>
+                  <th>Location Name</th>
+                  <th>Original Date Time</th>
+                  <th>Original Price</th>
+                  <th>Category Name</th>
                 </tr>
               </thead>
               <tbody>
@@ -104,13 +101,11 @@ function AnchorTests() {
                         <td>{element.asset_id}</td>
                         <td>{element.collection_name}</td>
                         <td>{element.schema_name}</td>
-                        <td>{element.immutable_serialized_data?.locationName}</td>
                         <td>{element.immutable_serialized_data?.eventName}</td>
-                        <td>{element.immutable_serialized_data?.name }</td>
-                        <td>{element.immutable_serialized_data?.date }</td>
-                        <td>{element.immutable_serialized_data?.hour }</td>
-                        <td>{element.immutable_serialized_data?.rowNo }</td>
-                        <td>{element.immutable_serialized_data?.seatNo }</td>
+                        <td>{element.immutable_serialized_data?.locationName}</td>
+                        <td>{element.immutable_serialized_data?.originalDateTime }</td>
+                        <td>{element.immutable_serialized_data?.originalPrice }</td>
+                        <td>{element.immutable_serialized_data?.categoryName }</td>
                       </tr>
                     )
                   })

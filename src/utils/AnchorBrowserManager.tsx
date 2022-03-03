@@ -106,7 +106,6 @@ export class AnchorBrowserManager{
             }).catch((err) => {
                 console.log(err);
                 console.log(err.response);
-                console.log(err.response.data)
                 if (err instanceof RpcError)
                   console.log(JSON.stringify(err.json, null, 2));
       
