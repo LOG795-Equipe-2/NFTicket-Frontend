@@ -1,4 +1,4 @@
-import AnchorBrowserManager from '../utils/AnchorBrowserManager';
+import { AnchorBrowserManager } from '../utils/AnchorBrowserManager';
 
 export class Ticket {
     asset_id:string | null = null
