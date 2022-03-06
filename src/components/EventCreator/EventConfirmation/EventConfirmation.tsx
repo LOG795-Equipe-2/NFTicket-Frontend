@@ -59,7 +59,7 @@ class EventConfirmation extends React.Component<
                   <Typography className="description-header" variant="h5">
                     Quantité
                   </Typography>
-                  <Typography variant="body1">{ticketCategory.amount}</Typography>
+                  <Typography variant="body1">{ticketCategory.initialAmount}</Typography>
                 </div>
               </div>
             </div>

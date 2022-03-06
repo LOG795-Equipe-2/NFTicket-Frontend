@@ -6,7 +6,9 @@ import {
   CardActions,
   Button,
 } from "@mui/material";
+import { Link } from "react-router-dom";
 import EventType from "../../interfaces/Event";
+import "./EventCard.scss";
 
 function EventCard({
   event,
@@ -16,7 +18,7 @@ function EventCard({
   showLink: boolean;
 }) {
   return (
-    <Card sx={{ maxWidth: 350, margin: "0 20px" }}>
+    <Card className="EventCard" sx={{ maxWidth: 350, margin: "0 20px" }}>
       <CardMedia
         component={"img"}
         height="200"
@@ -33,7 +35,8 @@ function EventCard({
       </CardContent>
       {showLink && (
         <CardActions>
-          <Button size="small">Voir les billets</Button>
+          <Link to={"/events/" + event.id}>
+            <Button size="small">Voir les billets</Button></Link>
         </CardActions>
       )}
     </Card>

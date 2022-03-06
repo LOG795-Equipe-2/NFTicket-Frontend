@@ -1,7 +1,7 @@
 export default interface TicketCategory {
   type: string;
   price: number;
-  amount: number;
+  initialAmount: number;
   styling: {
     useBorder: boolean,
     primaryColor: string,
@@ -9,4 +9,6 @@ export default interface TicketCategory {
     backgroundColor: string,
     backgroundImage: string
   };
+  remainingAmount?: number;
+  id?: string;
 }

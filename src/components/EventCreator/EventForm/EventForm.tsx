@@ -29,7 +29,7 @@ class EventForm extends React.Component<EventFormProps, EventFormState> {
         {
           type: "",
           price: 0,
-          amount: 1,
+          initialAmount: 1,
           styling: {
             primaryColor: "#FFFFFF",
             secondaryColor: "#FFFFFF",
@@ -56,7 +56,7 @@ class EventForm extends React.Component<EventFormProps, EventFormState> {
         {
           type: "",
           price: 0,
-          amount: 1,
+          initialAmount: 1,
           styling: {
             primaryColor: "#FFFFFF",
             secondaryColor: "#FFFFFF",
@@ -227,6 +227,8 @@ class EventForm extends React.Component<EventFormProps, EventFormState> {
             description,
             image,
             ticketCategories: this.state.ticketCategories,
+            id: "",
+            dateTime: new Date()
           };
           this.props.moveToNextStep(event);
           nextButton.click();
@@ -331,7 +333,7 @@ class EventForm extends React.Component<EventFormProps, EventFormState> {
                     className="small"
                     label="Quantité"
                     type="number"
-                    value={ticketCategory.amount}
+                    value={ticketCategory.initialAmount}
                     name="amount"
                     InputProps={{ inputProps: { min: 1 } }}
                     onChange={(e) =>
