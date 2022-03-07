@@ -7,7 +7,7 @@ export default interface Event {
     locationCity?: string;
     name: string,
     description: string,
-    image: string,
+    image: Blob,
     ticketCategories: Ticket[],
 }
 

@@ -7,11 +7,13 @@ import TicketCustomizer from "./TicketCustomizer/TicketCustomizer";
 import Event from "../../interfaces/Event";
 import EventConfirmation from "./EventConfirmation/EventConfirmation";
 import EventService from "../../services/EventService";
+import { Navigate } from "react-router-dom";
 
 type EventCreatorProps = {};
 type EventCreatorState = {
   currentStep: number;
   event: Event;
+  hasCompletedEventCreation: boolean;
 };
 const CssBox = styled(Box)(({ theme }) => ({
   ".EventCreator": {
@@ -96,8 +98,13 @@ class EventCreator extends React.Component<
     this.setState({ event });
   }
 
-  createEvent() {
-    EventService.createNewEvent(this.state.event);
+  async createEvent() {
+    const isEventCreated = await EventService.createNewEvent(this.state.event);
+
+    if(isEventCreated) 
+        this.setState({ hasCompletedEventCreation: true });
+    else 
+        alert("There was an issue creating the event, try again later")
   }
 
   constructor(props: {}) {
@@ -107,11 +114,12 @@ class EventCreator extends React.Component<
         locationName: "",
         name: "",
         description: "",
-        image: "",
+        image: new Blob(),
         ticketCategories: [],
         locationAddress: ""
       },
       currentStep: 0,
+      hasCompletedEventCreation: false,
     };
     this.handleEventFormSubmit = this.handleEventFormSubmit.bind(this);
     this.updateTicketStyling = this.updateTicketStyling.bind(this);
@@ -121,6 +129,7 @@ class EventCreator extends React.Component<
   render() {
     return (
       <CssBox className="EventCreator">
+        {this.state.hasCompletedEventCreation && <Navigate replace to="/" />}
         <div className="EventCreator__title">
           <Stepper activeStep={this.state.currentStep}>
             <Step>

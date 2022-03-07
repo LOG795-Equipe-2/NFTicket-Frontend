@@ -15,7 +15,8 @@ type EventFormProps = {
 type EventFormState = {
   ticketCategories: TicketCategory[];
   errors: any;
-  eventImage: string;
+  eventBase64Image: string;
+  eventBlobImage: Blob;
   isSubmitting: boolean;
 };
 
@@ -39,7 +40,8 @@ class EventForm extends React.Component<EventFormProps, EventFormState> {
           },
         },
       ],
-      eventImage: "",
+      eventBase64Image: "",
+      eventBlobImage: new Blob(),
       errors: {
         tickets: [{}],
       },
@@ -111,7 +113,11 @@ class EventForm extends React.Component<EventFormProps, EventFormState> {
       let fr = new FileReader();
       fr.onload = () => {
         if (!!fr.result) {
-          this.setState({ eventImage: fr.result as string, errors });
+          this.setState({
+            eventBase64Image: fr.result as string,
+            errors,
+            eventBlobImage: target.files[0]
+          });
         }
       };
       fr.readAsDataURL(target.files[0]);
@@ -128,7 +134,11 @@ class EventForm extends React.Component<EventFormProps, EventFormState> {
       let fr = new FileReader();
       fr.onload = () => {
         if (!!fr.result) {
-          this.setState({ eventImage: fr.result as string, errors });
+          this.setState({
+            eventBase64Image: fr.result as string,
+            errors,
+            eventBlobImage: files[0]
+          });
         }
       };
       fr.readAsDataURL(files[0]);
@@ -192,8 +202,9 @@ class EventForm extends React.Component<EventFormProps, EventFormState> {
       errors["event-description"] = "La description de l'événement est requise";
     }
 
-    const image = this.state.eventImage;
-    if (image.length === 0) {
+    const base64Image = this.state.eventBase64Image;
+    const blobImage = this.state.eventBlobImage;
+    if (base64Image.length === 0 || blobImage.size === 0) {
       hasErrors = true;
       errors["event-image"] = "Une image pour l'événement est requise";
     }
@@ -225,7 +236,7 @@ class EventForm extends React.Component<EventFormProps, EventFormState> {
             locationAddress: adress,
             name,
             description,
-            image,
+            image: this.state.eventBlobImage,
             ticketCategories: this.state.ticketCategories,
           };
           this.props.moveToNextStep(event);
@@ -378,13 +389,13 @@ class EventForm extends React.Component<EventFormProps, EventFormState> {
                   (this.state.errors["event-image"] ? "error" : "")
                 }
                 style={{
-                  borderWidth: this.state.eventImage === "" ? "2px" : "0px",
+                  borderWidth: this.state.eventBase64Image === "" ? "2px" : "0px",
                 }}
               >
-                {this.state.eventImage === "" ? (
+                {this.state.eventBase64Image === "" ? (
                   <AddAPhotoIcon />
                 ) : (
-                  <img src={this.state.eventImage} />
+                  <img src={this.state.eventBase64Image as string} />
                 )}
               </label>
               <input

@@ -58,28 +58,32 @@ class EventService {
      * @returns true if the operation succedded, false otherwise
      */
     async createNewEvent(event: Event): Promise<boolean> {
-        console.log(1)
-        if(!AuthService.account) // || !event.locationCity
+        if(!AuthService.account) //TODO check that other fields are not missing (after demo)
             return false;
-        console.log(2)
-        const eventData = {
-            locationName: event.locationName,
-            locationAddress: event.locationAddress,
-            locationCity: "testCity", // event.locationCity
-            name: event.name,
-            description: event.description,
-            imageId: "asd",
-            userCreatorId: AuthService.account.$id as string,
-            eventTime: "null" //TODO ask for event time when creating new events
-        };
 
         try {
 
-            console.log(2.5)
-            console.log((await appwrite.database.listDocuments(this.EVENTS_COLLECTION_ID)))
+            // upload the event's image
+            let f = new File([event.image], event.name);
+            let imageFile = await appwrite.storage.createFile('unique()', f);
+
+            // Create the Event document
+            const eventData = {
+                locationName: event.locationName,
+                locationAddress: event.locationAddress,
+                locationCity: "testCity", // event.locationCity //TODO change when we have a better implementation
+                name: event.name,
+                description: event.description,
+                imageId: imageFile.$id,
+                userCreatorId: AuthService.account.$id as string,
+                eventTime: "null" //TODO ask for event time when creating new events
+            };
+
             const eventDoc = await appwrite.database.createDocument<EventModel>(this.EVENTS_COLLECTION_ID, 'unique()', eventData);
-            console.log(3)
+
+            // For each ticket category, create a new document
             event.ticketCategories.forEach(async c => {
+                // create the document for the ticket's style
                 const styleDoc = await appwrite.database.createDocument<TicketCategoryStyleModel>(this.TICKET_CATEGORY_STYLE_COLLECTION_ID, 'unique()', c.styling);
                 
                 const ticketCategory = {
@@ -93,6 +97,7 @@ class EventService {
 
                 await appwrite.database.createDocument<TicketCategoryModel>(this.TICKET_CATEGORIES_COLLECTION_ID, 'unique()', ticketCategory);
 
+                // Create each tickets depending on the initial amount
                 for(let i = 1; i <= c.amount; i++) {
                     const ticket = {
                         ticketNumber: i,
@@ -102,9 +107,6 @@ class EventService {
                     await appwrite.database.createDocument(this.TICKET_COLLECTION_ID, 'unique()', ticket);
                 }
             })
-
-
-            console.log(4)
         } catch (e) {
             console.log("Error while creating new event. - " + (e as AppwriteException).message);
             return false;
