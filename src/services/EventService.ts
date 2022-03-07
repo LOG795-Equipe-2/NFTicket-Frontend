@@ -91,14 +91,14 @@ class EventService {
                     price: c.price,
                     stylingId: styleDoc.$id,
                     eventId: eventDoc.$id,
-                    initialQuantity: c.amount,
-                    remainingQuantity: c.amount
+                    initialQuantity: c.initialAmount,
+                    remainingQuantity: c.initialAmount
                 };
 
                 await appwrite.database.createDocument<TicketCategoryModel>(this.TICKET_CATEGORIES_COLLECTION_ID, 'unique()', ticketCategory);
 
                 // Create each tickets depending on the initial amount
-                for(let i = 1; i <= c.amount; i++) {
+                for(let i = 1; i <= c.initialAmount; i++) {
                     const ticket = {
                         ticketNumber: i,
                         categoryId: c.type,

@@ -30,7 +30,7 @@ class EventForm extends React.Component<EventFormProps, EventFormState> {
         {
           type: "",
           price: 0,
-          amount: 1,
+          initialAmount: 1,
           styling: {
             primaryColor: "#FFFFFF",
             secondaryColor: "#FFFFFF",
@@ -58,7 +58,7 @@ class EventForm extends React.Component<EventFormProps, EventFormState> {
         {
           type: "",
           price: 0,
-          amount: 1,
+          initialAmount: 1,
           styling: {
             primaryColor: "#FFFFFF",
             secondaryColor: "#FFFFFF",
@@ -91,7 +91,7 @@ class EventForm extends React.Component<EventFormProps, EventFormState> {
       valueAsNumber: number;
     };
     let ticketCategories = this.state.ticketCategories;
-    if (name === "price" || name == "amount") {
+    if (name === "price" || name == "initialAmount") {
       (ticketCategories[index] as any)[name] = target.valueAsNumber;
     } else {
       (ticketCategories[index] as any)[name] = target.value;
@@ -238,6 +238,8 @@ class EventForm extends React.Component<EventFormProps, EventFormState> {
             description,
             image: this.state.eventBlobImage,
             ticketCategories: this.state.ticketCategories,
+            id: "",
+            dateTime: new Date()
           };
           this.props.moveToNextStep(event);
           nextButton.click();
@@ -329,10 +331,10 @@ class EventForm extends React.Component<EventFormProps, EventFormState> {
                   <TextField
                     value={ticketCategory.price}
                     className="small"
-                    label="Prix"
+                    label="Prix ($)"
                     type="number"
                     name="price"
-                    InputProps={{ inputProps: { min: 0 } }}
+                    InputProps={{ inputProps: { min: 0, step: "0.01" } }}
                     onChange={(e) =>
                       this.handleTicketTypeChange(index, e, "price")
                     }
@@ -342,11 +344,11 @@ class EventForm extends React.Component<EventFormProps, EventFormState> {
                     className="small"
                     label="Quantité"
                     type="number"
-                    value={ticketCategory.amount}
-                    name="amount"
+                    value={ticketCategory.initialAmount}
+                    name="initialAmount"
                     InputProps={{ inputProps: { min: 1 } }}
                     onChange={(e) =>
-                      this.handleTicketTypeChange(index, e, "amount")
+                      this.handleTicketTypeChange(index, e, "initialAmount")
                     }
                     disabled={this.state.isSubmitting}
                   />

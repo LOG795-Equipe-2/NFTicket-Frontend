@@ -1,0 +1,29 @@
+.BuyTicket {
+    margin-top: 100px;
+    display: flex;
+    justify-content: center;
+    &__content {
+        width: min(80%, 1800px);
+        .go-back {
+            margin-bottom: 20px;
+            a {
+                text-decoration: none;
+                color: inherit;
+                display: flex;
+            }
+            svg {
+                margin-right: 10px;
+            }
+        }
+        .cost {
+            margin-top: 50px;
+            display: flex;
+            flex-direction: column;
+        }
+        .confirm {
+            display: flex;
+            justify-content: center;
+            margin: 20px 0;
+        }
+    }
+}

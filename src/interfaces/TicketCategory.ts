@@ -3,8 +3,10 @@ import { Models } from "appwrite";
 export default interface TicketCategory {
   type: string;
   price: number;
-  amount: number;
   styling: Styling;
+  initialAmount: number;
+  remainingAmount?: number;
+  id?: string;
 }
 
 export interface TicketCategoryModel extends Models.Document {

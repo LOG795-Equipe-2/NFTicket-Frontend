@@ -111,12 +111,14 @@ class EventCreator extends React.Component<
     super(props);
     this.state = {
       event: {
+        id: "",
         locationName: "",
         name: "",
         description: "",
         image: new Blob(),
         ticketCategories: [],
-        locationAddress: ""
+        locationAddress: "",
+        dateTime: new Date()
       },
       currentStep: 0,
       hasCompletedEventCreation: false,
