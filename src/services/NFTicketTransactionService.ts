@@ -81,7 +81,12 @@ export class NFTicketTransactionService {
 
     async createTicketsAndValidate(tickets:TicketCategoryTransaction[], nbTickets: number = 1) {
         let transactionObject = await this.createTickets(tickets, nbTickets)
-        transactionObject.transactionId = await this.getManager().performTransactions(transactionObject.transactionsBody)
+        if(transactionObject.success != false){
+            transactionObject.transactionId = await this.getManager().performTransactions(transactionObject.transactionsBody)
+        } else {
+            throw new Error(transactionObject.errorMessage)
+        }
+
         return await this.validateTicket(transactionObject);
     }
 
