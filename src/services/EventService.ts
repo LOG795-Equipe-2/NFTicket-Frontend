@@ -52,6 +52,11 @@ class EventService {
         return events;
     }
 
+    async getMyEvents(){
+        let events = await appwrite.database.listDocuments('62210e0672c9be723f8b');
+        return events;
+    }
+
     /**
      * Creates a new event in Appwrite //TODO check if we need to do blockchain operations (and call backend endpoints) 
      * @param event event Data

@@ -6,7 +6,7 @@
  * Author: Anthony Brochu
  */
 
-import { Box, styled } from "@mui/material";
+import { Box, styled, TextField, Typography, Button } from "@mui/material";
 import NFTicketTransactionServiceInstance, { NFTicketTransactionService } from '../../services/NFTicketTransactionService';
 import { useEffect, useState } from "react";
 import { TicketCategoryTransaction } from "../../interfaces/TicketCategory";
@@ -22,10 +22,9 @@ let serviceNFT:NFTicketTransactionService
 function AnchorTests() {
     const CssBox = styled(Box)(({ theme }) => ({}));
 
-    async function getAssetsForUser(){
+    async function getAssetsForUser(userName: string){
       if(serviceNFT.getManager().isUserLogged()){
         setLoading(true)
-        let userName = serviceNFT.getManager().getAccountName();
         
         let dataAssets = await fetch('http://localhost:3000/atomic-assets/assets/' + userName).then(response => response.json())
         
@@ -42,12 +41,14 @@ function AnchorTests() {
         }
 
         setLoading(false)
-        return dataAssets.rows
+        return dataAssets.rows.sort().reverse()
       }
     }
 
     let [assets, setAssets] = useState([])
     let [loading, setLoading] = useState(false)
+
+    let [searchUser, setSearchUser] = useState("");
 
     useEffect(() => {
       connectToBackend().then((service) => {
@@ -81,15 +82,27 @@ function AnchorTests() {
           )
         ]
       )
-      getAssetsForUser().then((data) => setAssets(data))
+      getAssetsForUser(serviceNFT.getManager().getAccountName() + "").then((data) => setAssets(data))
+    }
+
+    function handleEventSubmit(e: React.SyntheticEvent){
+      getAssetsForUser(searchUser).then((data) => setAssets(data))
+    }
+
+    function handleChange(event: any) {
+      setSearchUser(event.target.value);
     }
 
     return (
-        <CssBox className="home">
+        <div className="home">
             <button onClick={() => serviceNFT.getManager().login()}>Login</button>
             <button onClick={() => performTransactionCreateTicketBackend() }>createTickets</button>
             <button onClick={() => serviceNFT.getManager().logout()}>logout</button>
-            <button onClick={() => getAssetsForUser().then((data) => setAssets(data)) }>get asset for user</button>
+            <label>
+              EOS Name:
+              <input type="text" value={searchUser} onChange={handleChange} />
+            </label>
+            <button onClick={(e) => handleEventSubmit(e)}>get asset for user</button>
             <p>Status: {loading == true ? 'Loading...' : 'Done'}</p>
             <table>
               <thead>
@@ -123,7 +136,7 @@ function AnchorTests() {
                 }
               </tbody>
             </table>
-        </CssBox>
+        </div>
     );
   }
   
