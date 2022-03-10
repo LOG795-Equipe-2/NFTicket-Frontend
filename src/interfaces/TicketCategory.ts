@@ -26,3 +26,46 @@ export interface Styling {
   backgroundColor: string,
   backgroundImage: string
 }
+
+export class TicketCategoryTransaction {
+  eventName:string
+  locationName:string
+  originalDateTime:string
+  originalPrice:number
+  categoryName:string
+  numberOfTickets:number
+
+  constructor(eventName:string, locationName:string, originalDateTime:string, originalPrice:number, categoryName:string, numberOfTickets:number){
+      this.eventName = eventName
+      this.locationName = locationName
+      this.originalDateTime = originalDateTime
+      this.originalPrice = originalPrice
+      this.categoryName = categoryName
+      this.numberOfTickets = numberOfTickets
+  }
+
+  getSchemaName(){
+      return "ticket"
+  }
+
+  returnPropertiesAsAttributeMap(): any{
+      return [
+          { "name": "eventName", "type": "string" },
+          { "name": "locationName", "type": "string" },
+          { "name": "originalDateTime", "type": "string" },
+          { "name": "originalPrice", "type": "float" },
+          { "name": "categoryName", "type": "string" }
+      ]
+  }
+
+  toJSON(): any{
+      return {
+          "eventName": this.eventName,
+          "locationName": this.locationName,
+          "originalDateTime": this.originalDateTime,
+          "originalPrice": this.originalPrice,
+          "categoryName": this.categoryName,
+          "numberOfTickets": this.numberOfTickets
+      }
+  }
+}

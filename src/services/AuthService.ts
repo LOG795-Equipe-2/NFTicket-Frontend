@@ -1,7 +1,7 @@
 import { AppwriteException, Models, Query } from 'appwrite';
-import anchorBrowserManager, { AnchorBrowserManager } from './AnchorBrowserManager';
+import anchorBrowserManager, { AnchorBrowserManager } from '../utils/AnchorBrowserManager';
 
-import appwrite from "./AppwriteInstance"
+import appwrite from "../utils/AppwriteInstance"
 
 export enum OauthProvider {
     GOOGLE = "google",

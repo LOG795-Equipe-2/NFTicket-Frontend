@@ -1,57 +1,13 @@
+import Event from '../interfaces/Event';
+import { TicketCategoryTransaction } from '../interfaces/TicketCategory';
 import { AnchorBrowserManager } from '../utils/AnchorBrowserManager';
-
-export class TicketNFT {
-    asset_id:string | null = null
-
-    eventName:string
-    locationName:string
-    originalDateTime:string
-    originalPrice:number
-    categoryName:string
-    numberOfTickets:number
-
-    constructor(eventName:string, locationName:string, originalDateTime:string, originalPrice:number, categoryName:string, numberOfTickets:number){
-        this.eventName = eventName
-        this.locationName = locationName
-        this.originalDateTime = originalDateTime
-        this.originalPrice = originalPrice
-        this.categoryName = categoryName
-        this.numberOfTickets = numberOfTickets
-    }
-
-    getSchemaName(){
-        return "ticket"
-    }
-
-    returnPropertiesAsAttributeMap(): any{
-        return [
-            { "name": "eventName", "type": "string" },
-            { "name": "locationName", "type": "string" },
-            { "name": "originalDateTime", "type": "string" },
-            { "name": "originalPrice", "type": "float" },
-            { "name": "categoryName", "type": "string" }
-        ]
-    }
-
-    toJSON(): any{
-        return {
-            "eventName": this.eventName,
-            "locationName": this.locationName,
-            "originalDateTime": this.originalDateTime,
-            "originalPrice": this.originalPrice,
-            "categoryName": this.categoryName,
-            "numberOfTickets": this.numberOfTickets
-        }
-    }
-}
-
 
 /**
  * Frontend class service to send and validate transactions
  * 
  * Call init() to intialize the class properly.
  */
-class NFTicketTransactionService {
+export class NFTicketTransactionService {
     urlApi: string;
     manager: AnchorBrowserManager | null = null;
 
@@ -75,13 +31,14 @@ class NFTicketTransactionService {
         });
 
         this.manager = new AnchorBrowserManager(chainId, blockchainUrl, appName)
+        this.manager.restoreSession();
     }
 
     getManager(): AnchorBrowserManager {
         return this.manager as AnchorBrowserManager;
     }
 
-    async createTickets(tickets: TicketNFT[], nbTickets: number = 1): Promise<any> {
+    async createTickets(tickets: TicketCategoryTransaction[], nbTickets: number = 1): Promise<any> {
         const options = {
             method: 'POST',
             body: JSON.stringify(tickets),
@@ -122,13 +79,24 @@ class NFTicketTransactionService {
         return response
     }
 
-    async createTicketsAndValidate(tickets:TicketNFT[], nbTickets: number = 1) {
+    async createTicketsAndValidate(tickets:TicketCategoryTransaction[], nbTickets: number = 1) {
         let transactionObject = await this.createTickets(tickets, nbTickets)
         transactionObject.transactionId = await this.getManager().performTransactions(transactionObject.transactionsBody)
         return await this.validateTicket(transactionObject);
     }
 
+    createTicketCategoryTransactionsFromEvent(event: Event): TicketCategoryTransaction[] {
+        const tickets: TicketCategoryTransaction[] = [];
 
+        event.ticketCategories.forEach(tc => {
+            tickets.push(new TicketCategoryTransaction(event.name, event.locationName, event.dateTime.toString(), tc.price, tc.type, tc.initialAmount));
+        })
+        
+        return tickets;
+    }
 }
 
-export default NFTicketTransactionService;
+const NFTicketTransactionServiceInstance = new NFTicketTransactionService('http://localhost:3000');
+NFTicketTransactionServiceInstance.init();
+
+export default NFTicketTransactionServiceInstance;
