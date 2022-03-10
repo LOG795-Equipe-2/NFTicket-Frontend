@@ -17,8 +17,8 @@ function FeaturedEventsCarousel() {
             margin: "30px 40px",
           }}
         >
-          {eventGroup.map(event => (
-            <EventCard showLink key={event.name} event={event}/>
+          {eventGroup.map((event, index) => (
+            <EventCard showLink key={event.name + index + "_featured"} event={event}/>
           ))}
         </Box>
       ))}

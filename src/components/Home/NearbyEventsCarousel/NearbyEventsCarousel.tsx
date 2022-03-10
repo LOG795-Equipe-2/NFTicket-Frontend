@@ -18,7 +18,7 @@ function NearbyEventsCarousel() {
           }}
         >
           {eventGroup.map((event, index) => (
-            <EventCard showLink key={"event" + event.name + index} event={event}/>
+            <EventCard showLink key={event.name + index + "_nearby"} event={event}/>
           ))}
         </Box>
       ))}
