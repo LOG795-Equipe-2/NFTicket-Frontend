@@ -110,7 +110,7 @@ class EventCreator extends React.Component<
         image: "",
         ticketCategories: [],
         locationAddress: "",
-        dateTime: new Date()
+        dateTime: new Date(),
       },
       currentStep: 0,
     };
@@ -134,7 +134,11 @@ class EventCreator extends React.Component<
             </Step>
             <Step>
               <div
-                onClick={() => this.setCurrentStep(1)}
+                onClick={() => {
+                  if (this.state.currentStep > 1) {
+                    this.setCurrentStep(1);
+                  }
+                }}
                 className={`text ${this.state.currentStep > 1 && "previous"}`}
               >
                 <StepLabel>Personnaliser les billets</StepLabel>
@@ -163,7 +167,10 @@ class EventCreator extends React.Component<
             event={this.state.event}
           />
           <div key="section-2">
-            <EventConfirmation createEvent={this.createEvent} event={this.state.event} />
+            <EventConfirmation
+              createEvent={this.createEvent}
+              event={this.state.event}
+            />
           </div>
         </Carousel>
       </CssBox>
