@@ -29,7 +29,7 @@ export class AuthService {
      * The account of the currently logged-in User
      * @property
      */
-    account: Models.User<Models.Preferences> | null = null;
+    account: Models.User<Models.Preferences> | undefined = undefined;
 
     session: Models.Session | undefined = undefined;
 
@@ -81,7 +81,7 @@ export class AuthService {
      */
     logout(session = 'current'): void {
         appwrite.account.deleteSession(session);
-        this.account = null;
+        this.account = undefined;
         anchorBrowserManager.logout();
         window.localStorage.clear();
     }
