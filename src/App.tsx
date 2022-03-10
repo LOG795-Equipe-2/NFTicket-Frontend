@@ -10,7 +10,8 @@ import EventCreator from './components/EventCreator/EventCreator';
 import AnchorTests from "./components/AnchorTests/AnchorTests";
 import EventView from "./components/EventView/EventView";
 import BuyTicketView from "./components/BuyTicketView/BuyTicketView";
-
+import ListTicketView from "./components/ListTicketView/ListTicketView";
+import LoginView from "./components/LoginView/LoginView";
 
 const theme = createTheme(Theme);
 
@@ -22,8 +23,8 @@ function App() {
         <BrowserRouter>
           <Routes>
             <Route path="/" element={<Home />} />
-            <Route path="/tickets">tickets</Route>
-            <Route path="/login">login</Route>
+            <Route path="/tickets" element={<ListTicketView />}>tickets</Route>
+            <Route path="/login" element={<LoginView />}>login</Route>
             <Route path="/create" element={<EventCreator />} />
             <Route path="/testAnchor" element={<AnchorTests />}>AnchorTest</Route>
             <Route path="/events/:id" element={<EventView />} />
