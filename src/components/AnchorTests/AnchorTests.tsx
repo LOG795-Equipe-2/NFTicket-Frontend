@@ -8,7 +8,7 @@
 
 import { Box, styled } from "@mui/material";
 import NFTicketTransactionService from '../../services/NFTicketTransactionService';
-import { Ticket } from '../../services/NFTicketTransactionService';
+import { TicketNFT } from '../../services/NFTicketTransactionService';
 import { useEffect, useState } from "react";
 
 async function connectToBackend(){
@@ -61,14 +61,25 @@ function AnchorTests() {
  
 
     async function performTransactionCreateTicketBackend(){
-      let transactionObject = await serviceNFT.createTicketAndValidate(
-        new Ticket(
-          "Show des cowboys",
-          "Centre Bell 1",
-          "2022-05-02T20:00:00",
-          20.96,
-          "VIP"
-        )
+      let transactionObject = await serviceNFT.createTicketsAndValidate(
+        [
+            new TicketNFT(
+            "Show des cowboys",
+            "Centre Bell 1",
+            "2022-05-02T20:00:00",
+            50.0,
+            "VIP",
+            1
+          ),
+          new TicketNFT(
+            "Show des cowboys",
+            "Centre Bell 1",
+            "2022-05-02T20:00:00",
+            20.96,
+            "Normal",
+            2
+          )
+        ]
       )
       getAssetsForUser().then((data) => setAssets(data))
     }

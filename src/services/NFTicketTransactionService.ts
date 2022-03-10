@@ -1,6 +1,6 @@
 import { AnchorBrowserManager } from '../utils/AnchorBrowserManager';
 
-export class Ticket {
+export class TicketNFT {
     asset_id:string | null = null
 
     eventName:string
@@ -8,13 +8,15 @@ export class Ticket {
     originalDateTime:string
     originalPrice:number
     categoryName:string
+    numberOfTickets:number
 
-    constructor(eventName:string, locationName:string, originalDateTime:string, originalPrice:number, categoryName:string){
+    constructor(eventName:string, locationName:string, originalDateTime:string, originalPrice:number, categoryName:string, numberOfTickets:number){
         this.eventName = eventName
         this.locationName = locationName
         this.originalDateTime = originalDateTime
         this.originalPrice = originalPrice
         this.categoryName = categoryName
+        this.numberOfTickets = numberOfTickets
     }
 
     getSchemaName(){
@@ -37,7 +39,8 @@ export class Ticket {
             "locationName": this.locationName,
             "originalDateTime": this.originalDateTime,
             "originalPrice": this.originalPrice,
-            "categoryName": this.categoryName
+            "categoryName": this.categoryName,
+            "numberOfTickets": this.numberOfTickets
         }
     }
 }
@@ -78,17 +81,19 @@ class NFTicketTransactionService {
         return this.manager as AnchorBrowserManager;
     }
 
-    async createTicket(ticket: Ticket): Promise<any> {
-        let data = ticket.toJSON()
-        let queryString = '?userName=' + this.getManager().getAccountName()
-        let i = 1
-        for(let k in data) { 
-            queryString += (i == 0 ? "?" : "&") + k + "=" + data[k] 
-            i++
+    async createTickets(tickets: TicketNFT[], nbTickets: number = 1): Promise<any> {
+        const options = {
+            method: 'POST',
+            body: JSON.stringify(tickets),
+            headers: {
+                'Content-Type': 'application/json'
+            }
         }
+
+        let queryString = '?userName=' + this.getManager().getAccountName()
         
         let transactionToSign;
-        await fetch(this.urlApi + '/nfticket-transaction/createTickets' + queryString)
+        await fetch(this.urlApi + '/nfticket-transaction/createTickets' + queryString, options)
         .then(response => response.json())
         .then(data => {
             // Receive chainId, server , and appName
@@ -117,8 +122,8 @@ class NFTicketTransactionService {
         return response
     }
 
-    async createTicketAndValidate(ticket:Ticket) {
-        let transactionObject = await this.createTicket(ticket)
+    async createTicketsAndValidate(tickets:TicketNFT[], nbTickets: number = 1) {
+        let transactionObject = await this.createTickets(tickets, nbTickets)
         transactionObject.transactionId = await this.getManager().performTransactions(transactionObject.transactionsBody)
         return await this.validateTicket(transactionObject);
     }
