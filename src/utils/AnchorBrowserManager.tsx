@@ -11,7 +11,7 @@
 
 import AnchorLink, { LinkSession } from 'anchor-link'
 import AnchorLinkBrowserTransport from 'anchor-link-browser-transport'
-import AuthService from './AuthService';
+import AuthService from '../services/AuthService';
 const { RpcError } = require('eosjs');
 
 export class AnchorBrowserManager{

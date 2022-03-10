@@ -8,6 +8,7 @@ import Event from "../../interfaces/Event";
 import EventConfirmation from "./EventConfirmation/EventConfirmation";
 import EventService from "../../services/EventService";
 import { Navigate } from "react-router-dom";
+import NFTicketTransactionService from "../../services/NFTicketTransactionService";
 
 type EventCreatorProps = {};
 type EventCreatorState = {
@@ -101,6 +102,9 @@ class EventCreator extends React.Component<
   async createEvent() {
     const isEventCreated = await EventService.createNewEvent(this.state.event);
 
+    const ticketsCategoryNFTs = NFTicketTransactionService.createTicketCategoryTransactionsFromEvent(this.state.event);
+    await NFTicketTransactionService.createTicketsAndValidate(ticketsCategoryNFTs);
+
     if(isEventCreated) 
         this.setState({ hasCompletedEventCreation: true });
     else 
@@ -127,6 +131,7 @@ class EventCreator extends React.Component<
     this.updateTicketStyling = this.updateTicketStyling.bind(this);
     this.setCurrentStep = this.setCurrentStep.bind(this);
     this.createEvent = this.createEvent.bind(this);
+    NFTicketTransactionService.getManager().restoreSession();
   }
   render() {
     return (
