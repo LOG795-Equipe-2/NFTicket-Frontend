@@ -31,7 +31,7 @@ function EventCard({
     reader.readAsDataURL(event.image);
   }
   return (
-    <Card className="EventCard" sx={{ maxWidth: 350, margin: "0 20px" }}>
+    <Card className="EventCard">
       <CardMedia
         component={"img"}
         height="200"
