@@ -78,7 +78,7 @@ function Navigation() {
           
         </div>
         <div className="navbar__right__login">
-        <CssLink href="login" underline="none">
+        <CssLink href="signIn" underline="none">
             Connexion/Inscription
             <AccountCircleOutlinedIcon></AccountCircleOutlinedIcon>
           </CssLink>
