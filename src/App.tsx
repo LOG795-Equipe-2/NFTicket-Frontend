@@ -7,7 +7,8 @@ import Theme from "./theme.json";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Home from "./components/Home/Home";
 import AnchorTests from "./components/AnchorTests/AnchorTests";
-import Login from "./components/Login/Login";
+import SignIn from "./components/Login/SignIn";
+import SignUp from "./components/Login/SignUp";
 
 
 const theme = createTheme(Theme);
@@ -21,7 +22,8 @@ function App() {
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/tickets">tickets</Route>
-            <Route path="/login" element={<Login/>}>login</Route>
+            <Route path="/signIn" element={<SignIn/>}>signIn</Route>
+            <Route path="/signUp" element={<SignUp/>}>signUp</Route>
             <Route path="/testAnchor" element={<AnchorTests/>}>AnchorTest</Route>
           </Routes>
         </BrowserRouter>
