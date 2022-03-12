@@ -16,15 +16,11 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 
 const theme = createTheme();
 
-export default function SignUp() {
+export default function Recovery() {
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    // eslint-disable-next-line no-console
-    console.log({
-      email: data.get('email'),
-      password: data.get('password'),
-    });
+    
   };
 
   return (
@@ -46,10 +42,8 @@ export default function SignUp() {
           Récupération de mot de passe
           </Typography>
           <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
-            <Grid container spacing={2}>
-              
-              </Grid>
-                           
+            <Grid container spacing={2}>              
+              </Grid>                           
               <Grid item xs={12}>
                 <TextField
                   required
@@ -59,9 +53,7 @@ export default function SignUp() {
                   name="email"
                   autoComplete="email"
                 />
-              </Grid>
-              
-                
+              </Grid>               
               
             <Button
               type="submit"
@@ -71,6 +63,7 @@ export default function SignUp() {
             >
               Envoyer
             </Button>
+
             <Grid container justifyContent="flex-end">
               <Grid item>
                 <Link href="signIn" variant="body2">
