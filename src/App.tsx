@@ -9,6 +9,7 @@ import Home from "./components/Home/Home";
 import AnchorTests from "./components/AnchorTests/AnchorTests";
 import SignIn from "./components/Login/SignIn";
 import SignUp from "./components/Login/SignUp";
+import Recovery from "./components/Login/Recovery";
 
 
 const theme = createTheme(Theme);
@@ -24,6 +25,7 @@ function App() {
             <Route path="/tickets">tickets</Route>
             <Route path="/signIn" element={<SignIn/>}>signIn</Route>
             <Route path="/signUp" element={<SignUp/>}>signUp</Route>
+            <Route path="/recovery" element={<Recovery/>}>recovery</Route>
             <Route path="/testAnchor" element={<AnchorTests/>}>AnchorTest</Route>
           </Routes>
         </BrowserRouter>
