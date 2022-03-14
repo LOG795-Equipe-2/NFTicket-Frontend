@@ -23,7 +23,9 @@ export default function SignIn() {
     const data = new FormData(event.currentTarget);
 
     AuthService.loginWithPassword(data.get('email') as string, data.get('password') as string)
-    
+
+    //{this.state.hasCompletedEventCreation && <Navigate replace to="/Home" />}
+
     console.log({
       email: data.get('email'),
       password: data.get('password'),
