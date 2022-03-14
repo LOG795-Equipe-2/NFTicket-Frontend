@@ -12,6 +12,8 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import AuthService from '../../services/AuthService';
+import { Navigate } from 'react-router-dom';
 
 
 const theme = createTheme();
@@ -20,10 +22,14 @@ export default function SignUp() {
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    // eslint-disable-next-line no-console
+  
+    AuthService.createAccount(data.get('email') as string, data.get('password') as string, data.get('firstName') as string, data.get('lastName') as string)
+
+    //{this.state.hasCompletedEventCreation && <Navigate replace to="/SuccessSignUp" />}
+
     console.log({
-      firstname: data.get('firstname'),
-      lastname: data.get('lastname'),
+      firstname: data.get('firstName'),
+      lastname: data.get('lastName'),
       email: data.get('email'),
       password: data.get('password'),
     });

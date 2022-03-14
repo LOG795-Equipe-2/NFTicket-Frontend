@@ -12,22 +12,14 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import AuthService from '../../services/AuthService';
 
 
 const theme = createTheme();
 
-export default function SignIn() {
+export default function SuccessSignUp() {
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const data = new FormData(event.currentTarget);
-
-    AuthService.loginWithPassword(data.get('email') as string, data.get('password') as string)
-    
-    console.log({
-      email: data.get('email'),
-      password: data.get('password'),
-    });
+    const data = new FormData(event.currentTarget);    
   };
 
   return (
@@ -45,51 +37,26 @@ export default function SignIn() {
           <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
             <LockOutlinedIcon />
           </Avatar>
+
           <Typography component="h1" variant="h5">
-          S'identifier
+          Création de compte réussie
           </Typography>
-          <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
-            <TextField
-              margin="normal"
-              required
-              fullWidth
-              id="email"
-              label="Adresse courriel"
-              name="email"
-              autoComplete="email"
-              autoFocus
-            />
-            <TextField
-              margin="normal"
-              required
-              fullWidth
-              name="password"
-              label="Mot de passe"
-              type="password"
-              id="password"
-              autoComplete="current-password"
-            />
-            <FormControlLabel
-              control={<Checkbox value="remember" color="primary" />}
-              label="Conserver la connexion"
-            />
+
+          <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>                          
+              
             <Button
               type="submit"
               fullWidth
               variant="contained"
               sx={{ mt: 3, mb: 2 }}
             >
-              Sign In
+              S'identifier
             </Button>
-            <Grid container>
-              <Grid item xs>
-                <Link href="recovery" variant="body2">
-                  Mot de passe oublier?
-                </Link>
-              </Grid>
+
+            <Grid container justifyContent="flex-end">
               <Grid item>
-                <Link href="signUp" variant="body2">
-                  {"Vous n'avez pas de compte? S'inscrire"}
+                <Link href="home" variant="body2">
+                Page d'acceuil 
                 </Link>
               </Grid>
             </Grid>
