@@ -37,13 +37,13 @@ export class AuthService {
      * checks if a User was already connected on this device when creating the Service
      * @constructor
      */
-    constructor() { this.checkForSession(); }
+    constructor() { }
 
     /**
      * checks if a there is currently a User session on this device, if yes it puts it in the account property
      * @returns void
      */
-    private async checkForSession(): Promise<void> {
+    async checkForSession(): Promise<void> {
         try {
             this.account = await appwrite.account.get();
             this.session = await appwrite.account.getSession('current');
@@ -79,8 +79,8 @@ export class AuthService {
      * Delete the current session of a User, will also delete any Anchor Data that was used to save sessions
      * @returns void
      */
-    logout(session = 'current'): void {
-        appwrite.account.deleteSession(session);
+    async logout(session = 'current'): Promise<void> {
+        await appwrite.account.deleteSession(session);
         this.account = undefined;
         anchorBrowserManager.logout();
         window.localStorage.clear();
@@ -175,6 +175,36 @@ export class AuthService {
         anchorBrowserManager.restoreSession();
         console.log("done!")
     }
+
+    /**
+     * Logins the user with a email/password
+     * @param email 
+     * @param password 
+     * @returns true if the login was successful, false otherwise
+     */
+    async loginWithPassword(email: string, password: string): Promise<boolean> {
+        this.session = await appwrite.account.createSession(email, password);
+        await this.checkForSession();
+        return this.session !== undefined;
+    }
+
+    /**
+     * Create a new user from an email/password combination
+     * @param email 
+     * @param password 
+     * @param firstName 
+     * @param lastName 
+     * @returns True if the user creation was successful, false otherwise
+     */
+    async createAccount(email: string, password: string, firstName: string, lastName: string): Promise<boolean> {
+        const name: string = `${firstName} ${lastName}`;
+        if(name.length > 128)
+            return false
+        
+        const user = await appwrite.account.create("unique()", email, password, name);
+        return await this.loginWithPassword(email, password);
+    }
+    
     
 }
 

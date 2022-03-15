@@ -1,4 +1,4 @@
-import { Link, TextField } from "@mui/material";
+import { Button, Link, TextField } from "@mui/material";
 import { alpha, styled } from "@mui/material/styles";
 import { Box } from "@mui/material";
 import { ConfirmationNumber, Search } from "@mui/icons-material";
@@ -7,6 +7,8 @@ import InputAdornment from "@mui/material/InputAdornment";
 import AccountCircleOutlinedIcon from '@mui/icons-material/AccountCircleOutlined';
 import BookOnlineOutlinedIcon from '@mui/icons-material/BookOnlineOutlined';
 import "./Navigation.scss";
+import { AppwriteContext } from "../../App";
+
 
 function Navigation() {
   const CssTextField = styled(TextField)(({ theme }) => ({
@@ -78,10 +80,26 @@ function Navigation() {
           
         </div>
         <div className="navbar__right__login">
-        <CssLink href="login" underline="none">
-            Connexion/Inscription
-            <AccountCircleOutlinedIcon></AccountCircleOutlinedIcon>
-          </CssLink>
+          <AppwriteContext.Consumer>
+            {
+              value => { return typeof(value.userLoggedIn?.username) == "undefined" ? 
+                <CssLink href="signIn" underline="none">
+                  Connexion/Inscription
+                  <AccountCircleOutlinedIcon></AccountCircleOutlinedIcon>
+                </CssLink>
+                :
+                <div>{value.userLoggedIn.username}</div>
+            }}
+            
+          </AppwriteContext.Consumer>
+        </div>
+        <div>
+          <AppwriteContext.Consumer>
+            {
+              value => { return <Button onClick={() => value.AuthServiceObject.logout().then(() => { value.setUserLoggedIn(undefined); }) }>Logout</Button>
+            }}
+            
+          </AppwriteContext.Consumer>
         </div>
       </div>
     </Box>
