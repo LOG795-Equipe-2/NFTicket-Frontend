@@ -92,22 +92,6 @@ export class AuthService {
      */
     isLoggedIn(): boolean { return !(this.account == null) }
 
-
-    async loginWithPassword(email: string, password: string): Promise<boolean> {
-        this.session = await appwrite.account.createSession(email, password);
-        this.checkForSession();
-        return this.session !== undefined;
-    }
-
-    async createAccount(email: string, password: string, firstName: string, lastName: string): Promise<boolean> {
-        const name: string = `${firstName} ${lastName}`;
-        if(name.length > 128)
-            return false
-        
-        const user = await appwrite.account.create("unique()", email, password, name);
-        return await this.loginWithPassword(email, password);
-    }
-    
     /**
      * Saves the current anchorlink session info on the Backend so that it can be restored if the use reconnects on the same device
      * @returns void
