@@ -56,7 +56,7 @@ function Navigation() {
             fullWidth
             size="small"
             color="secondary"
-            label="Trouver un évenement..."
+            label="Trouver un événement..."
             InputProps={{
               endAdornment: (
                 <InputAdornment position="end">

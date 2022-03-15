@@ -29,6 +29,9 @@
         font-size: 30px;
         font-weight: 600;
       }
+      .EventCard {
+        margin: 0 20px;
+      }
     }
   }
   &__search {
@@ -47,6 +50,9 @@
       font-size: 30px;
       font-weight: 600;
     }
+    .EventCard {
+      margin: 0 20px;
+    }
   }
 
   &__createEvent {
@@ -61,12 +67,15 @@
     }
 
     &__content {
-        margin: 20px;
-        display: flex;
-        justify-content: center;
-        svg {
-            margin-left: 10px;
-        }
+      a {
+        text-decoration: none;
+      }
+      margin: 20px;
+      display: flex;
+      justify-content: center;
+      svg {
+          margin-left: 10px;
+      }
     }
   }
 }

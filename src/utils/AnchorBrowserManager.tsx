@@ -11,6 +11,7 @@
 
 import AnchorLink, { LinkSession } from 'anchor-link'
 import AnchorLinkBrowserTransport from 'anchor-link-browser-transport'
+import AuthService from '../services/AuthService';
 const { RpcError } = require('eosjs');
 
 export class AnchorBrowserManager{
@@ -59,6 +60,7 @@ export class AnchorBrowserManager{
           // Save the session within your application for future use
           this.session = identity.session
           console.log(`Logged in as ${this.session.auth}`)
+          AuthService.saveAnchorLinkInfosForCurrentSession();
         }).catch((err) => {
           // User has cancelled log in.
         });
@@ -94,24 +96,30 @@ export class AnchorBrowserManager{
      */
      async performTransactions(actions:any[]) {
         if(this.isUserLogged()){
+            let transactionId
             actions.forEach((element) => {
                 element.authorization = [this.session!.auth]
             })
             await this.session!.transact({ actions }).then(({transaction}) => {
                 console.log(`transation broadcast! Id: ${transaction.id}`);
+                transactionId = transaction.id
             }).catch((err) => {
                 console.log(err);
                 console.log(err.response);
-                console.log(err.response.data)
                 if (err instanceof RpcError)
                   console.log(JSON.stringify(err.json, null, 2));
       
                 throw err;
              });
-            
+            return transactionId
         } else {
             throw new Error("User is not logged in");
         }
     }
     
-} export default AnchorBrowserManager
+} 
+
+export default new AnchorBrowserManager(
+    process.env.CHAIN_ID || '5d5bbe6bb403e5ca8b087d382946807246b4dee094c7f5961e2bebd88f8c9c51', 
+    process.env.NODE_URL || 'http://eos1.anthonybrochu.com:8888/', 
+    process.env.APP_NAME || 'NFTicket');

@@ -1,0 +1,15 @@
+.TicketVisualiser {
+  background-size: cover!important;
+  background-position: center!important;
+  border-style: solid;
+  &__content {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+
+    .ticket-code {
+      margin-top: 10px;
+      mask: url(https://upload.wikimedia.org/wikipedia/commons/thumb/d/d0/QR_code_for_mobile_English_Wikipedia.svg/1280px-QR_code_for_mobile_English_Wikipedia.svg.png) no-repeat center / contain;
+    }
+  }
+}

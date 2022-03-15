@@ -5,15 +5,15 @@ FROM node:16.14 AS builder
 
 WORKDIR /app
 
-# Copy package.json to only restart that step when there are changes to the packages instead of the whole codebase.
-COPY ["package.json", "package-lock.json*", "./"]
-RUN npm install
+# Copy yarn.lock to only restart that step when there are changes to the packages instead of the whole codebase.
+COPY ["yarn.lock", "./"]
+RUN yarn
 
 # Copy source code
 COPY . .
 
 # Build project
-RUN npm run build
+RUN yarn run build
 
 # Use Nginx as our web server
 FROM nginx:1.20

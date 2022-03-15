@@ -6,15 +6,36 @@ import {
   CardActions,
   Button,
 } from "@mui/material";
+import { useState } from "react";
+import { Link } from "react-router-dom";
 import EventType from "../../interfaces/Event";
+import "./EventCard.scss";
 
-function EventCard({ event }: { event: EventType}) {
+function EventCard({
+  event,
+  showLink,
+}: {
+  event: EventType;
+  showLink: boolean;
+}) {
+  let [imageToDisplay, setImageToDisplay] = useState(event.image);
+  if (typeof event.image === "object") {
+    var reader = new FileReader();
+
+    reader.onload = function (e) {
+      if (e.target && e.target.result) {
+        setImageToDisplay(e.target.result as string);
+      }
+    };
+
+    reader.readAsDataURL(event.image);
+  }
   return (
-    <Card sx={{ maxWidth: 350, margin: "0 20px" }}>
+    <Card className="EventCard">
       <CardMedia
         component={"img"}
         height="200"
-        image={process.env.PUBLIC_URL + event.image}
+        image={imageToDisplay as string}
         alt={event.name}
       />
       <CardContent>
@@ -25,9 +46,13 @@ function EventCard({ event }: { event: EventType}) {
           {event.description}
         </Typography>
       </CardContent>
-      <CardActions>
-        <Button size="small">Voir les billets</Button>
-      </CardActions>
+      {showLink && (
+        <CardActions>
+          <Link to={"/events/" + event.id}>
+            <Button size="small">Voir les billets</Button>
+          </Link>
+        </CardActions>
+      )}
     </Card>
   );
 }

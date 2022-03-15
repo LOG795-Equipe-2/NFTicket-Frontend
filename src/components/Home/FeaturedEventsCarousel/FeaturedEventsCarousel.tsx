@@ -5,7 +5,6 @@ import eventService from "../../../services/EventService";
 
 function FeaturedEventsCarousel() {
   const eventGroups = eventService.getCurrentFeaturedEvents(4, 12);
-  console.log(eventGroups)
   return (
     <Carousel interval={10000} navButtonsAlwaysVisible animation="slide">
       {eventGroups.map((eventGroup, index) => (
@@ -18,8 +17,8 @@ function FeaturedEventsCarousel() {
             margin: "30px 40px",
           }}
         >
-          {eventGroup.map(event => (
-            <EventCard key={event.id} event={event}/>
+          {eventGroup.map((event, index) => (
+            <EventCard showLink key={event.name + index + "_featured"} event={event}/>
           ))}
         </Box>
       ))}
