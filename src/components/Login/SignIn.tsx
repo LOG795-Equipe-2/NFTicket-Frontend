@@ -12,19 +12,42 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-
+import { AppwriteContext } from '../../App';
+import { useNavigate  } from "react-router-dom";
 
 const theme = createTheme();
 
 export default function SignIn() {
+  let navigate = useNavigate();
+
+  const contextObject = React.useContext(AppwriteContext);
+
+  const [loggedInSuccess, setLoggedInSuccess] = React.useState<boolean>(false);
+
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
+
+    const email: string = data.get('email') as string;
+    const password: string = data.get('password') as string;
+    
+    login(email, password);
+
     console.log({
       email: data.get('email'),
       password: data.get('password'),
     });
   };
+
+  const login = async (email: string, password: string) => {
+    const session = await contextObject.AuthServiceObject.loginWithPassword(email, password);
+    contextObject.setUserLoggedIn({
+      userId: contextObject.AuthServiceObject.account?.$id,
+      username: contextObject.AuthServiceObject.account?.name
+    })
+    if(session)
+      navigate("/");
+  }
 
   return (
     <ThemeProvider theme={theme}>
