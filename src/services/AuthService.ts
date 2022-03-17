@@ -1,7 +1,5 @@
-import { Models, Query } from 'appwrite';
-import { AppwriteException } from 'appwrite'
-import { AnchorBrowserManager } from '../utils/AnchorBrowserManager';
-import { WalletManagerInterface } from '../utils/WalletManagerInterface';
+import { AppwriteException, Models, Query } from 'appwrite';
+import anchorBrowserManager, { AnchorBrowserManager } from '../utils/AnchorBrowserManager';
 
 import appwrite from "../utils/AppwriteInstance"
 
@@ -27,8 +25,6 @@ export class AuthService {
     private readonly ANCHORINFO_COLLECTION_ID: string = "621fcb8641b53f76bc95";
     private readonly ON_OAUTH_SUCCESS: string = "http://localhost:3000";
 
-    private walletManager: WalletManagerInterface;
-
     /**
      * The account of the currently logged-in User
      * @property
@@ -41,48 +37,24 @@ export class AuthService {
      * checks if a User was already connected on this device when creating the Service
      * @constructor
      */
-    constructor() { 
-        this.walletManager = new AnchorBrowserManager(
-            process.env.CHAIN_ID || '5d5bbe6bb403e5ca8b087d382946807246b4dee094c7f5961e2bebd88f8c9c51', 
-            process.env.NODE_URL || 'http://eos1.anthonybrochu.com:8888/', 
-            process.env.APP_NAME || 'NFTicket');
-    }
-
-    listeners: any[] = [];
+    constructor() { }
 
     /**
      * checks if a there is currently a User session on this device, if yes it puts it in the account property
      * @returns void
      */
-    async checkForSession(): Promise<boolean> {
+    async checkForSession(): Promise<void> {
         try {
             this.account = await appwrite.account.get();
             this.session = await appwrite.account.getSession('current');
-        } catch(e){
-            console.log("Error checking for already existing session (User might not be logged in). - " + e);
-            this.listeners.forEach(l => l.call());
-            return false;
-        }
+            const hasRestoredSession = await anchorBrowserManager.restoreSession();
 
-        try{
-            const hasRestoredSession = await this.walletManager.restoreSession();
-
-            if(!hasRestoredSession){
-                let sessionLocalStorage = await this.getAnchorLinkSessionLocalStorage();
-                if(sessionLocalStorage != null){
-                    await this.restoreAnchorLinkSessions(sessionLocalStorage)
-                    console.log("restored session from backend Local storage.")
-                } else {
-                    console.log("Did not restore session, nothing was saved in Appwrite.");
-                }
-            } else
-                console.log("restored session from Anchor directly.")
-        } catch (e) {  
+            if(!hasRestoredSession)
+                this.tryLoadAnchorLinkSession();
+        } catch (e) {
             // This means that no user was connected to this device
-            console.log("Error checking for already existing session. - " + e);
+            console.log("Error checking for already existing sesion. - " + e);
         }
-        this.listeners.forEach(l => l.call());
-        return true;
     }
 
     /**
@@ -92,37 +64,6 @@ export class AuthService {
      */
     private buildAppwriteSessionInfo(session: Models.Session) {
         return `${session.deviceName} - ${session.clientCode} - ${session.userId}`
-    }
-
-    /**
-     * Calls the login method for the wallet manager
-     */
-    async loginWallet(): Promise<boolean> {
-        let success = await this.walletManager.login();
-        if(success){
-            this.saveAnchorLinkInfosForCurrentSession();
-            return true;
-        }
-        return false;
-    }
-
-    /**
-     * Calls the login method for the wallet manager
-     */
-     async logoutWallet(): Promise<boolean> {
-        let success = await this.walletManager.logout();
-        if(success){
-            await this.deleteAnchorLinkInfosForCurrentSession();
-            return true;
-        }
-        return false;
-    }
-
-    /**
-     * Checks if the user is logged in within
-     */
-    isWalletLoggedIn(): boolean {
-        return this.walletManager.isUserLogged();
     }
 
     /**
@@ -141,7 +82,7 @@ export class AuthService {
     async logout(session = 'current'): Promise<void> {
         await appwrite.account.deleteSession(session);
         this.account = undefined;
-        this.walletManager.logout();
+        anchorBrowserManager.logout();
         window.localStorage.clear();
     }
 
@@ -198,35 +139,12 @@ export class AuthService {
     }
 
     /**
-     * Saves the current anchorlink session info on the Backend so that it can be restored if the use reconnects on the same device
-     * @returns void
-     */
-     async deleteAnchorLinkInfosForCurrentSession() {
-        if(!this.session)
-            return;
-
-        const appwriteSessionInfo = this.buildAppwriteSessionInfo(this.session)
-
-        try {
-            const existingSessions = await appwrite.database.listDocuments<AnchorInfoDocument>(this.ANCHORINFO_COLLECTION_ID, [Query.equal("appwriteSessionInfo", appwriteSessionInfo)]);
-            
-            if(existingSessions.documents.length == 1) {
-                appwrite.database.deleteDocument(this.ANCHORINFO_COLLECTION_ID, existingSessions.documents[0].$id)
-            }
-            
-        } catch (e: any) {
-            console.error("Error while adding/updating new anchor session infos")
-            throw new Error((e as AppwriteException).message)
-        }
-    }
-
-    /**
      * Will attempt to load the AnchorLink session infos from the backend
      * @returns void
      */
-    async getAnchorLinkSessionLocalStorage(): Promise<AnchorInfoDocument | null> {
+    async tryLoadAnchorLinkSession() {
         if(!this.session)
-            return null;
+            return;
         
         const appwriteSessionInfo = this.buildAppwriteSessionInfo(this.session);
 
@@ -234,12 +152,9 @@ export class AuthService {
             const sessions = await appwrite.database.listDocuments<AnchorInfoDocument>(this.ANCHORINFO_COLLECTION_ID, [Query.equal("appwriteSessionInfo", appwriteSessionInfo)])
 
             if(sessions.documents.length == 1)
-                return sessions.documents[0]
-            else
-                return null;
+                this.restoreAnchorLinkSessions(sessions.documents[0])
         } catch (e: any) {
             console.error(`error while fetching AnchorLink Sessions; ${(e as AppwriteException).message}`)
-            throw e;
         }
     }
 
@@ -247,7 +162,7 @@ export class AuthService {
      * Puts the data from the AnchorInfoDocument into the localStorage so that AnchorLink can use it to restore the session
      * @param anchorInfo The data that will be put into localStorage
      */
-    async restoreAnchorLinkSessions(anchorInfo: AnchorInfoDocument): Promise<boolean> {
+    restoreAnchorLinkSessions(anchorInfo: AnchorInfoDocument) {
         window.localStorage.clear();
         anchorInfo.channelsInfo.forEach((ci: string) => {
             let ciSplit = ci.split(this.SEPARATOR);
@@ -257,7 +172,8 @@ export class AuthService {
         let siInfo = anchorInfo.sessionsInfo.split(this.SEPARATOR);
         window.localStorage.setItem(siInfo[0], siInfo[1]);
 
-        return await this.walletManager.restoreSession();
+        anchorBrowserManager.restoreSession();
+        console.log("done!")
     }
 
     /**
