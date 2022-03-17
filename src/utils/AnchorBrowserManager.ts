@@ -9,12 +9,12 @@
  * Author: Anthony Brochu
  */
 
-import AnchorLink, { LinkSession } from 'anchor-link'
+import AnchorLink, { LinkSession, Name } from 'anchor-link'
 import AnchorLinkBrowserTransport from 'anchor-link-browser-transport'
-import AuthService from '../services/AuthService';
+import { WalletManagerInterface } from './WalletManagerInterface';
 const { RpcError } = require('eosjs');
 
-export class AnchorBrowserManager{
+export class AnchorBrowserManager implements WalletManagerInterface {
     link: AnchorLink;
     appName: string;
     /**
@@ -42,11 +42,11 @@ export class AnchorBrowserManager{
         this.appName = appName;
     }
 
-    isUserLogged(){
+    isUserLogged(): boolean {
         return this.session !== null && typeof(this.session) !== "undefined";
     }
 
-    getAccountName(){
+    getAccountName(): Name | undefined {
         return this.session?.auth.actor
     }
 
@@ -54,36 +54,42 @@ export class AnchorBrowserManager{
      * Login using the browser popup.
      * Error or cancellation can be managed
      */
-    async login() {
-        // Perform the login, which returns the users identity
-        await this.link.login(this.appName).then((identity) => {
-          // Save the session within your application for future use
-          this.session = identity.session
-          console.log(`Logged in as ${this.session.auth}`)
-          AuthService.saveAnchorLinkInfosForCurrentSession();
-        }).catch((err) => {
-          // User has cancelled log in.
-        });
+    async login(): Promise<boolean> {
+        try{   
+            // Perform the login, which returns the users identity
+            const identity = await this.link.login(this.appName);
+            if(identity){
+                // Save the session within your application for future use
+                this.session = identity.session
+                console.log(`Logged in as ${this.session.auth}`)
+                return true
+            } else
+                return false
+        }  catch(err){
+            console.log("error loggin to anchor: " + err);
+            return false;
+        }
     }
 
     /**
      * Allows to restore the session if there was one.
      * @returns Promise of a boolean that will tell if the session was able to be restored or not.
      */
-    async restoreSession():Promise<Boolean>{
-        return this.link.restoreSession(this.appName).then((result) => {
-            this.session = result
-            if (this.isUserLogged()) {
-                return true;
-            }
-            return false;
-        });
+    async restoreSession(): Promise<boolean>{
+        let restoredSession = await this.link.restoreSession(this.appName)
+        console.log(restoredSession);
+        this.session = restoredSession
+        if (this.isUserLogged()) {
+            return true;
+        }
+        return false;
     }
 
-    async logout() {
+    async logout(): Promise<boolean> {
         if(this.isUserLogged()){
             this.link.removeSession(this.appName, this.session!.auth, this.session!.chainId);
             this.session = undefined;
+            return true;
         } else {
             throw new Error("User is not logged in");
         }
@@ -118,8 +124,3 @@ export class AnchorBrowserManager{
     }
     
 } 
-
-export default new AnchorBrowserManager(
-    process.env.CHAIN_ID || '5d5bbe6bb403e5ca8b087d382946807246b4dee094c7f5961e2bebd88f8c9c51', 
-    process.env.NODE_URL || 'http://eos1.anthonybrochu.com:8888/', 
-    process.env.APP_NAME || 'NFTicket');
