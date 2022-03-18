@@ -59,7 +59,7 @@ export class NFTicketTransactionService {
         return transactionToSign
     }
 
-    async validateTicket(transactionObject: any){
+    async validateTicket(transactionObject: any) : Promise<any> {
         const options = {
             method: 'POST',
             body: JSON.stringify(transactionObject),
@@ -79,7 +79,7 @@ export class NFTicketTransactionService {
         return response
     }
 
-    async createTicketsAndValidate(tickets:TicketCategoryTransaction[], nbTickets: number = 1) {
+    async createTicketsAndValidate(tickets:TicketCategoryTransaction[], nbTickets: number = 1): Promise<any> {
         let transactionObject = await this.createTickets(tickets, nbTickets)
         if(transactionObject.success != false){
             transactionObject.transactionId = await this.getManager().performTransactions(transactionObject.transactionsBody)
