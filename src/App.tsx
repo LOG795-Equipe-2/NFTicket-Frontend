@@ -67,18 +67,24 @@ interface context {
 interface UserContext {
   userId: string | undefined;
   username: string | undefined;
+  isFetching: boolean
 }
 
 export const AppwriteContext = React.createContext<context>(null!);
 
 function App() {
-  let [userLoggedIn, setUserLoggedIn] = React.useState<UserContext | undefined>(undefined);
+  let [userLoggedIn, setUserLoggedIn] = React.useState<UserContext | undefined>({ 
+    username: undefined,
+    userId: undefined,
+    isFetching: true
+   });
 
   useEffect(() => {
     AuthServiceInstance.checkForSession().then(() => {
       setUserLoggedIn({
         userId: AuthServiceInstance.account?.$id,
-        username: AuthServiceInstance.account?.name
+        username: AuthServiceInstance.account?.name,
+        isFetching: false
       });
     })
   }, [])

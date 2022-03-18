@@ -1,4 +1,4 @@
-import { Button, Link, ListItemIcon, ListItemText, Menu, MenuItem, TextField } from "@mui/material";
+import { Button, CircularProgress, Link, ListItemIcon, ListItemText, Menu, MenuItem, TextField } from "@mui/material";
 import { alpha, styled } from "@mui/material/styles";
 import { Box } from "@mui/material";
 import { ConfirmationNumber, Search } from "@mui/icons-material";
@@ -8,6 +8,7 @@ import AccountCircleOutlinedIcon from '@mui/icons-material/AccountCircleOutlined
 import BookOnlineOutlinedIcon from '@mui/icons-material/BookOnlineOutlined';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import LogoutIcon from '@mui/icons-material/Logout';
+import SettingsIcon from '@mui/icons-material/Settings';
 import "./Navigation.scss";
 import { AppwriteContext } from "../../App";
 import React from "react";
@@ -23,7 +24,8 @@ function Navigation() {
     setAnchorEl(null);
   };
   const handleLogout = (appwriteContext: any) => {
-    appwriteContext.AuthServiceObject.logout().then(() => { appwriteContext.setUserLoggedIn(undefined); })
+    appwriteContext.setUserLoggedIn({ isFetching: true });
+    appwriteContext.AuthServiceObject.logout().then(() => { appwriteContext.setUserLoggedIn({ isFetching: false, username: undefined, userid: undefined }); })
     setAnchorEl(null);
   }
   const CssTextField = styled(TextField)(({ theme }) => ({
@@ -61,7 +63,12 @@ function Navigation() {
     "&:hover": {
       color: theme.palette.primary.light
     }
-  }))
+  }));
+  const NavbarMenu = styled(Menu)(({ theme }) => ({
+    ".MuiLink-root": {
+      color: theme.palette.primary.dark
+    }
+  }));
   return (
     <Box sx={{ bgcolor: "primary.dark" }} className="navbar">
       <div className="navbar__left">
@@ -93,24 +100,32 @@ function Navigation() {
         </Box>
       </div>
       <div className="navbar__right">
-        <div className="navbar__right__my-tickets">
-          <CssLink href="tickets" underline="none">
-            Mes billets
-            <BookOnlineOutlinedIcon></BookOnlineOutlinedIcon>
-          </CssLink>
 
-        </div>
-        <div className="navbar__right__login">
-          <AppwriteContext.Consumer>
-            {
-              value => {
-                return typeof (value.userLoggedIn?.username) == "undefined" ?
+
+        <AppwriteContext.Consumer>
+          {
+            value => {
+              return value.userLoggedIn?.isFetching ? (
+                <Box className="loading">
+                  <CircularProgress color="secondary" size={25} />
+                </Box>
+              ) : (typeof (value.userLoggedIn?.username) == "undefined" ?
+                <div className="navbar__right__login">
                   <CssLink href="sign-in" underline="none">
                     Connexion/Inscription
                     <AccountCircleOutlinedIcon></AccountCircleOutlinedIcon>
                   </CssLink>
-                  :
-                  <React.Fragment>
+                </div>
+                :
+                <React.Fragment>
+                  <div className="navbar__right__my-tickets">
+                    <CssLink href="tickets" underline="none">
+                      Mes billets
+                      <BookOnlineOutlinedIcon></BookOnlineOutlinedIcon>
+                    </CssLink>
+
+                  </div>
+                  <div className="navbar__right__login">
                     <NavbarItem
                       id="menu-button"
                       className={`navbar-item ${menuOpen && "open"}`}
@@ -122,7 +137,7 @@ function Navigation() {
                       {value.userLoggedIn?.username}
                       <ArrowDropDownIcon />
                     </NavbarItem>
-                    <Menu
+                    <NavbarMenu
                       id="navbar-menu"
                       open={menuOpen}
                       anchorEl={anchorEl}
@@ -131,22 +146,34 @@ function Navigation() {
                       }}
                       onClose={handleMenuClose}
                       sx={{
-                        marginLeft: '10px'
+                        marginLeft: '10px',
+                        marginTop: '10px'
                       }}
                     >
+                      <MenuItem>
+                        <ListItemIcon><SettingsIcon color="primary" /></ListItemIcon>
+                        <ListItemText>Paramètres</ListItemText>
+                      </MenuItem>
+                      <MenuItem>
+                        <Link href="create" underline="none">
+                          <ListItemIcon><ConfirmationNumber color="primary" /></ListItemIcon>
+                          <ListItemText>Créer un événement</ListItemText>
+                        </Link>
+
+                      </MenuItem>
                       <MenuItem onClick={() => handleLogout(value)}>
-                        <ListItemIcon><LogoutIcon/></ListItemIcon>
+                        <ListItemIcon><LogoutIcon color="primary" /></ListItemIcon>
                         <ListItemText>Déconnexion</ListItemText>
                       </MenuItem>
-                    </Menu>
-                  </React.Fragment>
+                    </NavbarMenu>
+                  </div>
+                </React.Fragment>
+              )
+            }}
 
-              }}
-
-          </AppwriteContext.Consumer>
-        </div>
+        </AppwriteContext.Consumer>
       </div>
-    </Box>
+    </Box >
   );
 }
 
