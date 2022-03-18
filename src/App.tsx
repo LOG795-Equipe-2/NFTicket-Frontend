@@ -68,13 +68,19 @@ interface context {
 interface UserContext {
   userId: string | undefined;
   username: string | undefined;
+  isFetchingAppwrite: boolean
   isLoggedInAnchor: boolean;
 }
 
 export const AppwriteContext = React.createContext<context>(null!);
 
 function App() {
-  let [userLoggedIn, setUserLoggedIn] = React.useState<UserContext | undefined>(undefined);
+  let [userLoggedIn, setUserLoggedIn] = React.useState<UserContext | undefined>({ 
+    username: undefined,
+    userId: undefined,
+    isLoggedInAnchor: false,
+    isFetchingAppwrite: true
+   });
 
   useEffect(() => {
     AuthServiceInstance.checkForSession().then((sessionWasLoaded) => {
@@ -83,7 +89,15 @@ function App() {
           userId: AuthServiceInstance.account?.$id,
           username: AuthServiceInstance.account?.name,
           isLoggedInAnchor: AuthServiceInstance.isWalletLoggedIn(),
+          isFetchingAppwrite: false
         });
+      } else {
+        setUserLoggedIn({
+          userId: undefined,
+          username: undefined,
+          isLoggedInAnchor: false,
+          isFetchingAppwrite: false
+        })
       }
     })
   }, [])
@@ -103,8 +117,8 @@ function App() {
               <Route path="/" element={<Home />} />
               <Route path="/user_data" element={<ListTicketView />}>tickets</Route>
               <Route path="/tickets" element={<UserTickets/>}></Route>
-              <Route path="/signIn" element={<SignIn/>}></Route>
-              <Route path="/signUp" element={<SignUp/>}></Route>
+              <Route path="/sign-in" element={<SignIn/>}></Route>
+              <Route path="/sign-up" element={<SignUp/>}></Route>
               <Route path="/settings" element={<SettingsView />}></Route>
               <Route path="/create" element={<EventCreator />} />
               <Route path="/testAnchor" element={<AnchorTests />}>AnchorTest</Route>
