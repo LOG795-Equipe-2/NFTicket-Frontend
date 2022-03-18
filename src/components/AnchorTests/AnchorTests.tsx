@@ -49,13 +49,15 @@ function AnchorTests() {
     let [loading, setLoading] = useState(false)
 
     let [searchUser, setSearchUser] = useState("");
+    let [eventId, setEventId] = useState();
+    let [ticketValidationNumber, setTicketValidationNumber] = useState("");
 
     useEffect(() => {
       connectToBackend().then((service) => {
           // Try to restore the session at beginning.
-          service.getManager().restoreSession().then((value) => {
-            console.log("restored session?: " + value)
-          })
+          // service.getManager().restoreSession().then((value) => {
+          //   console.log("restored session?: " + value)
+          // })
           serviceNFT = service
       });
     }, []); // checks for changes in the values in this array
@@ -85,6 +87,24 @@ function AnchorTests() {
       getAssetsForUser(serviceNFT.getManager().getAccountName() + "").then((data) => setAssets(data))
     }
 
+    async function handleEventBuyTickets(){
+      //Buy Ticket with EventID
+      console.log("in handleEventBuyTickets")
+    }
+
+    async function startTicketValidation(){
+      // Generate a unique ID that will be stored in the DB for validation
+      console.log("in startTicketValidation")
+      
+      // setTicketValidationNumber();
+    }
+
+    async function validateIdentityAsClient(){
+      // validate the client identity for specific client by signing a trx that the backend will send for us.
+      console.log("in validateIdentityAsClient")
+    
+    }
+
     function handleEventSubmit(e: React.SyntheticEvent){
       getAssetsForUser(searchUser).then((data) => setAssets(data))
     }
@@ -93,11 +113,33 @@ function AnchorTests() {
       setSearchUser(event.target.value);
     }
 
+    function handleChangeEventId(event: any) {
+      setEventId(event.target.value);
+    }
+
     return (
         <div className="home">
-            <button onClick={() => serviceNFT.getManager().login()}>Login</button>
-            <button onClick={() => performTransactionCreateTicketBackend() }>createTickets</button>
-            <button onClick={() => serviceNFT.getManager().logout()}>logout</button>
+            <button onClick={() => performTransactionCreateTicketBackend() }>Create Tickets</button>
+            <br/>
+            <label>
+              Event ID:
+              <input type="text" value={eventId} onChange={handleChangeEventId} />
+            </label>
+            <button onClick={(e) => handleEventBuyTickets() }>Buy 1 Ticket from Event</button>
+            <br/>
+
+            <button onClick={(e) => startTicketValidation() }>Start Ticket Valudation (Validator Side)</button>
+            <p>Your validation number: {ticketValidationNumber}</p>
+            <br/>
+
+            <p>The Identify will be validated by sending a transaction to test your ownership. It will be linked to the validator by the ticketValidationNumber.</p>
+            <button onClick={(e) => validateIdentityAsClient() }>Validate the ownership of your ticket (Client Side)</button>
+            <p>Your validation number: {ticketValidationNumber}</p>
+            <br/>
+
+
+            <br/>
+            <br/>
             <label>
               EOS Name:
               <input type="text" value={searchUser} onChange={handleChange} />
