@@ -22,8 +22,6 @@ export default function SignIn() {
 
   const contextObject = React.useContext(AppwriteContext);
 
-  const [loggedInSuccess, setLoggedInSuccess] = React.useState<boolean>(false);
-
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
@@ -43,7 +41,8 @@ export default function SignIn() {
     const session = await contextObject.AuthServiceObject.loginWithPassword(email, password);
     contextObject.setUserLoggedIn({
       userId: contextObject.AuthServiceObject.account?.$id,
-      username: contextObject.AuthServiceObject.account?.name
+      username: contextObject.AuthServiceObject.account?.name,
+      isLoggedInAnchor: contextObject.AuthServiceObject.isWalletLoggedIn(),
     })
     if(session)
       navigate("/");

@@ -5,6 +5,7 @@ import { ConfirmationNumber, Search } from "@mui/icons-material";
 import IconButton from "@mui/material/IconButton";
 import InputAdornment from "@mui/material/InputAdornment";
 import AccountCircleOutlinedIcon from '@mui/icons-material/AccountCircleOutlined';
+import SettingsApplicationsIcon from '@mui/icons-material/SettingsApplications';
 import BookOnlineOutlinedIcon from '@mui/icons-material/BookOnlineOutlined';
 import "./Navigation.scss";
 import { AppwriteContext } from "../../App";
@@ -72,6 +73,13 @@ function Navigation() {
         </Box>
       </div>
       <div className="navbar__right">
+      <div className="navbar__right__my-tickets">
+          <CssLink href="settings" underline="none">
+            Settings
+            <SettingsApplicationsIcon></SettingsApplicationsIcon>
+          </CssLink>
+          
+        </div>
         <div className="navbar__right__my-tickets">
           <CssLink href="tickets" underline="none">
             Mes billets
@@ -88,7 +96,7 @@ function Navigation() {
                   <AccountCircleOutlinedIcon></AccountCircleOutlinedIcon>
                 </CssLink>
                 :
-                <div>{value.userLoggedIn.username}</div>
+                <div style={{ color: value.userLoggedIn.isLoggedInAnchor ? 'green': 'red'}}>{value.userLoggedIn.username}</div>
             }}
             
           </AppwriteContext.Consumer>
@@ -96,9 +104,8 @@ function Navigation() {
         <div>
           <AppwriteContext.Consumer>
             {
-              value => { return <Button onClick={() => value.AuthServiceObject.logout().then(() => { value.setUserLoggedIn(undefined); }) }>Logout</Button>
+              value => { return value.userLoggedIn !== undefined && <Button onClick={() => value.AuthServiceObject.logout().then(() => { value.setUserLoggedIn(undefined); }) }>Logout</Button>
             }}
-            
           </AppwriteContext.Consumer>
         </div>
       </div>
