@@ -10,6 +10,7 @@ import AnchorTests from "./components/AnchorTests/AnchorTests";
 import EventView from "./components/EventView/EventView";
 import BuyTicketView from "./components/BuyTicketView/BuyTicketView";
 import ListTicketView from "./components/ListTicketView/ListTicketView";
+import SettingsView from "./components/SettingsView/SettingsView";
 import UserTickets from './components/UserTickets/UserTickets';
 import SignIn from "./components/Login/SignIn";
 import SignUp from "./components/Login/SignUp";
@@ -68,6 +69,7 @@ interface UserContext {
   userId: string | undefined;
   username: string | undefined;
   isFetching: boolean
+  isLoggedInAnchor: boolean;
 }
 
 export const AppwriteContext = React.createContext<context>(null!);
@@ -76,16 +78,27 @@ function App() {
   let [userLoggedIn, setUserLoggedIn] = React.useState<UserContext | undefined>({ 
     username: undefined,
     userId: undefined,
+    isLoggedInAnchor: false,
     isFetching: true
    });
 
   useEffect(() => {
-    AuthServiceInstance.checkForSession().then(() => {
-      setUserLoggedIn({
-        userId: AuthServiceInstance.account?.$id,
-        username: AuthServiceInstance.account?.name,
-        isFetching: false
-      });
+    AuthServiceInstance.checkForSession().then((sessionWasLoaded) => {
+      if(sessionWasLoaded){
+        setUserLoggedIn({
+          userId: AuthServiceInstance.account?.$id,
+          username: AuthServiceInstance.account?.name,
+          isLoggedInAnchor: AuthServiceInstance.isWalletLoggedIn(),
+          isFetching: false
+        });
+      } else {
+        setUserLoggedIn({
+          userId: undefined,
+          username: undefined,
+          isLoggedInAnchor: false,
+          isFetching: false
+        })
+      }
     })
   }, [])
 
@@ -106,6 +119,7 @@ function App() {
               <Route path="/tickets" element={<UserTickets/>}></Route>
               <Route path="/sign-in" element={<SignIn/>}></Route>
               <Route path="/sign-up" element={<SignUp/>}></Route>
+              <Route path="/settings" element={<SettingsView />}></Route>
               <Route path="/create" element={<EventCreator />} />
               <Route path="/testAnchor" element={<AnchorTests />}>AnchorTest</Route>
               <Route path="/events/:id" element={<EventView />} />

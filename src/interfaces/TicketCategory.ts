@@ -7,6 +7,7 @@ export default interface TicketCategory {
   initialAmount: number;
   remainingAmount?: number;
   id?: string;
+  atomicTemplateId?: number;
 }
 
 export interface TicketCategoryModel extends Models.Document {

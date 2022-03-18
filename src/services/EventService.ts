@@ -97,7 +97,8 @@ class EventService {
                     stylingId: styleDoc.$id,
                     eventId: eventDoc.$id,
                     initialQuantity: c.initialAmount,
-                    remainingQuantity: c.initialAmount
+                    remainingQuantity: c.initialAmount,
+                    atomicTemplateId: c.atomicTemplateId
                 };
 
                 await appwrite.database.createDocument<TicketCategoryModel>(this.TICKET_CATEGORIES_COLLECTION_ID, 'unique()', ticketCategory);

@@ -151,8 +151,11 @@ function Navigation() {
                       }}
                     >
                       <MenuItem>
-                        <ListItemIcon><SettingsIcon color="primary" /></ListItemIcon>
-                        <ListItemText>Paramètres</ListItemText>
+                        <Link href="settings" underline="none">
+                          <ListItemIcon><SettingsIcon color="primary" /></ListItemIcon>
+                          <ListItemText>Paramètres</ListItemText>
+                        </Link>
+
                       </MenuItem>
                       <MenuItem>
                         <Link href="create" underline="none">

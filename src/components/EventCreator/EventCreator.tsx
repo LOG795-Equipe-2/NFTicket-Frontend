@@ -100,15 +100,31 @@ class EventCreator extends React.Component<
   }
 
   async createEvent() {
-    const isEventCreated = await EventService.createNewEvent(this.state.event);
-
+    // Create the ticket as NFT before saving to DB, and getting response with required data.
     const ticketsCategoryNFTs = NFTicketTransactionService.createTicketCategoryTransactionsFromEvent(this.state.event);
-    await NFTicketTransactionService.createTicketsAndValidate(ticketsCategoryNFTs);
+    let response = await NFTicketTransactionService.createTicketsAndValidate(ticketsCategoryNFTs);
 
-    if(isEventCreated) 
-        this.setState({ hasCompletedEventCreation: true });
-    else 
-        alert("There was an issue creating the event, try again later")
+    if(typeof(response) !== "undefined" && response?.success){
+      // Find the template Id to save in the database, based on the response of the backend
+      this.state.event.ticketCategories.forEach((category) => {
+        category.atomicTemplateId = response.templates.find((template: any) => 
+          template.categoryName == category.type &&
+                  template.originalPrice == category.price.toString() &&
+                  template.locationName == this.state.event.locationName &&
+                  template.name == this.state.event.name &&
+                  template.originalDateTime == this.state.event.dateTime
+        ).template_id;
+      });
+
+      const isEventCreated = await EventService.createNewEvent(this.state.event);
+
+      if(isEventCreated) 
+          this.setState({ hasCompletedEventCreation: true });
+      else 
+          alert("There was an issue creating the event, try again later")
+    } else {
+      console.log("Create Event had an error: " + response.data);
+    }
   }
 
   constructor(props: {}) {
