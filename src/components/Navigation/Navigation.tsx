@@ -24,8 +24,8 @@ function Navigation() {
     setAnchorEl(null);
   };
   const handleLogout = (appwriteContext: any) => {
-    appwriteContext.setUserLoggedIn({ isFetching: true });
-    appwriteContext.AuthServiceObject.logout().then(() => { appwriteContext.setUserLoggedIn({ isFetching: false, username: undefined, userid: undefined }); })
+    appwriteContext.setUserLoggedIn({ isFetchingAppwrite: true });
+    appwriteContext.AuthServiceObject.logout().then(() => { appwriteContext.setUserLoggedIn({ isFetchingAppwrite: false, username: undefined, userid: undefined }); })
     setAnchorEl(null);
   }
   const CssTextField = styled(TextField)(({ theme }) => ({
@@ -105,7 +105,7 @@ function Navigation() {
         <AppwriteContext.Consumer>
           {
             value => {
-              return value.userLoggedIn?.isFetching ? (
+              return value.userLoggedIn?.isFetchingAppwrite ? (
                 <Box className="loading">
                   <CircularProgress color="secondary" size={25} />
                 </Box>

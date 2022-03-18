@@ -68,7 +68,7 @@ interface context {
 interface UserContext {
   userId: string | undefined;
   username: string | undefined;
-  isFetching: boolean
+  isFetchingAppwrite: boolean
   isLoggedInAnchor: boolean;
 }
 
@@ -79,7 +79,7 @@ function App() {
     username: undefined,
     userId: undefined,
     isLoggedInAnchor: false,
-    isFetching: true
+    isFetchingAppwrite: true
    });
 
   useEffect(() => {
@@ -89,14 +89,14 @@ function App() {
           userId: AuthServiceInstance.account?.$id,
           username: AuthServiceInstance.account?.name,
           isLoggedInAnchor: AuthServiceInstance.isWalletLoggedIn(),
-          isFetching: false
+          isFetchingAppwrite: false
         });
       } else {
         setUserLoggedIn({
           userId: undefined,
           username: undefined,
           isLoggedInAnchor: false,
-          isFetching: false
+          isFetchingAppwrite: false
         })
       }
     })
