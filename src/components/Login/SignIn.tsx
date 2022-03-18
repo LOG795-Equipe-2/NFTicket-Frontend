@@ -103,11 +103,11 @@ export default function SignIn() {
             <Grid container>
               <Grid item xs>
                 <Link href="#" variant="body2">
-                  Mot de passe oublier?
+                  Mot de passe oublié?
                 </Link>
               </Grid>
               <Grid item>
-                <Link href="signUp" variant="body2">
+                <Link href="sign-up" variant="body2">
                   {"Vous n'avez pas de compte? S'inscrire"}
                 </Link>
               </Grid>

@@ -1,4 +1,4 @@
-import { Button, Link, TextField } from "@mui/material";
+import { Button, Link, ListItemIcon, ListItemText, Menu, MenuItem, TextField } from "@mui/material";
 import { alpha, styled } from "@mui/material/styles";
 import { Box } from "@mui/material";
 import { ConfirmationNumber, Search } from "@mui/icons-material";
@@ -6,11 +6,26 @@ import IconButton from "@mui/material/IconButton";
 import InputAdornment from "@mui/material/InputAdornment";
 import AccountCircleOutlinedIcon from '@mui/icons-material/AccountCircleOutlined';
 import BookOnlineOutlinedIcon from '@mui/icons-material/BookOnlineOutlined';
+import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
+import LogoutIcon from '@mui/icons-material/Logout';
 import "./Navigation.scss";
 import { AppwriteContext } from "../../App";
+import React from "react";
 
 
 function Navigation() {
+  const [anchorEl, setAnchorEl] = React.useState(null);
+  const menuOpen = Boolean(anchorEl);
+  const handleMenuOpenClick = (event: any) => {
+    setAnchorEl(event.target.parentElement)
+  };
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+  };
+  const handleLogout = (appwriteContext: any) => {
+    appwriteContext.AuthServiceObject.logout().then(() => { appwriteContext.setUserLoggedIn(undefined); })
+    setAnchorEl(null);
+  }
   const CssTextField = styled(TextField)(({ theme }) => ({
     "& .MuiInputLabel-root": {
       color: alpha(theme.palette.primary.light, 0.5),
@@ -41,6 +56,12 @@ function Navigation() {
       },
     },
   }));
+  const NavbarItem = styled(Box)(({ theme }) => ({
+    color: theme.palette.secondary.main,
+    "&:hover": {
+      color: theme.palette.primary.light
+    }
+  }))
   return (
     <Box sx={{ bgcolor: "primary.dark" }} className="navbar">
       <div className="navbar__left">
@@ -77,28 +98,51 @@ function Navigation() {
             Mes billets
             <BookOnlineOutlinedIcon></BookOnlineOutlinedIcon>
           </CssLink>
-          
+
         </div>
         <div className="navbar__right__login">
           <AppwriteContext.Consumer>
             {
-              value => { return typeof(value.userLoggedIn?.username) == "undefined" ? 
-                <CssLink href="signIn" underline="none">
-                  Connexion/Inscription
-                  <AccountCircleOutlinedIcon></AccountCircleOutlinedIcon>
-                </CssLink>
-                :
-                <div>{value.userLoggedIn.username}</div>
-            }}
-            
-          </AppwriteContext.Consumer>
-        </div>
-        <div>
-          <AppwriteContext.Consumer>
-            {
-              value => { return <Button onClick={() => value.AuthServiceObject.logout().then(() => { value.setUserLoggedIn(undefined); }) }>Logout</Button>
-            }}
-            
+              value => {
+                return typeof (value.userLoggedIn?.username) == "undefined" ?
+                  <CssLink href="sign-in" underline="none">
+                    Connexion/Inscription
+                    <AccountCircleOutlinedIcon></AccountCircleOutlinedIcon>
+                  </CssLink>
+                  :
+                  <React.Fragment>
+                    <NavbarItem
+                      id="menu-button"
+                      className={`navbar-item ${menuOpen && "open"}`}
+                      aria-controls={menuOpen ? 'navbar-menu' : undefined}
+                      aria-haspopup="true"
+                      aria-expanded={menuOpen ? 'true' : undefined}
+                      color="secondary"
+                      onClick={handleMenuOpenClick}>
+                      {value.userLoggedIn?.username}
+                      <ArrowDropDownIcon />
+                    </NavbarItem>
+                    <Menu
+                      id="navbar-menu"
+                      open={menuOpen}
+                      anchorEl={anchorEl}
+                      MenuListProps={{
+                        'aria-labelledby': 'menu-button'
+                      }}
+                      onClose={handleMenuClose}
+                      sx={{
+                        marginLeft: '10px'
+                      }}
+                    >
+                      <MenuItem onClick={() => handleLogout(value)}>
+                        <ListItemIcon><LogoutIcon/></ListItemIcon>
+                        <ListItemText>Déconnexion</ListItemText>
+                      </MenuItem>
+                    </Menu>
+                  </React.Fragment>
+
+              }}
+
           </AppwriteContext.Consumer>
         </div>
       </div>

@@ -98,8 +98,8 @@ function App() {
               <Route path="/" element={<Home />} />
               <Route path="/user_data" element={<ListTicketView />}>tickets</Route>
               <Route path="/tickets" element={<UserTickets/>}></Route>
-              <Route path="/signIn" element={<SignIn/>}></Route>
-              <Route path="/signUp" element={<SignUp/>}></Route>
+              <Route path="/sign-in" element={<SignIn/>}></Route>
+              <Route path="/sign-up" element={<SignUp/>}></Route>
               <Route path="/create" element={<EventCreator />} />
               <Route path="/testAnchor" element={<AnchorTests />}>AnchorTest</Route>
               <Route path="/events/:id" element={<EventView />} />

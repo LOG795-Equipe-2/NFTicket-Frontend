@@ -55,7 +55,7 @@ export default function SignUp() {
                   required
                   fullWidth
                   id="firstName"
-                  label="Prenom"
+                  label="Prénom"
                   autoFocus
                 />
               </Grid>
@@ -107,8 +107,8 @@ export default function SignUp() {
             </Button>
             <Grid container justifyContent="flex-end">
               <Grid item>
-                <Link href="signIn" variant="body2">
-                Vous avez déjà un compte? Identifier vous 
+                <Link href="sign-in" variant="body2">
+                Vous avez déjà un compte? Identifiez-vous 
                 </Link>
               </Grid>
             </Grid>
