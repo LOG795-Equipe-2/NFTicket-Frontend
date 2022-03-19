@@ -101,13 +101,14 @@ class EventService {
                     atomicTemplateId: c.atomicTemplateId
                 };
 
-                await appwrite.database.createDocument<TicketCategoryModel>(this.TICKET_CATEGORIES_COLLECTION_ID, 'unique()', ticketCategory);
+                let response = await appwrite.database.createDocument<TicketCategoryModel>(this.TICKET_CATEGORIES_COLLECTION_ID, 'unique()', ticketCategory);
+                let categoryId = response.$id
 
                 // Create each tickets depending on the initial amount
                 for(let i = 1; i <= c.initialAmount; i++) {
                     const ticket = {
                         ticketNumber: i,
-                        categoryId: c.type,
+                        categoryId: categoryId,
                         eventId: eventDoc.$id
                     }
                     await appwrite.database.createDocument(this.TICKET_COLLECTION_ID, 'unique()', ticket);
