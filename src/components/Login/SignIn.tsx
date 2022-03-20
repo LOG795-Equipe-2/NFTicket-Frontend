@@ -13,7 +13,7 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { AppwriteContext } from '../../App';
-import { useNavigate  } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 
 const theme = createTheme();
 
@@ -28,7 +28,7 @@ export default function SignIn() {
 
     const email: string = data.get('email') as string;
     const password: string = data.get('password') as string;
-    
+
     login(email, password);
 
     console.log({
@@ -44,12 +44,19 @@ export default function SignIn() {
       username: contextObject.AuthServiceObject.account?.name,
       isLoggedInAnchor: contextObject.AuthServiceObject.isWalletLoggedIn(),
     })
-    if(session)
+    if (session)
       navigate("/");
   }
 
   return (
     <ThemeProvider theme={theme}>
+      <AppwriteContext.Consumer>
+        {value => {
+          return !value.userLoggedIn?.isFetchingAppwrite && value.userLoggedIn?.username !== undefined && (
+            <Navigate to="/" />
+          )
+        }}
+      </AppwriteContext.Consumer>
       <Container component="main" maxWidth="xs">
         <CssBaseline />
         <Box
@@ -64,7 +71,7 @@ export default function SignIn() {
             <LockOutlinedIcon />
           </Avatar>
           <Typography component="h1" variant="h5">
-          S'identifier
+            S'identifier
           </Typography>
           <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
             <TextField
@@ -112,7 +119,7 @@ export default function SignIn() {
               </Grid>
             </Grid>
           </Box>
-        </Box>        
+        </Box>
       </Container>
     </ThemeProvider>
   );

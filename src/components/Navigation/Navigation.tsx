@@ -1,4 +1,4 @@
-import { Button, CircularProgress, Link, ListItemIcon, ListItemText, Menu, MenuItem, TextField } from "@mui/material";
+import { Button, CircularProgress, Divider, Link, ListItemIcon, ListItemText, Menu, MenuItem, TextField } from "@mui/material";
 import { alpha, styled } from "@mui/material/styles";
 import { Box } from "@mui/material";
 import { ConfirmationNumber, Search } from "@mui/icons-material";
@@ -151,21 +151,21 @@ function Navigation() {
                       }}
                     >
                       <MenuItem>
-                        <Link href="settings" underline="none">
+                        <Link href="settings" underline="none" onClick={handleMenuClose}>
                           <ListItemIcon><SettingsIcon color="primary" /></ListItemIcon>
                           <ListItemText>Paramètres</ListItemText>
                         </Link>
 
                       </MenuItem>
                       <MenuItem>
-                        <Link href="create" underline="none">
+                        <Link href="create" underline="none" onClick={handleMenuClose}>
                           <ListItemIcon><ConfirmationNumber color="primary" /></ListItemIcon>
                           <ListItemText>Créer un événement</ListItemText>
                         </Link>
-
                       </MenuItem>
+                      <Divider/>
                       <MenuItem onClick={() => handleLogout(value)}>
-                        <ListItemIcon><LogoutIcon color="primary" /></ListItemIcon>
+                        <ListItemIcon><LogoutIcon color="error" /></ListItemIcon>
                         <ListItemText>Déconnexion</ListItemText>
                       </MenuItem>
                     </NavbarMenu>
