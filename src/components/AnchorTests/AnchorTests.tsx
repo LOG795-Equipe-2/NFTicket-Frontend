@@ -10,6 +10,9 @@ import { Box, styled, TextField, Typography, Button } from "@mui/material";
 import NFTicketTransactionServiceInstance, { NFTicketTransactionService } from '../../services/NFTicketTransactionService';
 import { useEffect, useState } from "react";
 import { TicketCategoryTransaction } from "../../interfaces/TicketCategory";
+import EventService from "../../services/EventService";
+import appwrite from "../../utils/AppwriteInstance"
+import { Query } from "appwrite"
 
 async function connectToBackend(){
   let service = NFTicketTransactionServiceInstance;
@@ -37,6 +40,8 @@ function AnchorTests() {
               element.immutable_serialized_data.eventName = dataTemplate.rows[0].immutable_serialized_data.name
               element.immutable_serialized_data.locationName = dataTemplate.rows[0].immutable_serialized_data.locationName
               element.immutable_serialized_data.originalDateTime = dataTemplate.rows[0].immutable_serialized_data.originalDateTime
+              element.immutable_serialized_data.originalPrice = dataTemplate.rows[0].immutable_serialized_data.originalPrice
+              element.immutable_serialized_data.categoryName = dataTemplate.rows[0].immutable_serialized_data.categoryName
             }
         }
 
@@ -45,12 +50,16 @@ function AnchorTests() {
       }
     }
 
+    let [events, setEvents] = useState<any[]>([])
+    let [categoryTickets, setCategoryTickets] = useState<any[]>([])
+
     let [assets, setAssets] = useState([])
     let [loading, setLoading] = useState(false)
 
     let [searchUser, setSearchUser] = useState("");
+    let [searchEventId, setSearchEventId] = useState("");
     let [eventId, setEventId] = useState();
-    let [ticketValidationNumber, setTicketValidationNumber] = useState("");
+    let [ticketValidationNumber, setTicketValidationNumber] = useState("");    
 
     useEffect(() => {
       connectToBackend().then((service) => {
@@ -108,13 +117,38 @@ function AnchorTests() {
     function handleEventSubmit(e: React.SyntheticEvent){
       getAssetsForUser(searchUser).then((data) => setAssets(data))
     }
+    function handleClearAssets(e: React.SyntheticEvent){
+        setAssets([])
+    }
+    
+    function handleGetEvents(e: React.SyntheticEvent){
+      EventService.getMyEvents().then((data) => setEvents(data.documents));
+    }
 
+    function handleClearEvents(e: React.SyntheticEvent){
+      setEvents([])
+    }
+    
     function handleChange(event: any) {
       setSearchUser(event.target.value);
     }
 
+    function handleChangeSearchEventId(event:any) {
+      setSearchEventId(event.target.value);
+    }
+
     function handleChangeEventId(event: any) {
       setEventId(event.target.value);
+    }
+
+    function handleGetCategoriesTicket(e: React.SyntheticEvent){
+      appwrite.database.listDocuments('622111bde1ca95a94544',[
+        Query.equal('eventId', searchEventId)
+      ]).then((data) => setCategoryTickets(data.documents));
+    }
+
+    function handleClearCategoriesTicket(e: React.SyntheticEvent){
+      setCategoryTickets([])
     }
 
     return (
@@ -145,6 +179,7 @@ function AnchorTests() {
               <input type="text" value={searchUser} onChange={handleChange} />
             </label>
             <button onClick={(e) => handleEventSubmit(e)}>get asset for user</button>
+            <button onClick={(e) => handleClearAssets(e)}>clear assets</button>
             <p>Status: {loading == true ? 'Loading...' : 'Done'}</p>
             <table>
               <thead>
@@ -178,6 +213,86 @@ function AnchorTests() {
                 }
               </tbody>
             </table>
+
+            <br/>
+            <br/>
+            <label>
+              Your events
+              {/* <input type="text" value={searchUser} onChange={handleChange} /> */}
+            </label>
+            <button onClick={(e) => handleGetEvents(e)}>get Your Events</button>
+            <button onClick={(e) => handleClearEvents(e)}>clear events</button>
+            <p>Status: {loading == true ? 'Loading...' : 'Done'}</p>
+            <table>
+              <thead>
+                <tr>
+                  <th>Id</th>
+                  <th>Name</th>
+                  <th>Location Name</th>
+                </tr>
+              </thead>
+              <tbody>
+                {
+                  events.map((element: any, index:number) => {
+                    return (
+                      <tr key={element.$id}>
+                        <td>{element.$id}</td>
+                        <td>{element.name}</td>
+                        <td>{element.locationName}</td>
+                      </tr>
+                    )
+                  })
+                }
+              </tbody>
+            </table>
+
+            <br/>
+            <br/>
+            <label>
+              Event Id:
+              <input type="text" value={searchEventId} onChange={handleChangeSearchEventId} />
+            </label>
+            <button onClick={(e) => handleGetCategoriesTicket(e)}>get category Tickets</button>
+            <button onClick={(e) => handleClearCategoriesTicket(e)}>clear category tickets</button>
+            <p>Status: {loading == true ? 'Loading...' : 'Done'}</p>
+            <table>
+              <thead>
+                <tr>
+                  <th>Id</th>
+                  <th>Name</th>
+                  <th>Price</th>
+                  <th>Event Id</th>
+                  <th>initialQuantity</th>
+                  <th>remainingQuantity</th>
+                  <th>atomicTemplateId</th>
+                </tr>
+              </thead>
+              <tbody>
+                {
+                  categoryTickets.map((element: any, index:number) => {
+                    return (
+                      <tr key={element.$id}>
+                        <td>{element.$id}</td>
+                        <td>{element.name}</td>
+                        <td>{element.price}</td>
+                        <td>{element.eventId}</td>
+                        <td>{element.initialQuantity}</td>
+                        <td>{element.remainingQuantity }</td>
+                        <td>{element.atomicTemplateId }</td>
+                      </tr>
+                    )
+                  })
+                }
+              </tbody>
+            </table>
+
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+            <br/>
         </div>
     );
   }
