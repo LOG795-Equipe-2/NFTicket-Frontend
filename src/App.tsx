@@ -70,6 +70,7 @@ interface UserContext {
   username: string | undefined;
   isFetchingAppwrite: boolean
   isLoggedInAnchor: boolean;
+  email: string | undefined;
 }
 
 export const AppwriteContext = React.createContext<context>(null!);
@@ -79,24 +80,28 @@ function App() {
     username: undefined,
     userId: undefined,
     isLoggedInAnchor: false,
-    isFetchingAppwrite: true
+    isFetchingAppwrite: true,
+    email: undefined
    });
 
   useEffect(() => {
     AuthServiceInstance.checkForSession().then((sessionWasLoaded) => {
       if(sessionWasLoaded){
+        console.log(AuthServiceInstance.account)
         setUserLoggedIn({
           userId: AuthServiceInstance.account?.$id,
           username: AuthServiceInstance.account?.name,
           isLoggedInAnchor: AuthServiceInstance.isWalletLoggedIn(),
-          isFetchingAppwrite: false
+          isFetchingAppwrite: false,
+          email: AuthServiceInstance.account?.email
         });
       } else {
         setUserLoggedIn({
           userId: undefined,
           username: undefined,
           isLoggedInAnchor: false,
-          isFetchingAppwrite: false
+          isFetchingAppwrite: false,
+          email: undefined
         })
       }
     })

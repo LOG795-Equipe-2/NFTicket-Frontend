@@ -9,6 +9,7 @@ import AccountCircleIcon from '@mui/icons-material/AccountCircleOutlined';
 import LogoutIcon from '@mui/icons-material/Logout';
 import './SettingsView.scss';
 import { Navigate } from "react-router-dom";
+import ProfileView from "./ProfileView/ProfileView";
 
 let serviceNFT: NFTicketTransactionService
 enum SelectedTab {
@@ -93,7 +94,7 @@ function SettingsView(props: any) {
 
                       </ListItem>
                     ) : ((value.userLoggedIn?.username === undefined) ? (
-                      <Navigate to="/sign-in"/>
+                      <Navigate to="/"/>
                     ) : (
                       <ListItem disablePadding={true}>
                         <ListItemButton onClick={() => handleLogout(value)}>
@@ -112,7 +113,7 @@ function SettingsView(props: any) {
         </div>
         <div className="Settings__content__window">
           {selectedTab === SelectedTab.PROFILE && (
-            <div>profile</div>
+            <ProfileView/>
           )}
           {selectedTab === SelectedTab.ANCHOR && (
             <div>
