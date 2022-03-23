@@ -14,7 +14,7 @@ const CssBox = styled(Box)(({ theme }) => ({
     },
     "&__reset-password": {
       "input": {
-        width: '250px'
+        width: '200px'
       }
     }
   }

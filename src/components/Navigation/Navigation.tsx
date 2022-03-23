@@ -1,4 +1,4 @@
-import { Button, CircularProgress, Divider, Link, ListItemIcon, ListItemText, Menu, MenuItem, TextField } from "@mui/material";
+import { Badge, Button, CircularProgress, Divider, Link, ListItemIcon, ListItemText, Menu, MenuItem, TextField } from "@mui/material";
 import { alpha, styled } from "@mui/material/styles";
 import { Box } from "@mui/material";
 import { ConfirmationNumber, Search } from "@mui/icons-material";
@@ -66,7 +66,11 @@ function Navigation() {
   }));
   const NavbarMenu = styled(Menu)(({ theme }) => ({
     ".MuiLink-root": {
-      color: theme.palette.primary.dark
+      color: theme.palette.primary.dark,
+      ".MuiBadge-badge": {
+        right: '-8px',
+        top: '3px'
+      }
     }
   }));
   return (
@@ -153,7 +157,12 @@ function Navigation() {
                       <MenuItem>
                         <Link href="settings" underline="none" onClick={handleMenuClose}>
                           <ListItemIcon><SettingsIcon color="primary" /></ListItemIcon>
-                          <ListItemText>Paramètres</ListItemText>
+                          <ListItemText>
+                            {value.userLoggedIn && !value.userLoggedIn?.isLoggedInAnchor ? (
+                              <Badge variant="dot" color="error">Paramètres</Badge>
+                            ) : "Paramètres"}
+
+                          </ListItemText>
                         </Link>
 
                       </MenuItem>
@@ -163,7 +172,7 @@ function Navigation() {
                           <ListItemText>Créer un événement</ListItemText>
                         </Link>
                       </MenuItem>
-                      <Divider/>
+                      <Divider />
                       <MenuItem onClick={() => handleLogout(value)}>
                         <ListItemIcon><LogoutIcon color="error" /></ListItemIcon>
                         <ListItemText>Déconnexion</ListItemText>

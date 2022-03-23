@@ -1,4 +1,4 @@
-import { Box, styled, TextField, Typography, Button, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Card, Divider, CircularProgress } from "@mui/material";
+import { Box, styled, TextField, Typography, Button, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Card, Divider, CircularProgress, Badge } from "@mui/material";
 import { AppwriteContext } from '../../App';
 import React from "react";
 import { useEffect, useState, useContext } from "react";
@@ -10,6 +10,7 @@ import LogoutIcon from '@mui/icons-material/Logout';
 import './SettingsView.scss';
 import { Navigate } from "react-router-dom";
 import ProfileView from "./ProfileView/ProfileView";
+import AnchorWalletView from "./AnchorWalletView/AnchorWalletView";
 
 let serviceNFT: NFTicketTransactionService
 enum SelectedTab {
@@ -23,6 +24,14 @@ function SettingsView(props: any) {
     ".Settings": {
       "&__title": {
         color: theme.palette.primary.dark
+      },
+      "&__content": {
+        "&__menu": {
+          ".MuiBadge-badge": {
+            right: '-8px',
+            top: '3px'
+          }
+        }
       }
     }
   }));
@@ -32,37 +41,6 @@ function SettingsView(props: any) {
   const handleLogout = (appwriteContext: any) => {
     appwriteContext.setUserLoggedIn({ isFetchingAppwrite: true });
     appwriteContext.AuthServiceObject.logout().then(() => { appwriteContext.setUserLoggedIn({ isFetchingAppwrite: false, username: undefined, userid: undefined }); })
-  }
-
-  const unlinkAnchor = () => {
-    console.log("in unlinkAnchor");
-    context.AuthServiceObject.logoutWallet().then((logoutSuccessful: boolean) => {
-      context.setUserLoggedIn({
-        ...context.userLoggedIn,
-        isLoggedInAnchor: false
-      })
-    }).catch((err) => {
-      console.log("Error while unlinking Anchor: " + err);
-      context.setUserLoggedIn({
-        ...context.userLoggedIn,
-        isLoggedInAnchor: false
-      })
-    });
-  }
-
-  const linkAnchor = () => {
-    context.AuthServiceObject.loginWallet().then((isLoggedInWallet: boolean) => {
-      context.setUserLoggedIn({
-        ...context.userLoggedIn,
-        isLoggedInAnchor: isLoggedInWallet
-      })
-    }).catch((err) => {
-      console.log("Error while login to anchor: " + err);
-      context.setUserLoggedIn({
-        ...context.userLoggedIn,
-        isLoggedInAnchor: false
-      })
-    });
   }
 
   return (
@@ -81,7 +59,16 @@ function SettingsView(props: any) {
               <ListItem disablePadding={true}>
                 <ListItemButton selected={selectedTab === SelectedTab.ANCHOR} onClick={() => setSelectedTab(SelectedTab.ANCHOR)}>
                   <ListItemIcon><AnchorIcon color="primary" /></ListItemIcon>
-                  <ListItemText>Anchor Wallet</ListItemText>
+                  <ListItemText>
+                    <AppwriteContext.Consumer>
+                      {context => {
+                        return (context.userLoggedIn && !context.userLoggedIn?.isLoggedInAnchor) ? (
+                          <Badge variant="dot" color="error">Anchor Wallet</Badge>
+                        ) : "Anchor Wallet"
+                      }}
+                    </AppwriteContext.Consumer>
+
+                  </ListItemText>
                 </ListItemButton>
               </ListItem>
               <Divider />
@@ -94,7 +81,7 @@ function SettingsView(props: any) {
 
                       </ListItem>
                     ) : ((value.userLoggedIn?.username === undefined) ? (
-                      <Navigate to="/"/>
+                      <Navigate to="/" />
                     ) : (
                       <ListItem disablePadding={true}>
                         <ListItemButton onClick={() => handleLogout(value)}>
@@ -113,18 +100,10 @@ function SettingsView(props: any) {
         </div>
         <div className="Settings__content__window">
           {selectedTab === SelectedTab.PROFILE && (
-            <ProfileView/>
+            <ProfileView />
           )}
           {selectedTab === SelectedTab.ANCHOR && (
-            <div>
-              <p>Vous pouvez vous connecter à votre compte Anchor pour faire vos transactions.</p>
-              <p>Ce compte sera utilisé pour faire vos transactions et voir vos billets NFT.</p>
-              <p>Le système se souviendra uniquement du dernier appareil auquel vous vous être connecté.</p>
-              {typeof (context.userLoggedIn) !== "undefined" && context.userLoggedIn?.isLoggedInAnchor ?
-                <Button onClick={unlinkAnchor}>Déconnecter votre compte Anchor de votre appareil actuel</Button> :
-                <Button onClick={linkAnchor}>Connecter son compte Anchor à votre appareil actuel</Button>
-              }
-            </div>
+            <AnchorWalletView />
           )}
         </div>
       </div>
