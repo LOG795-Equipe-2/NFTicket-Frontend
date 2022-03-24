@@ -16,7 +16,7 @@ export default function BuyTicketView() {
             color: theme.palette.primary.dark
           },
           ".text": {
-            color: theme.palette.success.main
+            color: theme.palette.info.main
           }
         }
       }

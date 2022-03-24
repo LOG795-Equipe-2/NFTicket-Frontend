@@ -14,6 +14,7 @@ import SettingsView from "./components/SettingsView/SettingsView";
 import UserTickets from './components/UserTickets/UserTickets';
 import SignIn from "./components/Login/SignIn";
 import SignUp from "./components/Login/SignUp";
+import themeJSON from './theme.json';
 import AuthServiceInstance, {AuthService} from "./services/AuthService";
 
 
@@ -27,22 +28,7 @@ const LinkBehavior = React.forwardRef<
 });
 
 const theme = createTheme({
-  palette: {
-    "primary": {
-      "main": "#3F72AF",
-      "dark": "#112D4E",
-      "light": "#DBE2EF",
-      "contrastText": "#F9F7F7"
-    },
-    "secondary": {
-      "main": "#bb9c50",
-      "light": "#b9994c"
-    },
-    "success": {
-      "main": "#bb9c50",
-      "contrastText": "#F9F7F7"
-    }
-  },
+  palette: themeJSON.palette,
   components: {
     MuiLink: {
       defaultProps: {
