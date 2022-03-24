@@ -14,6 +14,7 @@ import SettingsView from "./components/SettingsView/SettingsView";
 import UserTickets from './components/UserTickets/UserTickets';
 import SignIn from "./components/Login/SignIn";
 import SignUp from "./components/Login/SignUp";
+import themeJSON from './theme.json';
 import AuthServiceInstance, {AuthService} from "./services/AuthService";
 
 
@@ -27,22 +28,7 @@ const LinkBehavior = React.forwardRef<
 });
 
 const theme = createTheme({
-  palette: {
-    "primary": {
-      "main": "#3F72AF",
-      "dark": "#112D4E",
-      "light": "#DBE2EF",
-      "contrastText": "#F9F7F7"
-    },
-    "secondary": {
-      "main": "#bb9c50",
-      "light": "#b9994c"
-    },
-    "success": {
-      "main": "#bb9c50",
-      "contrastText": "#F9F7F7"
-    }
-  },
+  palette: themeJSON.palette,
   components: {
     MuiLink: {
       defaultProps: {
@@ -70,6 +56,7 @@ interface UserContext {
   username: string | undefined;
   isFetchingAppwrite: boolean
   isLoggedInAnchor: boolean;
+  email: string | undefined;
 }
 
 export const AppwriteContext = React.createContext<context>(null!);
@@ -79,24 +66,28 @@ function App() {
     username: undefined,
     userId: undefined,
     isLoggedInAnchor: false,
-    isFetchingAppwrite: true
+    isFetchingAppwrite: true,
+    email: undefined
    });
 
   useEffect(() => {
     AuthServiceInstance.checkForSession().then((sessionWasLoaded) => {
       if(sessionWasLoaded){
+        console.log(AuthServiceInstance.account)
         setUserLoggedIn({
           userId: AuthServiceInstance.account?.$id,
           username: AuthServiceInstance.account?.name,
           isLoggedInAnchor: AuthServiceInstance.isWalletLoggedIn(),
-          isFetchingAppwrite: false
+          isFetchingAppwrite: false,
+          email: AuthServiceInstance.account?.email
         });
       } else {
         setUserLoggedIn({
           userId: undefined,
           username: undefined,
           isLoggedInAnchor: false,
-          isFetchingAppwrite: false
+          isFetchingAppwrite: false,
+          email: undefined
         })
       }
     })

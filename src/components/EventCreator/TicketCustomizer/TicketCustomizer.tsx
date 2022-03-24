@@ -160,7 +160,7 @@ class TicketCustomizer extends React.Component<
           </div>
           <div className="EventCreator__customizeTickets__editor__confirm">
             <Button
-              color="success"
+              color="info"
               variant="contained"
               onClick={() => this.props.confirmTicketStyling(2)}
               id="confirm-styling"

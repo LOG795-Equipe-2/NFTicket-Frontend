@@ -1,0 +1,22 @@
+.Settings {
+    margin-top: 100px;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    &__title {
+        width: min(80%, 1800px);
+        font-size: 30px;
+        font-weight: 600;
+    }
+    &__content {
+        width: min(80%, 1800px);
+        display: flex;
+        margin-top: 20px;
+        &__menu {
+            width: 300px;
+        }
+        &__window {
+            margin-left: 40px;
+        }
+    }
+}

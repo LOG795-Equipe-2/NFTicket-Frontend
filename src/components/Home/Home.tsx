@@ -77,7 +77,7 @@ function Home() {
         </div>
         <div className="home__createEvent__content">
           <NavLink to="create">
-            <Button color="success" variant="contained">
+            <Button color="info" variant="contained">
               Créer votre événement
               <ConfirmationNumber />
             </Button>
