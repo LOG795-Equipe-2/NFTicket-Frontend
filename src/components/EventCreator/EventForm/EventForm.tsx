@@ -415,7 +415,7 @@ class EventForm extends React.Component<EventFormProps, EventFormState> {
         </div>
         <div className="EventCreator__submitContainer">
           <Button
-            color="success"
+            color="info"
             type="submit"
             variant="contained"
             form="event-form"

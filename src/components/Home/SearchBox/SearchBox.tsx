@@ -58,7 +58,7 @@ function SearchBox() {
         />
       </div>
       <div className="home-searchbox__button">
-        <Button color="success" variant="contained">
+        <Button color="info" variant="contained">
           <SearchIcon></SearchIcon>
         </Button>
       </div>

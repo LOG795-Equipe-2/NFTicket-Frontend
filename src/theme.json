@@ -10,7 +10,7 @@
       "main": "#bb9c50",
       "light": "#b9994c"
     },
-    "success": {
+    "info": {
       "main": "#bb9c50",
       "contrastText": "#F9F7F7"
     }

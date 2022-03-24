@@ -68,7 +68,7 @@ class EventConfirmation extends React.Component<
         <div className="EventConfirmation__confirm">
           <Button
             onClick={() => this.props.createEvent()}
-            color="success"
+            color="info"
             variant="contained"
             id="confirm-styling"
           >

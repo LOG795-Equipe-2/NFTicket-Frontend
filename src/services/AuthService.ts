@@ -288,6 +288,10 @@ export class AuthService {
         const user = await appwrite.account.create("unique()", email, password, name);
         return await this.loginWithPassword(email, password);
     }
+
+    changePassword(currentPassword: string, newPassword: string) {
+        return appwrite.account.updatePassword(newPassword, currentPassword);     
+    }
     
     
 }
