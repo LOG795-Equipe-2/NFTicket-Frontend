@@ -107,13 +107,14 @@ class EventCreator extends React.Component<
     if(typeof(response) !== "undefined" && response?.success){
       // Find the template Id to save in the database, based on the response of the backend
       this.state.event.ticketCategories.forEach((category) => {
-        category.atomicTemplateId = response.templates.find((template: any) => 
+        category.atomicTemplateId = response.data.templates.find((template: any) => 
           template.categoryName == category.type &&
                   template.originalPrice == category.price.toString() &&
                   template.locationName == this.state.event.locationName &&
                   template.name == this.state.event.name &&
                   template.originalDateTime == this.state.event.dateTime
         ).template_id;
+        this.state.event.collName = response.data.collName;
       });
 
       const isEventCreated = await EventService.createNewEvent(this.state.event);
@@ -123,7 +124,7 @@ class EventCreator extends React.Component<
       else 
           alert("There was an issue creating the event, try again later")
     } else {
-      console.log("Create Event had an error: " + response.data);
+      console.log("Create Event had an error: " + response.errorMesssage);
     }
   }
 

@@ -23,11 +23,11 @@ export class NFTicketTransactionService {
         await fetch(this.urlApi + '/nfticket-transaction/init')
         // TODO: HTTP Error management if error
         .then(response => response.json())
-        .then(data => {
+        .then(response => {
             // Receive chainId, server , and appName
-            chainId = data.chainId
-            blockchainUrl = data.blockchainUrl
-            appName = data.appName
+            chainId = response.data.chainId
+            blockchainUrl = response.data.blockchainUrl
+            appName = response.data.appName
         });
 
         this.manager = new AnchorBrowserManager(chainId, blockchainUrl, appName)
@@ -59,6 +59,18 @@ export class NFTicketTransactionService {
         return transactionToSign
     }
 
+    async getBuyTicketFromCategoryTransactions(ticketCategoryId: string): Promise<any> {
+        let queryString = '?userName=' + this.getManager().getAccountName() + "&ticketCategoryId=" + ticketCategoryId
+        
+        let transactionToSign;
+        await fetch(this.urlApi + '/nfticket-transaction/buyTicketFromCategory' + queryString)
+        .then(response => response.json())
+        .then(data => {
+            transactionToSign = data
+        });
+        return transactionToSign
+    }
+
     async validateTicket(transactionObject: any) : Promise<any> {
         const options = {
             method: 'POST',
@@ -72,7 +84,6 @@ export class NFTicketTransactionService {
         await fetch(this.urlApi + '/nfticket-transaction/validateTransaction', options)
         .then(response => response.json())
         .then(data => {
-            // Receive chainId, server , and appName
             response = data
         });
 
@@ -82,12 +93,47 @@ export class NFTicketTransactionService {
     async createTicketsAndValidate(tickets:TicketCategoryTransaction[], nbTickets: number = 1): Promise<any> {
         let transactionObject = await this.createTickets(tickets, nbTickets)
         if(transactionObject.success != false){
+            transactionObject = transactionObject.data
             transactionObject.transactionId = await this.getManager().performTransactions(transactionObject.transactionsBody)
         } else {
             throw new Error(transactionObject.errorMessage)
         }
 
         return await this.validateTicket(transactionObject);
+    }
+
+    async buyTicketFromCategory(ticketCategoryId: string){
+        let transactionObject = await this.getBuyTicketFromCategoryTransactions(ticketCategoryId)
+        if(transactionObject.success != false){
+            transactionObject = transactionObject.data
+            if(transactionObject.transactionsBody.length > 0){
+                transactionObject.transactionId = await this.getManager().performTransactions(transactionObject.transactionsBody)
+            } else {
+                transactionObject.transactionId = "000000000000000"
+            }
+        } else {
+            throw new Error(transactionObject.errorMessage)
+        }
+        return transactionObject
+    }
+
+    async validateBuyTicketFromCategory(transactionObject: any) : Promise<any> {
+        const options = {
+            method: 'POST',
+            body: JSON.stringify(transactionObject),
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        }
+
+        let response
+        await fetch(this.urlApi + '/nfticket-transaction/validateTransaction', options)
+        .then(response => response.json())
+        .then(data => {
+            response = data
+        });
+
+        return response
     }
 
     createTicketCategoryTransactionsFromEvent(event: Event): TicketCategoryTransaction[] {
