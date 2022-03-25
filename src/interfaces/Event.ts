@@ -11,6 +11,7 @@ export default interface Event {
     image: Blob | string;
     ticketCategories: Ticket[];
     dateTime: Date;
+    collName?: string
 }
 
 export interface EventModel extends Models.Document {

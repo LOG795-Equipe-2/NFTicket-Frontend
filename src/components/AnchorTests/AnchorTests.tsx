@@ -29,24 +29,24 @@ function AnchorTests() {
       if(serviceNFT.getManager().isUserLogged()){
         setLoading(true)
         
-        let dataAssets = await fetch('http://localhost:3000/atomic-assets/assets/' + userName).then(response => response.json())
+        let responseAssets = await fetch('http://localhost:3000/atomic-assets/assets/' + userName).then(response => response.json())
         
-        for(const element of dataAssets.rows){
+        for(const element of responseAssets.data.rows){
             /* Temp index for prevent spam */
             if(typeof(element.immutable_serialized_data) == "object"){
               let dataTemplate = await fetch('http://localhost:3000/atomic-assets/templates/' + element.collection_name + '/' + element.template_id)
               .then(response => response.json())
 
-              element.immutable_serialized_data.eventName = dataTemplate.rows[0].immutable_serialized_data.name
-              element.immutable_serialized_data.locationName = dataTemplate.rows[0].immutable_serialized_data.locationName
-              element.immutable_serialized_data.originalDateTime = dataTemplate.rows[0].immutable_serialized_data.originalDateTime
-              element.immutable_serialized_data.originalPrice = dataTemplate.rows[0].immutable_serialized_data.originalPrice
-              element.immutable_serialized_data.categoryName = dataTemplate.rows[0].immutable_serialized_data.categoryName
+              element.immutable_serialized_data.eventName = dataTemplate.data.rows[0].immutable_serialized_data.name
+              element.immutable_serialized_data.locationName = dataTemplate.data.rows[0].immutable_serialized_data.locationName
+              element.immutable_serialized_data.originalDateTime = dataTemplate.data.rows[0].immutable_serialized_data.originalDateTime
+              element.immutable_serialized_data.originalPrice = dataTemplate.data.rows[0].immutable_serialized_data.originalPrice
+              element.immutable_serialized_data.categoryName = dataTemplate.data.rows[0].immutable_serialized_data.categoryName
             }
         }
 
         setLoading(false)
-        return dataAssets.rows.sort().reverse()
+        return responseAssets.data.rows.sort().reverse()
       }
     }
 
@@ -58,7 +58,7 @@ function AnchorTests() {
 
     let [searchUser, setSearchUser] = useState("");
     let [searchEventId, setSearchEventId] = useState("");
-    let [eventId, setEventId] = useState();
+    let [ticketCategoryId, setTicketCategoryId] = useState("");
     let [ticketValidationNumber, setTicketValidationNumber] = useState("");    
 
     useEffect(() => {
@@ -99,6 +99,10 @@ function AnchorTests() {
     async function handleEventBuyTickets(){
       //Buy Ticket with EventID
       console.log("in handleEventBuyTickets")
+      let transactionObject = await serviceNFT.buyTicketFromCategory(ticketCategoryId)
+      let validationResponse = await serviceNFT.validateBuyTicketFromCategory(transactionObject)
+      console.log(validationResponse)
+
     }
 
     async function startTicketValidation(){
@@ -137,14 +141,14 @@ function AnchorTests() {
       setSearchEventId(event.target.value);
     }
 
-    function handleChangeEventId(event: any) {
-      setEventId(event.target.value);
+    function handleChangeTicketCategoryId(event: any) {
+      setTicketCategoryId(event.target.value);
     }
 
     function handleGetCategoriesTicket(e: React.SyntheticEvent){
       appwrite.database.listDocuments('622111bde1ca95a94544',[
         Query.equal('eventId', searchEventId)
-      ]).then((data) => setCategoryTickets(data.documents));
+      ], 100).then((data) => setCategoryTickets(data.documents));
     }
 
     function handleClearCategoriesTicket(e: React.SyntheticEvent){
@@ -156,8 +160,8 @@ function AnchorTests() {
             <button onClick={() => performTransactionCreateTicketBackend() }>Create Tickets</button>
             <br/>
             <label>
-              Event ID:
-              <input type="text" value={eventId} onChange={handleChangeEventId} />
+              Ticket Category ID:
+              <input type="text" value={ticketCategoryId} onChange={handleChangeTicketCategoryId} />
             </label>
             <button onClick={(e) => handleEventBuyTickets() }>Buy 1 Ticket from Event</button>
             <br/>
@@ -229,6 +233,7 @@ function AnchorTests() {
                   <th>Id</th>
                   <th>Name</th>
                   <th>Location Name</th>
+                  <th>Atomic Collection Name</th>
                 </tr>
               </thead>
               <tbody>
@@ -239,6 +244,7 @@ function AnchorTests() {
                         <td>{element.$id}</td>
                         <td>{element.name}</td>
                         <td>{element.locationName}</td>
+                        <td>{element.atomicCollName}</td>
                       </tr>
                     )
                   })

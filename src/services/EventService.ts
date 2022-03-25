@@ -81,7 +81,8 @@ class EventService {
                 description: event.description,
                 imageId: imageFile.$id,
                 userCreatorId: AuthService.account.$id as string,
-                eventTime: "null" //TODO ask for event time when creating new events
+                eventTime: "null", //TODO ask for event time when creating new events
+                atomicCollName: event.collName
             };
 
             const eventDoc = await appwrite.database.createDocument<EventModel>(this.EVENTS_COLLECTION_ID, 'unique()', eventData);
