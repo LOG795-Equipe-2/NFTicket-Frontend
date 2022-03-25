@@ -21,7 +21,7 @@ import NFTicketTransactionServiceInstance, {
   NFTicketTransactionService,
 } from "../../services/NFTicketTransactionService";
 import AuthService from "../../services/AuthService";
-import BookOnlineIcon from "@mui/icons-material/BookOnline";
+import EventSeatIcon from '@mui/icons-material/EventSeat';
 import AnchorIcon from "@mui/icons-material/Anchor";
 import AccountCircleIcon from "@mui/icons-material/AccountCircleOutlined";
 import LogoutIcon from "@mui/icons-material/Logout";
@@ -116,7 +116,7 @@ function SettingsView(props: any) {
                   onClick={() => setSelectedTab(SelectedTab.MY_EVENTS)}
                 >
                   <ListItemIcon>
-                    <BookOnlineIcon color="primary" />
+                    <EventSeatIcon color="primary" />
                   </ListItemIcon>
                   <ListItemText>Mes événements</ListItemText>
                 </ListItemButton>
