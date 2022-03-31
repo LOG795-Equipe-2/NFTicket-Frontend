@@ -6,7 +6,7 @@ import {
   CardActions,
   Button,
 } from "@mui/material";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import EventType from "../../interfaces/Event";
 import "./EventCard.scss";
@@ -30,6 +30,21 @@ function EventCard({
 
     reader.readAsDataURL(event.image);
   }
+  useEffect(() => {
+    if (typeof event.image === "object") {
+      var reader = new FileReader();
+  
+      reader.onload = function (e) {
+        if (e.target && e.target.result) {
+          setImageToDisplay(e.target.result as string);
+        }
+      };
+  
+      reader.readAsDataURL(event.image);
+    } else {
+      setImageToDisplay(event.image);
+    }
+  }, [event])
   return (
     <Card className="EventCard">
       <CardMedia

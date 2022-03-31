@@ -63,7 +63,7 @@ export default function MyEventsView() {
           <Box>
             <Stack direction="row" spacing={2}>
               <Box sx={{ width: 300 }}>
-                <EventCard showLink={false} event={events[selectedEvent]} />
+                <EventCard key={events[selectedEvent].id} showLink={false} event={events[selectedEvent]} />
               </Box>
               <Stack direction="column">
                 {ticketCategories.map((category: any) => (
