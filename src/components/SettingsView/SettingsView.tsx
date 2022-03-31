@@ -8,7 +8,7 @@ import AnchorIcon from '@mui/icons-material/Anchor';
 import AccountCircleIcon from '@mui/icons-material/AccountCircleOutlined';
 import LogoutIcon from '@mui/icons-material/Logout';
 import './SettingsView.scss';
-import { Navigate } from "react-router-dom";
+import { Navigate, useSearchParams } from "react-router-dom";
 import ProfileView from "./ProfileView/ProfileView";
 import AnchorWalletView from "./AnchorWalletView/AnchorWalletView";
 
@@ -37,11 +37,32 @@ function SettingsView(props: any) {
   }));
 
   const context = useContext(AppwriteContext);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [redirectReason, setRedirectReason] = useState<any>();
 
   const handleLogout = (appwriteContext: any) => {
     appwriteContext.setUserLoggedIn({ isFetchingAppwrite: true });
     appwriteContext.AuthServiceObject.logout().then(() => { appwriteContext.setUserLoggedIn({ isFetchingAppwrite: false, username: undefined, userid: undefined }); })
   }
+
+  useEffect(() => {
+    const page = searchParams.get("page")
+    switch(page) {
+      case "anchor":
+        setSelectedTab(SelectedTab.ANCHOR);
+        setRedirectReason({type: "warning", message: "No Anchor account is linked to this account"})
+      break;
+      case "profile": setSelectedTab(SelectedTab.PROFILE);
+      break;
+    }
+  }, []);
+
+  const changeTab = (tab: SelectedTab) => {
+    setRedirectReason(null);
+    setSelectedTab(tab);
+  }
+
+  
 
   return (
     <CssBox className="Settings">
@@ -51,13 +72,13 @@ function SettingsView(props: any) {
           <Card>
             <List disablePadding={true}>
               <ListItem disablePadding={true}>
-                <ListItemButton selected={selectedTab === SelectedTab.PROFILE} onClick={() => setSelectedTab(SelectedTab.PROFILE)}>
+                <ListItemButton selected={selectedTab === SelectedTab.PROFILE} onClick={() => changeTab(SelectedTab.PROFILE)}>
                   <ListItemIcon><AccountCircleIcon color="primary" /></ListItemIcon>
                   <ListItemText>Profil</ListItemText>
                 </ListItemButton>
               </ListItem>
               <ListItem disablePadding={true}>
-                <ListItemButton selected={selectedTab === SelectedTab.ANCHOR} onClick={() => setSelectedTab(SelectedTab.ANCHOR)}>
+                <ListItemButton selected={selectedTab === SelectedTab.ANCHOR} onClick={() => changeTab(SelectedTab.ANCHOR)}>
                   <ListItemIcon><AnchorIcon color="primary" /></ListItemIcon>
                   <ListItemText>
                     <AppwriteContext.Consumer>
@@ -103,7 +124,7 @@ function SettingsView(props: any) {
             <ProfileView />
           )}
           {selectedTab === SelectedTab.ANCHOR && (
-            <AnchorWalletView />
+            <AnchorWalletView snackbarContent={redirectReason}/>
           )}
         </div>
       </div>

@@ -148,7 +148,6 @@ class EventCreator extends React.Component<
     this.updateTicketStyling = this.updateTicketStyling.bind(this);
     this.setCurrentStep = this.setCurrentStep.bind(this);
     this.createEvent = this.createEvent.bind(this);
-    NFTicketTransactionService.getManager().restoreSession();
   }
   render() {
     return (
