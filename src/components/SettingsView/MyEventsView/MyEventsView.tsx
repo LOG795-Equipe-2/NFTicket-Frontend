@@ -67,7 +67,7 @@ export default function MyEventsView() {
               </Box>
               <Stack direction="column">
                 {ticketCategories.map((category: any) => (
-                  <Stack spacing={2} direction="row">
+                  <Stack key={category["$id"]} spacing={2} direction="row">
                     <TicketVisualiser size="small" event={events[selectedEvent]} ticket={category} />
                     <Stack spacing={2} direction="column">
                       <Box sx={{ display: 'flex', alignItems: 'center' }}>Billets vendus: <Typography color="primary" sx={{ margin: '0 5px' }} variant="h5">{category.initialQuantity - (category.remainingQuantity || 0)}</Typography> de <Typography color="primary" sx={{ margin: '0 5px' }} variant="h5">{category.initialQuantity}</Typography></Box>
