@@ -2,7 +2,7 @@ import testData from '../assets/testData.json';
 import Event, { EventModel } from '../interfaces/Event';
 import AuthService from './AuthService';
 import { Styling, TicketCategoryModel } from "../interfaces/TicketCategory";
-import { AppwriteException, Models } from "appwrite";
+import { AppwriteException, Models, Query } from "appwrite";
 
 import appwrite from "../utils/AppwriteInstance"
 import { id } from 'date-fns/locale';
@@ -55,6 +55,13 @@ class EventService {
     async getMyEvents(){
         let events = await appwrite.database.listDocuments('62210e0672c9be723f8b');
         return events;
+    }
+
+    async getTicketCategoriesForEvent(eventId: string) {
+        let ticketCategories = appwrite.database.listDocuments(this.TICKET_CATEGORIES_COLLECTION_ID, [
+            Query.equal('eventId', eventId)
+        ], 100)
+        return (await ticketCategories).documents;
     }
 
     /**
