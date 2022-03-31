@@ -2,7 +2,7 @@ import testData from '../assets/testData.json';
 import Event, { EventModel } from '../interfaces/Event';
 import AuthService from './AuthService';
 import { Styling, TicketCategoryModel } from "../interfaces/TicketCategory";
-import { AppwriteException, Models } from "appwrite";
+import { AppwriteException, Models, Query } from "appwrite";
 
 import appwrite from "../utils/AppwriteInstance"
 import { id } from 'date-fns/locale';
@@ -54,7 +54,26 @@ class EventService {
 
     async getMyEvents(){
         let events = await appwrite.database.listDocuments('62210e0672c9be723f8b');
+        events.documents.forEach(async (document: any) => {
+            const image = await appwrite.storage.getFileView(document.imageId);
+            document.image = image.href;
+        })
         return events;
+    }
+
+    async getTicketCategoriesForEvent(eventId: string) {
+        let ticketCategories = await appwrite.database.listDocuments(this.TICKET_CATEGORIES_COLLECTION_ID, [
+            Query.equal('eventId', eventId)
+        ], 100);
+        const documents = await Promise.all(ticketCategories.documents.map(async (category) => {
+            let style = await appwrite.database.getDocument(this.TICKET_CATEGORY_STYLE_COLLECTION_ID,
+                (category as any).stylingId
+            );
+            (category as any).styling = style;
+            return category;
+
+        }));
+        return documents
     }
 
     /**
@@ -81,7 +100,7 @@ class EventService {
                 description: event.description,
                 imageId: imageFile.$id,
                 userCreatorId: AuthService.account.$id as string,
-                eventTime: "null", //TODO ask for event time when creating new events
+                eventTime: "0", //TODO ask for event time when creating new events
                 atomicCollName: event.collName
             };
 

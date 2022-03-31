@@ -111,8 +111,7 @@ class EventCreator extends React.Component<
           template.categoryName == category.type &&
                   template.originalPrice == category.price.toString() &&
                   template.locationName == this.state.event.locationName &&
-                  template.name == this.state.event.name &&
-                  template.originalDateTime == this.state.event.dateTime
+                  template.name == this.state.event.name
         ).template_id;
         this.state.event.collName = response.data.collName;
       });

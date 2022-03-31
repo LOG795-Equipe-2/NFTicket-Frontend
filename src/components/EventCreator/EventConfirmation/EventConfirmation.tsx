@@ -32,7 +32,7 @@ class EventConfirmation extends React.Component<
           <Typography className="header" variant="subtitle1">
             Événement
           </Typography>
-          <EventCard showLink={false} event={this.props.event} />
+          <Box sx={{ width: 350 }}><EventCard showLink={false} event={this.props.event} /></Box>
         </div>
         <div className="EventConfirmation__tickets">
           <Typography className="header" variant="subtitle1">
