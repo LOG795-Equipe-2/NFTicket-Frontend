@@ -54,14 +54,26 @@ class EventService {
 
     async getMyEvents(){
         let events = await appwrite.database.listDocuments('62210e0672c9be723f8b');
+        events.documents.forEach(async (document: any) => {
+            const image = await appwrite.storage.getFileView(document.imageId);
+            document.image = image.href;
+        })
         return events;
     }
 
     async getTicketCategoriesForEvent(eventId: string) {
-        let ticketCategories = appwrite.database.listDocuments(this.TICKET_CATEGORIES_COLLECTION_ID, [
+        let ticketCategories = await appwrite.database.listDocuments(this.TICKET_CATEGORIES_COLLECTION_ID, [
             Query.equal('eventId', eventId)
-        ], 100)
-        return (await ticketCategories).documents;
+        ], 100);
+        const documents = await Promise.all(ticketCategories.documents.map(async (category) => {
+            let style = await appwrite.database.getDocument(this.TICKET_CATEGORY_STYLE_COLLECTION_ID,
+                (category as any).stylingId
+            );
+            (category as any).styling = style;
+            return category;
+
+        }));
+        return documents
     }
 
     /**
