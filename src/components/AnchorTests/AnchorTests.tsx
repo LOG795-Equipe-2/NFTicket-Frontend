@@ -61,6 +61,8 @@ function AnchorTests() {
     let [ticketCategoryId, setTicketCategoryId] = useState("");
     let [ticketValidationNumber, setTicketValidationNumber] = useState("");    
 
+    let [ticketId, setTicketId] = useState("");    
+
     useEffect(() => {
       connectToBackend().then((service) => {
           // Try to restore the session at beginning.
@@ -129,6 +131,27 @@ function AnchorTests() {
       EventService.getMyEvents().then((data) => setEvents(data.documents));
     }
 
+    async function handleEventSignTicket(e: React.SyntheticEvent){
+      console.log("in handleEventSignTicket")
+      let userName = serviceNFT.getManager().getAccountName();
+
+      // Get the transactions
+      let transactionsToSign = await serviceNFT.signTicket(userName + "", ticketId);
+
+      // Sign the transactions
+      let transactionResult = await serviceNFT.getManager().signTransactions(transactionsToSign.transactionsBody);
+      
+      // Adjust other parameters required for validation
+      transactionsToSign.signedTransactions = transactionResult;
+      transactionsToSign.transactionId = "0000000000";
+      // Add it here otherwise it dosen't seem to show up
+      transactionsToSign.serializedTransaction = transactionResult.resolved.serializedTransaction
+
+      // Send to the backend
+      let response = await serviceNFT.validateSignTicket(transactionsToSign);
+      console.log(response)
+    }
+
     function handleClearEvents(e: React.SyntheticEvent){
       setEvents([])
     }
@@ -155,6 +178,10 @@ function AnchorTests() {
       setCategoryTickets([])
     }
 
+    function handleChangeTicketId(event: any){
+      setTicketId(event.target.value)
+    }
+
     return (
         <div className="home">
             <button onClick={() => performTransactionCreateTicketBackend() }>Create Tickets</button>
@@ -164,6 +191,13 @@ function AnchorTests() {
               <input type="text" value={ticketCategoryId} onChange={handleChangeTicketCategoryId} />
             </label>
             <button onClick={(e) => handleEventBuyTickets() }>Buy 1 Ticket from Event</button>
+            <br/>
+
+            <label>
+              AtomicAssets Ticket ID:
+              <input type="text" value={ticketId} onChange={handleChangeTicketId} />
+            </label>
+            <button onClick={(e) => handleEventSignTicket(e) }>Sign 1 ticket</button>
             <br/>
 
             <button onClick={(e) => startTicketValidation() }>Start Ticket Valudation (Validator Side)</button>
@@ -196,6 +230,7 @@ function AnchorTests() {
                   <th>Original Date Time</th>
                   <th>Original Price</th>
                   <th>Category Name</th>
+                  <th>Signed</th>
                 </tr>
               </thead>
               <tbody>
@@ -211,6 +246,7 @@ function AnchorTests() {
                         <td>{element.immutable_serialized_data?.originalDateTime }</td>
                         <td>{element.immutable_serialized_data?.originalPrice }</td>
                         <td>{element.immutable_serialized_data?.categoryName }</td>
+                        <td>{element.mutable_serialized_data?.signed }</td>
                       </tr>
                     )
                   })
