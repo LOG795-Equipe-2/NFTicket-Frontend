@@ -196,7 +196,14 @@ export class AuthService {
         }
         
     }
-
+    /**
+     * Returns a header containing an appwrite JWT
+     * @returns A header that can be appended to a request to be identified by the back-end
+     */
+    async createJwtHeader(): Promise<{ "nfticket-appwrite-jwt": string }> {
+        const jwt = await appwrite.account.createJWT();
+        return { "nfticket-appwrite-jwt": jwt.jwt };
+    }
     /**
      * Saves the current anchorlink session info on the Backend so that it can be restored if the use reconnects on the same device
      * @returns void
