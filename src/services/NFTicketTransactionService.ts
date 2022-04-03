@@ -26,6 +26,7 @@ import { AnchorBrowserManager } from '../utils/AnchorBrowserManager';
  */
 export class NFTicketTransactionService {
     urlApi: string;
+    urlTransactionsRoute = "/transactions"
     manager: AnchorBrowserManager | null = null;
 
     constructor(urlApi: string){
@@ -37,7 +38,7 @@ export class NFTicketTransactionService {
         let blockchainUrl = ''
         let appName = ''
 
-        await fetch(this.urlApi + '/nfticket-transaction/init')
+        await fetch(this.urlApi + this.urlTransactionsRoute + '/init')
         // TODO: HTTP Error management if error
         .then(response => response.json())
         .then(response => {
@@ -67,7 +68,7 @@ export class NFTicketTransactionService {
         let queryString = '?userName=' + this.getManager().getAccountName()
         
         let transactionToSign;
-        await fetch(this.urlApi + '/nfticket-transaction/createTickets' + queryString, options)
+        await fetch(this.urlApi + this.urlTransactionsRoute + '/createTickets' + queryString, options)
         .then(response => response.json())
         .then(data => {
             // Receive chainId, server , and appName
@@ -80,7 +81,7 @@ export class NFTicketTransactionService {
         let queryString = '?userName=' + this.getManager().getAccountName() + "&ticketCategoryId=" + ticketCategoryId
         
         let transactionToSign;
-        await fetch(this.urlApi + '/nfticket-transaction/buyTicketFromCategory' + queryString)
+        await fetch(this.urlApi + '/transactions/buyTicketFromCategory' + queryString)
         .then(response => response.json())
         .then(data => {
             transactionToSign = data
@@ -98,7 +99,7 @@ export class NFTicketTransactionService {
         }
 
         let response
-        await fetch(this.urlApi + '/nfticket-transaction/validateTransaction', options)
+        await fetch(this.urlApi + this.urlTransactionsRoute + '/validateTransaction', options)
         .then(response => response.json())
         .then(data => {
             response = data
@@ -144,7 +145,7 @@ export class NFTicketTransactionService {
         }
 
         let response
-        await fetch(this.urlApi + '/nfticket-transaction/validateTransaction', options)
+        await fetch(this.urlApi + this.urlTransactionsRoute + '/validateTransaction', options)
         .then(response => response.json())
         .then(data => {
             response = data
@@ -165,7 +166,7 @@ export class NFTicketTransactionService {
 
     async signTicket(userName: string, ticketId: string): Promise<any>{
         let queryString = '?userName=' + userName + '&assetId=' + ticketId
-        let transactionsToSign = await fetch(this.urlApi + '/nfticket-transaction/signTicket' + queryString)
+        let transactionsToSign = await fetch(this.urlApi + this.urlTransactionsRoute + '/signTicket' + queryString)
         .then(response => response.json())
         return transactionsToSign.data
     }
@@ -180,7 +181,7 @@ export class NFTicketTransactionService {
         }
   
         let response
-        await fetch(this.urlApi + '/nfticket-transaction/validateTransaction', options)
+        await fetch(this.urlApi + this.urlTransactionsRoute + '/validateTransaction', options)
             .then(response => response.json())
             .then(data => { response = data });
 

@@ -61,7 +61,7 @@ function AnchorTests() {
     let [ticketCategoryId, setTicketCategoryId] = useState("");
     let [ticketValidationNumber, setTicketValidationNumber] = useState("");    
 
-    let [ticketId, setTicketId] = useState("");    
+    let [ticketId, setTicketId] = useState("1099511627829");    
 
     useEffect(() => {
       connectToBackend().then((service) => {
@@ -70,6 +70,7 @@ function AnchorTests() {
           //   console.log("restored session?: " + value)
           // })
           serviceNFT = service
+          console.log(service)
       });
     }, []); // checks for changes in the values in this array
  
