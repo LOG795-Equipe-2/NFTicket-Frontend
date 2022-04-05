@@ -117,10 +117,18 @@ export class NFTicketTransactionService {
     }
 
     async getBuyTicketFromCategoryTransactions(ticketCategoryId: string): Promise<any> {
+        const options = {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                ...await AuthServiceSingleton.createJwtHeader()
+            }
+        }
+
         let queryString = '?userName=' + this.getManager().getAccountName() + "&ticketCategoryId=" + ticketCategoryId
         
         let transactionToSign;
-        await fetch(this.urlApi + '/transactions/buyTicketFromCategory' + queryString)
+        await fetch(this.urlApi + this.urlTransactionsRoute + this.urlTransactionsActionsRoute + '/buyTickets' + queryString, options)
         .then(response => response.json())
         .then(data => {
             transactionToSign = data
@@ -151,7 +159,10 @@ export class NFTicketTransactionService {
         if(transactionObject.success != false){
             transactionObject = transactionObject.data
             if(transactionObject.transactionsBody.length > 0){
-                transactionObject.transactionId = await this.getManager().performTransactions(transactionObject.transactionsBody)
+                let transactionResult = await this.getManager().signTransactions(transactionObject.transactionsBody)
+                transactionObject.transactionId = transactionResult.transaction.id
+                transactionObject.signatures = transactionResult.signatures
+                transactionObject.serializedTransaction = transactionResult.resolved.serializedTransaction
             } else {
                 transactionObject.transactionId = "000000000000000"
             }
@@ -166,12 +177,13 @@ export class NFTicketTransactionService {
             method: 'POST',
             body: JSON.stringify(transactionObject),
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                ...await AuthServiceSingleton.createJwtHeader()
             }
         }
 
         let response
-        await fetch(this.urlApi + this.urlTransactionsRoute + '/validateTransaction', options)
+        await fetch(this.urlApi + this.urlTransactionsRoute + this.urlTransactionsValidateRoute + '/buyTickets', options)
         .then(response => response.json())
         .then(data => {
             response = data
