@@ -9,7 +9,7 @@
  * Author: Anthony Brochu
  */
 
-import AnchorLink, { LinkSession, Name } from 'anchor-link'
+import AnchorLink, { LinkSession, Name, TransactResult } from 'anchor-link'
 import AnchorLinkBrowserTransport from 'anchor-link-browser-transport'
 import { WalletManagerInterface } from './WalletManagerInterface';
 const { RpcError } = require('eosjs');
@@ -118,6 +118,32 @@ export class AnchorBrowserManager implements WalletManagerInterface {
                 throw err;
              });
             return transactionId
+        } else {
+            throw new Error("User is not logged in");
+        }
+    }
+
+    /**
+     * Sign but does not broadcast a transaction in the browser.
+     * Ask for the user to log in and sign the transaction in the Anchor wallet.
+     * The function will validate the authorization for the user with the session auth.
+     */
+    async signTransactions(actions:any[]): Promise<TransactResult> {
+        if(this.isUserLogged()){
+            actions.forEach((element) => {
+                element.authorization = [this.session!.auth]
+            })
+            let resolvedSignature = await this.session!.transact({ actions },{ 
+                broadcast:false
+            }).catch((err) => {
+                console.log(err);
+                console.log(err.response);
+                if (err instanceof RpcError)
+                    console.log(JSON.stringify(err.json, null, 2));
+        
+                throw err;
+            });
+            return resolvedSignature
         } else {
             throw new Error("User is not logged in");
         }

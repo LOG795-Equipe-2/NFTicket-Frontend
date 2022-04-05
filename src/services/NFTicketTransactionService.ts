@@ -3,6 +3,23 @@ import { TicketCategoryTransaction } from '../interfaces/TicketCategory';
 import { AnchorBrowserManager } from '../utils/AnchorBrowserManager';
 
 /**
+ * To send the data as JSON.stringify without error
+ * Source: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Errors/Cyclic_object_value
+ */
+ const getCircularReplacer = () => {
+    const seen = new WeakSet();
+    return (key:any, value: any) => {
+      if (typeof value === "object" && value !== null) {
+        if (seen.has(value)) {
+          return;
+        }
+        seen.add(value);
+      }
+      return value;
+    };
+  };
+
+/**
  * Frontend class service to send and validate transactions
  * 
  * Call init() to intialize the class properly.
@@ -144,6 +161,30 @@ export class NFTicketTransactionService {
         })
         
         return tickets;
+    }
+
+    async signTicket(userName: string, ticketId: string): Promise<any>{
+        let queryString = '?userName=' + userName + '&assetId=' + ticketId
+        let transactionsToSign = await fetch(this.urlApi + '/nfticket-transaction/signTicket' + queryString)
+        .then(response => response.json())
+        return transactionsToSign.data
+    }
+
+    async validateSignTicket(transactionsSigned: any) : Promise<any> {
+        const options = {
+            method: 'POST',
+            body: JSON.stringify(transactionsSigned, getCircularReplacer()),
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        }
+  
+        let response
+        await fetch(this.urlApi + '/nfticket-transaction/validateTransaction', options)
+            .then(response => response.json())
+            .then(data => { response = data });
+
+        return response
     }
 }
 
