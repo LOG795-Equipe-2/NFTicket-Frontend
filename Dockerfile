@@ -5,7 +5,7 @@ FROM node:16.14 AS builder
 
 WORKDIR /app
 
-COPY ["package.json", "yarn.lock", "./"]
+COPY ["package.json", "./"]
 RUN yarn
 
 # Copy source code
