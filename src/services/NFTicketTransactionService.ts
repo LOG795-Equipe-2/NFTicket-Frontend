@@ -205,10 +205,19 @@ export class NFTicketTransactionService {
     }
 
     async signTicket(userName: string, ticketId: string): Promise<any>{
+        const options = {
+            method: 'POST',
+            body: '',
+            headers: {
+                'Content-Type': 'application/json',
+                ...await AuthServiceSingleton.createJwtHeader()
+            }
+        }
+
         let queryString = '?userName=' + userName + '&assetId=' + ticketId
-        let transactionsToSign = await fetch(this.urlApi + this.urlTransactionsRoute + '/signTicket' + queryString)
+        let transactionsToSign = await fetch(this.urlApi + this.urlTransactionsRoute + this.urlTransactionsActionsRoute + '/signTicket' + queryString, options)
         .then(response => response.json())
-        return transactionsToSign.data
+        return transactionsToSign
     }
 
     async validateSignTicket(transactionsSigned: any) : Promise<any> {
@@ -216,14 +225,14 @@ export class NFTicketTransactionService {
             method: 'POST',
             body: JSON.stringify(transactionsSigned, getCircularReplacer()),
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                ...await AuthServiceSingleton.createJwtHeader()
             }
         }
   
-        let response
-        await fetch(this.urlApi + this.urlTransactionsRoute + '/validateTransaction', options)
-            .then(response => response.json())
-            .then(data => { response = data });
+        let response = await fetch(this.urlApi + this.urlTransactionsRoute + this.urlTransactionsValidateRoute + '/signTicket', options)
+            .then(response => response.json());
+        console.log(response);
 
         return response
     }

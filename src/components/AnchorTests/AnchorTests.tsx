@@ -140,18 +140,25 @@ function AnchorTests() {
       // Get the transactions
       let transactionsToSign = await serviceNFT.signTicket(userName + "", ticketId);
 
-      // Sign the transactions
-      let transactionResult = await serviceNFT.getManager().signTransactions(transactionsToSign.transactionsBody);
-      
-      // Adjust other parameters required for validation
-      transactionsToSign.signedTransactions = transactionResult;
-      transactionsToSign.transactionId = transactionResult.transaction.id;
-      // Add it here otherwise it dosen't seem to show up
-      transactionsToSign.serializedTransaction = transactionResult.resolved.serializedTransaction
+      if(transactionsToSign.success == true){
+        transactionsToSign = transactionsToSign.data
+        // Sign the transactions
+        let transactionResult = await serviceNFT.getManager().signTransactions(transactionsToSign.transactionsBody);
+        
+        // Adjust other parameters required for validation
+        transactionsToSign.signatures = transactionResult.signatures;
+        transactionsToSign.transactionId = transactionResult.transaction.id;
+        // Add it here otherwise it dosen't seem to show up
+        transactionsToSign.serializedTransaction = transactionResult.resolved.serializedTransaction
 
-      // Send to the backend
-      let response = await serviceNFT.validateSignTicket(transactionsToSign);
-      console.log(response)
+        // Send to the backend
+        let response = await serviceNFT.validateSignTicket(transactionsToSign);
+        console.log(response)
+
+        getAssetsForUser(serviceNFT.getManager().getAccountName() + "").then((data) => setAssets(data))
+      } else {
+        console.log(transactionsToSign)
+      }
     }
 
     function handleClearEvents(e: React.SyntheticEvent){
