@@ -76,6 +76,7 @@ export default function ValidatorView() {
 
     const confirmAndReset = () => {
         setTicketValidationMessage(null);
+        setUsername("");
         setTicketID("");
     }
 
