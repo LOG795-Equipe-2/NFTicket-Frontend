@@ -5,6 +5,7 @@ import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import ErrorIcon from '@mui/icons-material/Error';
 import React, { useEffect } from 'react';
 import './ValidatorView.scss';
+import BouncerService from "../../services/BouncerService";
 
 const CssBox = styled(Box)(({ theme }) => ({
     backgroundColor: theme.palette.primary.dark,
@@ -49,14 +50,28 @@ export default function ValidatorView() {
     const [closeSessionConfirm, setCloseSessionConfirm] = React.useState(false);
     useEffect(() => {
         // Check validator and event authenticity
-        setTimeout(() => setValidatorState(ValidatorState.SUCCESS), 1500);
+        if (!id || !eventId) {
+            setValidatorState(ValidatorState.ERROR);
+        } else {
+            BouncerService.validateBouncerUrl(eventId, id).then(response => {
+                if (response >= 200 && response < 300) {
+                    setValidatorState(ValidatorState.SUCCESS)
+                } else {
+                    setValidatorState(ValidatorState.ERROR);
+                }
+            })
+        }
     });
     const validateTicketID = () => {
         // Check ticket authenticity
         setTicketValidationMessage(ValidatorState.FETCHING);
-        setTimeout(() => {
-            setTicketValidationMessage(ValidatorState.SUCCESS);
-        }, 1500)
+        BouncerService.validateAssetId(eventId || "", ticketID, id || "", username).then(response => {
+            if (response.success) {
+                setTicketValidationMessage(ValidatorState.SUCCESS);
+            } else {
+                setTicketValidationMessage(ValidatorState.ERROR);
+            }
+        })
     }
 
     const confirmAndReset = () => {
@@ -65,8 +80,7 @@ export default function ValidatorView() {
     }
 
     const exitSession = () => {
-        // Call API
-        navigate("/");
+        BouncerService.deleteBouncer(eventId || "", id || "").then(() => navigate("/"));
     }
 
     return (
@@ -90,7 +104,7 @@ export default function ValidatorView() {
                         NFTicket
                     </Box>
                     <CssTextField value={ticketID} onChange={(e) => setTicketID(e.target.value)} label="ID du billet" type="text" />
-                    <CssTextField value={ticketID} onChange={(e) => setUsername(e.target.value)} label="Nom d'utilisateur" type="text" />
+                    <CssTextField value={username} onChange={(e) => setUsername(e.target.value)} label="Nom d'utilisateur" type="text" />
                     <Button onClick={validateTicketID} variant="contained" color="info" disabled={!ticketID || ticketValidationMessage === ValidatorState.FETCHING}>{ticketValidationMessage === ValidatorState.FETCHING ? (
                         <CircularProgress color="info" size={25} />) : ("Valider")
                     }</Button>
