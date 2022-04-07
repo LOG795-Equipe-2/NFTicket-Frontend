@@ -7,6 +7,7 @@ WORKDIR /app
 
 COPY package.json .
 # Copy yarn.lock to only restart that step when there are changes to the packages instead of the whole codebase.
+COPY package.json .
 COPY ["yarn.lock", "./"]
 RUN yarn
 

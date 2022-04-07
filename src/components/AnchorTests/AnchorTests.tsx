@@ -61,7 +61,7 @@ function AnchorTests() {
     let [ticketCategoryId, setTicketCategoryId] = useState("");
     let [ticketValidationNumber, setTicketValidationNumber] = useState("");    
 
-    let [ticketId, setTicketId] = useState("");    
+    let [ticketId, setTicketId] = useState("1099511627829");    
 
     useEffect(() => {
       connectToBackend().then((service) => {
@@ -70,6 +70,8 @@ function AnchorTests() {
           //   console.log("restored session?: " + value)
           // })
           serviceNFT = service
+          console.log("connected to backend: ")
+          console.log(service)
       });
     }, []); // checks for changes in the values in this array
  
@@ -143,7 +145,7 @@ function AnchorTests() {
       
       // Adjust other parameters required for validation
       transactionsToSign.signedTransactions = transactionResult;
-      transactionsToSign.transactionId = "0000000000";
+      transactionsToSign.transactionId = transactionResult.transaction.id;
       // Add it here otherwise it dosen't seem to show up
       transactionsToSign.serializedTransaction = transactionResult.resolved.serializedTransaction
 

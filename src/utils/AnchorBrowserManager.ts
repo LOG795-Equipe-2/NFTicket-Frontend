@@ -9,7 +9,7 @@
  * Author: Anthony Brochu
  */
 
-import AnchorLink, { LinkSession, Name, TransactResult } from 'anchor-link'
+import AnchorLink, { LinkSession, Name, TransactOptions, TransactResult } from 'anchor-link'
 import AnchorLinkBrowserTransport from 'anchor-link-browser-transport'
 import { WalletManagerInterface } from './WalletManagerInterface';
 const { RpcError } = require('eosjs');
@@ -134,8 +134,8 @@ export class AnchorBrowserManager implements WalletManagerInterface {
                 element.authorization = [this.session!.auth]
             })
             let resolvedSignature = await this.session!.transact({ actions },{ 
-                broadcast:false
-            }).catch((err) => {
+                broadcast: false
+            } as TransactOptions).catch((err) => {
                 console.log(err);
                 console.log(err.response);
                 if (err instanceof RpcError)
@@ -143,6 +143,8 @@ export class AnchorBrowserManager implements WalletManagerInterface {
         
                 throw err;
             });
+            console.log(resolvedSignature)
+            console.log(resolvedSignature.transaction.id)
             return resolvedSignature
         } else {
             throw new Error("User is not logged in");
