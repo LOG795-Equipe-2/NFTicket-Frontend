@@ -1,4 +1,4 @@
-import * as React from 'react';
+import { useState, useContext } from 'react';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -11,45 +11,77 @@ import Box from '@mui/material/Box';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
+import Snackbar from "@mui/material/Snackbar"
+import Alert from "@mui/material/Alert"
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { AppwriteContext } from '../../App';
 import { Navigate, useNavigate } from "react-router-dom";
+import { Backdrop, CircularProgress } from '@mui/material';
+import { SnackbarMessage } from "../../interfaces/MUIIntefaces";
 
 const theme = createTheme();
 
 export default function SignIn() {
   let navigate = useNavigate();
+  const [errorEmail, setErrorEmail] = useState<string>("");
+  const [errorPassword, setErrorPassword] = useState<string>("");
+  const [isFetching, setIsFetching] = useState<boolean>(false);
+  const [snackbarContent, setSnackbarContent] = useState<SnackbarMessage | undefined>(undefined);
 
-  const contextObject = React.useContext(AppwriteContext);
+  const contextObject = useContext(AppwriteContext);
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    setErrorEmail("");
+    setErrorPassword("");
+    setSnackbarContent(undefined)
     const data = new FormData(event.currentTarget);
 
     const email: string = data.get('email') as string;
     const password: string = data.get('password') as string;
 
     login(email, password);
-
-    console.log({
-      email: data.get('email'),
-      password: data.get('password'),
-    });
   };
 
   const login = async (email: string, password: string) => {
-    const session = await contextObject.AuthServiceObject.loginWithPassword(email, password);
-    contextObject.setUserLoggedIn({
-      userId: contextObject.AuthServiceObject.account?.$id,
-      username: contextObject.AuthServiceObject.account?.name,
-      isLoggedInAnchor: contextObject.AuthServiceObject.isWalletLoggedIn(),
-    })
-    if (session)
-      navigate("/");
+    try {
+      setIsFetching(true);
+      const session = await contextObject.AuthServiceObject.loginWithPassword(email, password);
+      setIsFetching(false);
+
+      contextObject.setUserLoggedIn({
+        userId: contextObject.AuthServiceObject.account?.$id,
+        username: contextObject.AuthServiceObject.account?.name,
+        isLoggedInAnchor: contextObject.AuthServiceObject.isWalletLoggedIn(),
+      })
+      if (session)
+        navigate("/");
+    } catch (e: any) {
+      setIsFetching(false);
+      const message: string = e.message as string;
+      if (message.startsWith("Invalid email")) {
+        setErrorEmail(message);
+      } else if (message.startsWith("Invalid password")) {
+        setErrorPassword(message);
+      } else {
+        setSnackbarContent({type: "error", message})
+      }
+    }
   }
 
   return (
     <ThemeProvider theme={theme}>
+      <Backdrop
+        sx={{ color: '#fff', zIndex: (theme: any) => theme.zIndex.drawer + 1 }}
+        open={isFetching}
+      >
+        <CircularProgress color="inherit" />
+      </Backdrop>
+      <Snackbar open={!!snackbarContent} autoHideDuration={6000} onClose={() => setSnackbarContent(undefined)}>
+        {snackbarContent && (
+          <Alert onClose={() => setSnackbarContent(undefined)} severity={snackbarContent.type}>{snackbarContent.message}</Alert>
+        )}
+      </Snackbar>
       <AppwriteContext.Consumer>
         {value => {
           return !value.userLoggedIn?.isFetchingAppwrite && value.userLoggedIn?.username !== undefined && (
@@ -83,6 +115,8 @@ export default function SignIn() {
               name="email"
               autoComplete="email"
               autoFocus
+              error={!!errorEmail}
+              helperText={errorEmail}
             />
             <TextField
               margin="normal"
@@ -93,10 +127,8 @@ export default function SignIn() {
               type="password"
               id="password"
               autoComplete="current-password"
-            />
-            <FormControlLabel
-              control={<Checkbox value="remember" color="primary" />}
-              label="Conserver la connexion"
+              error={!!errorPassword}
+              helperText={errorPassword}
             />
             <Button
               type="submit"

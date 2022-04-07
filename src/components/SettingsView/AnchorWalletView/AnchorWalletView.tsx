@@ -6,6 +6,8 @@ import {
   Typography,
   Paper,
   Stack,
+  Snackbar,
+  Alert,
 } from "@mui/material";
 import { AppwriteContext } from "../../../App";
 import { useContext } from "react";
@@ -14,13 +16,16 @@ import { Navigate } from "react-router-dom";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import CheckIcon from '@mui/icons-material/Check';
 import React from "react";
+import { SnackbarMessage } from "../../../interfaces/MUIIntefaces";
 
 const CssBox = styled(Box)(({ theme }) => ({
   ".AnchorWalletView": {},
 }));
 
-export default function AnchorWalletView() {
+export default function AnchorWalletView(props: { snackbarContent: SnackbarMessage }) {
   const context = useContext(AppwriteContext);
+  const [snackbarContent, setSnackbarContent] = React.useState<SnackbarMessage | undefined>(props.snackbarContent);
+
   const unlinkAnchor = () => {
     console.log("in unlinkAnchor");
     context.AuthServiceObject.logoutWallet()
@@ -57,6 +62,11 @@ export default function AnchorWalletView() {
   };
   return (
     <CssBox className="AnchorWalletView">
+      <Snackbar open={!!snackbarContent} autoHideDuration={6000} onClose={() => setSnackbarContent(undefined)}>
+        {snackbarContent && (
+          <Alert onClose={() => setSnackbarContent(undefined)} severity={snackbarContent.type}>{snackbarContent.message}</Alert>
+        )}
+      </Snackbar>
       <AppwriteContext.Consumer>
         {(value) => {
           return value.userLoggedIn?.isFetchingAppwrite ? (

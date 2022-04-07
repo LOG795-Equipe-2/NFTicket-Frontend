@@ -1,9 +1,9 @@
 
-import React, { useEffect } from "react";
+import React, { useContext, useEffect } from "react";
 import "./App.scss";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import Navigation from "./components/Navigation/Navigation";
-import { BrowserRouter, Routes, Route, Link as RouterLink, LinkProps as RouterLinkProps } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Link as RouterLink, LinkProps as RouterLinkProps, Navigate } from "react-router-dom";
 import Home from "./components/Home/Home";
 import EventCreator from './components/EventCreator/EventCreator';
 import AnchorTests from "./components/AnchorTests/AnchorTests";
@@ -61,6 +61,20 @@ interface UserContext {
 
 export const AppwriteContext = React.createContext<context>(null!);
 
+const ProtectedRoute = (props: { needAnchor: boolean, children: any }) => {
+  const context = useContext(AppwriteContext)
+  
+  if (!context.userLoggedIn?.isFetchingAppwrite && !context.AuthServiceObject.isLoggedIn()) {
+    return <Navigate to="/sign-in" replace/>;
+  }
+
+  if(props.needAnchor && !context.userLoggedIn?.isFetchingAppwrite && !context.AuthServiceObject.isWalletLoggedIn()) {
+    return <Navigate to="/settings?page=anchor" replace/>;
+  }
+
+  return props.children;
+};
+
 function App() {
   let [userLoggedIn, setUserLoggedIn] = React.useState<UserContext | undefined>({ 
     username: undefined,
@@ -111,7 +125,11 @@ function App() {
               <Route path="/sign-in" element={<SignIn/>}></Route>
               <Route path="/sign-up" element={<SignUp/>}></Route>
               <Route path="/settings" element={<SettingsView />}></Route>
-              <Route path="/create" element={<EventCreator />} />
+              <Route path="/create" element={
+                <ProtectedRoute needAnchor={true}>
+                  <EventCreator />
+                </ProtectedRoute>
+              } />
               <Route path="/testAnchor" element={<AnchorTests />}>AnchorTest</Route>
               <Route path="/events/:id" element={<EventView />} />
               <Route path="/events/:id/buy/:ticketId" element={<BuyTicketView/>}/>
