@@ -63,7 +63,7 @@ function EventCard({
       </CardContent>
       {showLink && (
         <CardActions>
-          <Link to={"/events/" + event.id}>
+          <Link to={"/events/" + event.$id}>
             <Button size="small">Voir les billets</Button>
           </Link>
         </CardActions>
