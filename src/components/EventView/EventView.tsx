@@ -52,7 +52,7 @@ function EventView() {
     dateTime: new Date(),
     ticketCategories: [
       {
-        id: "1",
+        id: "624efef31081b237db12",
         type: "Standard",
         price: 20.00,
         initialAmount: 100,
@@ -66,7 +66,7 @@ function EventView() {
         }
       },
       {
-        id: "2",
+        id: "6243166810eaee472ab6",
         type: "VIP",
         price: 30.00,
         initialAmount: 20,
