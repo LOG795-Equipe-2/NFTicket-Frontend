@@ -63,7 +63,7 @@ export default function BuyTicketView() {
     dateTime: new Date(),
     ticketCategories: [
       {
-        id: "6245ce6ecc4fed483329",
+        id: "624efef31081b237db12",
         type: "Standard",
         price: 20.0,
         initialAmount: 100,
