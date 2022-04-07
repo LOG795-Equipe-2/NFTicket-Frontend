@@ -16,15 +16,37 @@ class EventService {
     private readonly TICKET_CATEGORIES_COLLECTION_ID: string = "622111bde1ca95a94544";
     private readonly TICKET_COLLECTION_ID: string = "6221134c389c90325a38";
 
-    getCurrentFeaturedEvents(separator: number, maxEvents: number): Array<Array<Event>> {
+    constructor(private urlApi: string) { }
+
+    async getCurrentFeaturedEvents(separator: number, maxEvents: number, city: string): Promise<Event[][]> {
+
+
+        const fetchedEventModels = await (await fetch(this.urlApi + '/appwrite/events/featured?city=' + city)).json() as EventModel[];
+        const formattedEvents: Event[] = await Promise.all(fetchedEventModels.map(async (e) => {
+            const img = await appwrite.storage.getFileView(e.imageId);
+            return {
+                id: e.$id,
+                locationName: e.locationName,
+                locationAddress: e.locationAddress,
+                locationCity: e.locationCity,
+                name: e.name,
+                description: e.description,
+                image: img.href,
+                ticketCategories: [],
+                dateTime: new Date(e.eventTime),
+                collName: e.atomicCollName
+            } as Event;
+        }))
+        
+
+
         // TODO:  Add call to back-end to fetch events based on criteria
         // This criteria could be the number of tickets sold in the past week, for example
-        const fetchedData = testData;
-        let events = [];
+        let events: Event[][] = [];
         let separatorCtr = 0;
         let accumulator = [];
-        for (let i = 0; i < maxEvents; i++) {
-            accumulator.push(fetchedData[i] as any);
+        for (let i = 0; i < formattedEvents.length; i++) {
+            accumulator.push(formattedEvents[i] as any);
             separatorCtr++;
             if (separatorCtr % separator === 0) {
                 events.push(accumulator);
@@ -32,6 +54,7 @@ class EventService {
                 separatorCtr = 0;
             }
         }
+        console.log(events)
         return events;
     }
     getNearbyEvents(separator: number, maxEvents: number, zipcode: string): Array<Array<Event>> {
@@ -143,4 +166,4 @@ class EventService {
     }
 }
 
-export default new EventService();
+export default new EventService(process.env.REACT_APP_BACKEND_URL || "http://localhost:3000");

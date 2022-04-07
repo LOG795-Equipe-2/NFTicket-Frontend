@@ -22,5 +22,6 @@ export interface EventModel extends Models.Document {
     description: string,
     imageId: string,
     userCreatorId: string,
-    eventTime: string
+    eventTime: string,
+    atomicCollName: string,
 }
