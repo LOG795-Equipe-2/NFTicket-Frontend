@@ -53,7 +53,7 @@ class EventService {
     }
 
     async getMyEvents(){
-        let events = await appwrite.database.listDocuments('62210e0672c9be723f8b');
+        let events = await appwrite.database.listDocuments('62210e0672c9be723f8b', [], 100);
         events.documents.forEach(async (document: any) => {
             const image = await appwrite.storage.getFileView(document.imageId);
             document.image = image.href;

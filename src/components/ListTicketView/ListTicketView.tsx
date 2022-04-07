@@ -61,7 +61,7 @@ function ListTicketView(){
                     let myCreatedTicketsLocal: any[] = []
                     let userName = serviceNFT.getManager().getAccountName()
                     if(typeof(data) !== "undefined"){
-                        fetch('http://localhost:3000/nfticket-transaction/getCollNameForUser?userName=' + userName).then((response) => response.json()).then((collName) => {
+                        fetch('http://localhost:3000/transactions/getCollNameForUser?userName=' + userName).then((response) => response.json()).then((collName) => {
                             for(let element of data){
                                 if(element.collection_name == collName.data){
                                     myCreatedTicketsLocal.push(element)

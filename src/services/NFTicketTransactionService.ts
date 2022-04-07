@@ -1,6 +1,7 @@
 import Event from '../interfaces/Event';
 import { TicketCategoryTransaction } from '../interfaces/TicketCategory';
 import { AnchorBrowserManager } from '../utils/AnchorBrowserManager';
+import AuthServiceSingleton from '../services/AuthService';
 
 /**
  * To send the data as JSON.stringify without error
@@ -26,6 +27,10 @@ import { AnchorBrowserManager } from '../utils/AnchorBrowserManager';
  */
 export class NFTicketTransactionService {
     urlApi: string;
+    urlTransactionsRoute = "/transactions"
+    urlTransactionsValidateRoute = "/validate"
+    urlTransactionsActionsRoute = "/actions"
+    urlTransactionsUtilityRoute = "/utility"
     manager: AnchorBrowserManager | null = null;
 
     constructor(urlApi: string){
@@ -37,7 +42,11 @@ export class NFTicketTransactionService {
         let blockchainUrl = ''
         let appName = ''
 
-        await fetch(this.urlApi + '/nfticket-transaction/init')
+        const options = {
+            headers: await AuthServiceSingleton.createJwtHeader()
+        }
+
+        await fetch(this.urlApi + this.urlTransactionsRoute + this.urlTransactionsUtilityRoute + '/init', options)
         // TODO: HTTP Error management if error
         .then(response => response.json())
         .then(response => {
@@ -55,63 +64,89 @@ export class NFTicketTransactionService {
         return this.manager as AnchorBrowserManager;
     }
 
+    /**
+     * Fetch the backend to get the transactions to sign to create a ticket.
+     * Throws error if unauthorized or if backend has an error. 
+     *
+     * @param tickets 
+     * @param nbTickets 
+     * @returns 
+     */
     async createTickets(tickets: TicketCategoryTransaction[], nbTickets: number = 1): Promise<any> {
         const options = {
             method: 'POST',
-            body: JSON.stringify(tickets),
+            body: JSON.stringify({ tickets: tickets }),
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                ...await AuthServiceSingleton.createJwtHeader()
             }
         }
-
         let queryString = '?userName=' + this.getManager().getAccountName()
         
-        let transactionToSign;
-        await fetch(this.urlApi + '/nfticket-transaction/createTickets' + queryString, options)
-        .then(response => response.json())
-        .then(data => {
-            // Receive chainId, server , and appName
-            transactionToSign = data
-        });
-        return transactionToSign
-    }
-
-    async getBuyTicketFromCategoryTransactions(ticketCategoryId: string): Promise<any> {
-        let queryString = '?userName=' + this.getManager().getAccountName() + "&ticketCategoryId=" + ticketCategoryId
-        
-        let transactionToSign;
-        await fetch(this.urlApi + '/nfticket-transaction/buyTicketFromCategory' + queryString)
-        .then(response => response.json())
-        .then(data => {
-            transactionToSign = data
-        });
+        let transactionToSign = await fetch(this.urlApi + this.urlTransactionsRoute + this.urlTransactionsActionsRoute + '/createTickets' + queryString, options)
+        .then((response) => {
+            if(response.status >= 200 && response.status < 300){
+                return response.json()
+            } else {
+                throw Error(response.statusText)
+            }
+        })
         return transactionToSign
     }
 
     async validateTicket(transactionObject: any) : Promise<any> {
         const options = {
             method: 'POST',
-            body: JSON.stringify(transactionObject),
+            body: JSON.stringify(transactionObject, getCircularReplacer()),
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                ...await AuthServiceSingleton.createJwtHeader()
             }
         }
 
-        let response
-        await fetch(this.urlApi + '/nfticket-transaction/validateTransaction', options)
+        let response = await fetch(this.urlApi + this.urlTransactionsRoute + this.urlTransactionsValidateRoute + '/createTickets', options)
+        .then(async (response) => {
+            let responseJson = await response.json()
+            if(response.status >= 200 && response.status < 300){
+                return responseJson
+            } else {
+                throw Error(responseJson.error + " : " + responseJson.message)
+            }
+        })
+        return response
+    }
+
+    async getBuyTicketFromCategoryTransactions(ticketCategoryId: string): Promise<any> {
+        const options = {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                ...await AuthServiceSingleton.createJwtHeader()
+            }
+        }
+
+        let queryString = '?userName=' + this.getManager().getAccountName() + "&ticketCategoryId=" + ticketCategoryId
+        
+        let transactionToSign;
+        await fetch(this.urlApi + this.urlTransactionsRoute + this.urlTransactionsActionsRoute + '/buyTickets' + queryString, options)
         .then(response => response.json())
         .then(data => {
-            response = data
+            transactionToSign = data
         });
-
-        return response
+        return transactionToSign
     }
 
     async createTicketsAndValidate(tickets:TicketCategoryTransaction[], nbTickets: number = 1): Promise<any> {
         let transactionObject = await this.createTickets(tickets, nbTickets)
         if(transactionObject.success != false){
             transactionObject = transactionObject.data
-            transactionObject.transactionId = await this.getManager().performTransactions(transactionObject.transactionsBody)
+            let transactionResult = await this.getManager().signTransactions(transactionObject.transactionsBody)
+            // Adjust other parameters required for validation
+            transactionObject.signatures = transactionResult.signatures;
+            transactionObject.transactionId = transactionResult.transaction.id;
+            // Add it here otherwise it dosen't seem to show up
+            transactionObject.serializedTransaction = transactionResult.resolved.serializedTransaction
+
         } else {
             throw new Error(transactionObject.errorMessage)
         }
@@ -124,7 +159,10 @@ export class NFTicketTransactionService {
         if(transactionObject.success != false){
             transactionObject = transactionObject.data
             if(transactionObject.transactionsBody.length > 0){
-                transactionObject.transactionId = await this.getManager().performTransactions(transactionObject.transactionsBody)
+                let transactionResult = await this.getManager().signTransactions(transactionObject.transactionsBody)
+                transactionObject.transactionId = transactionResult.transaction.id
+                transactionObject.signatures = transactionResult.signatures
+                transactionObject.serializedTransaction = transactionResult.resolved.serializedTransaction
             } else {
                 transactionObject.transactionId = "000000000000000"
             }
@@ -139,12 +177,13 @@ export class NFTicketTransactionService {
             method: 'POST',
             body: JSON.stringify(transactionObject),
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                ...await AuthServiceSingleton.createJwtHeader()
             }
         }
 
         let response
-        await fetch(this.urlApi + '/nfticket-transaction/validateTransaction', options)
+        await fetch(this.urlApi + this.urlTransactionsRoute + this.urlTransactionsValidateRoute + '/buyTickets', options)
         .then(response => response.json())
         .then(data => {
             response = data
@@ -165,7 +204,7 @@ export class NFTicketTransactionService {
 
     async signTicket(userName: string, ticketId: string): Promise<any>{
         let queryString = '?userName=' + userName + '&assetId=' + ticketId
-        let transactionsToSign = await fetch(this.urlApi + '/nfticket-transaction/signTicket' + queryString)
+        let transactionsToSign = await fetch(this.urlApi + this.urlTransactionsRoute + '/signTicket' + queryString)
         .then(response => response.json())
         return transactionsToSign.data
     }
@@ -180,7 +219,7 @@ export class NFTicketTransactionService {
         }
   
         let response
-        await fetch(this.urlApi + '/nfticket-transaction/validateTransaction', options)
+        await fetch(this.urlApi + this.urlTransactionsRoute + '/validateTransaction', options)
             .then(response => response.json())
             .then(data => { response = data });
 
