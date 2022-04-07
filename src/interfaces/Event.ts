@@ -2,7 +2,7 @@ import Ticket from "./TicketCategory";
 import { Models } from "appwrite";
 
 export default interface Event {
-    id: string;
+    $id: string;
     locationName: string;
     locationAddress: string;
     locationCity?: string;
