@@ -238,7 +238,7 @@ class EventForm extends React.Component<EventFormProps, EventFormState> {
             description,
             image: this.state.eventBlobImage,
             ticketCategories: this.state.ticketCategories,
-            id: "",
+            $id: "",
             dateTime: new Date()
           };
           this.props.moveToNextStep(event);

@@ -43,7 +43,7 @@ const CssBox = styled(Box)(({ theme }) => ({
 function EventView() {
   const { id } = useParams();
   const event: Event = {
-    id: id || "1",
+    $id: id || "1",
     name: "A test event",
     description: "This event is a test event for NFTicket",
     locationAddress: "1100 Notre-Dame St W, Montreal, Quebec H3C 1K3",
