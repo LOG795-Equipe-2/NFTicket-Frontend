@@ -23,18 +23,20 @@ async function connectToBackend(){
 let serviceNFT:NFTicketTransactionService
 
 function AnchorTests() {
+    const urlApi = process.env.REACT_APP_BACKEND_URL || 'http://localhost:3000'
+
     const CssBox = styled(Box)(({ theme }) => ({}));
 
     async function getAssetsForUser(userName: string){
       if(serviceNFT.getManager().isUserLogged()){
         setLoading(true)
         
-        let responseAssets = await fetch('http://localhost:3000/atomic-assets/assets/' + userName).then(response => response.json())
+        let responseAssets = await fetch(urlApi + '/atomic-assets/assets/' + userName).then(response => response.json())
         
         for(const element of responseAssets.data.rows){
             /* Temp index for prevent spam */
             if(typeof(element.immutable_serialized_data) == "object"){
-              let dataTemplate = await fetch('http://localhost:3000/atomic-assets/templates/' + element.collection_name + '/' + element.template_id)
+              let dataTemplate = await fetch(urlApi + '/atomic-assets/templates/' + element.collection_name + '/' + element.template_id)
               .then(response => response.json())
 
               element.immutable_serialized_data.eventName = dataTemplate.data.rows[0].immutable_serialized_data.name

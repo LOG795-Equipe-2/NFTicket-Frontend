@@ -26,7 +26,7 @@ export class AuthService {
 
     private readonly SEPARATOR: string = " ---- ";
     private readonly ANCHORINFO_COLLECTION_ID: string = "621fcb8641b53f76bc95";
-    private readonly ON_OAUTH_SUCCESS: string = "http://localhost:3000";
+    private readonly ON_OAUTH_SUCCESS: string = this.urlApi;
 
     private walletManager: WalletManagerInterface;
 
@@ -44,7 +44,7 @@ export class AuthService {
      * checks if a User was already connected on this device when creating the Service
      * @constructor
      */
-    constructor() { 
+    constructor(private urlApi: string) { 
         this.walletManager = new AnchorBrowserManager(
             process.env.CHAIN_ID || '5d5bbe6bb403e5ca8b087d382946807246b4dee094c7f5961e2bebd88f8c9c51', 
             process.env.REACT_APP_NODE_URL || 'http://eos1.anthonybrochu.com:8888/', 
@@ -319,4 +319,4 @@ export class AuthService {
     
 }
 
-export default new AuthService();
+export default new AuthService(process.env.REACT_APP_BACKEND_URL || 'http://localhost:3000');

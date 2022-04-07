@@ -17,18 +17,20 @@ import Paper from '@mui/material/Paper';
 let serviceNFT:NFTicketTransactionService
 
 function ListTicketView(){
+    const urlApi = process.env.REACT_APP_BACKEND_URL || 'http://localhost:3000'
+
     const CssBox = styled(Box)(({ theme }) => ({}));
 
     async function getAssetsForUser(){
         if(serviceNFT.getManager().isUserLogged()){
             let userName = serviceNFT.getManager().getAccountName()
             
-            let dataAssets = await fetch('http://localhost:3000/atomic-assets/assets/' + userName).then(response => response.json())
+            let dataAssets = await fetch(urlApi + '/atomic-assets/assets/' + userName).then(response => response.json())
             
             for(const element of dataAssets.rows){
                 /* Temp index for prevent spam */
                 if(typeof(element.immutable_serialized_data) == "object"){
-                let dataTemplate = await fetch('http://localhost:3000/atomic-assets/templates/' + element.collection_name + '/' + element.template_id)
+                let dataTemplate = await fetch(urlApi + '/atomic-assets/templates/' + element.collection_name + '/' + element.template_id)
                 .then(response => response.json())
 
                 element.immutable_serialized_data.eventName = dataTemplate.rows[0].immutable_serialized_data.name
@@ -61,7 +63,7 @@ function ListTicketView(){
                     let myCreatedTicketsLocal: any[] = []
                     let userName = serviceNFT.getManager().getAccountName()
                     if(typeof(data) !== "undefined"){
-                        fetch('http://localhost:3000/transactions/getCollNameForUser?userName=' + userName).then((response) => response.json()).then((collName) => {
+                        fetch(urlApi + '/transactions/getCollNameForUser?userName=' + userName).then((response) => response.json()).then((collName) => {
                             for(let element of data){
                                 if(element.collection_name == collName.data){
                                     myCreatedTicketsLocal.push(element)
