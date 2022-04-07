@@ -15,7 +15,8 @@ import UserTickets from './components/UserTickets/UserTickets';
 import SignIn from "./components/Login/SignIn";
 import SignUp from "./components/Login/SignUp";
 import themeJSON from './theme.json';
-import AuthServiceInstance, {AuthService} from "./services/AuthService";
+import AuthServiceInstance, { AuthService } from "./services/AuthService";
+import { Backdrop, CircularProgress } from "@mui/material";
 
 
 const LinkBehavior = React.forwardRef<
@@ -62,31 +63,36 @@ interface UserContext {
 export const AppwriteContext = React.createContext<context>(null!);
 
 const ProtectedRoute = (props: { needAnchor: boolean, children: any }) => {
-  const context = useContext(AppwriteContext)
-  
-  if (!context.userLoggedIn?.isFetchingAppwrite && !context.AuthServiceObject.isLoggedIn()) {
-    return <Navigate to="/sign-in" replace/>;
+  const context = useContext(AppwriteContext);
+  if (context.userLoggedIn?.isFetchingAppwrite) {
+    return <Backdrop sx={{ color: '#fff', zIndex: 100 }} open={true} >
+      <CircularProgress size={50} color="inherit" />
+    </Backdrop>
   }
 
-  if(props.needAnchor && !context.userLoggedIn?.isFetchingAppwrite && !context.AuthServiceObject.isWalletLoggedIn()) {
-    return <Navigate to="/settings?page=anchor" replace/>;
+  if (!context.userLoggedIn?.isFetchingAppwrite && !context.AuthServiceObject.isLoggedIn()) {
+    return <Navigate to="/sign-in" replace />;
+  }
+
+  if (props.needAnchor && !context.userLoggedIn?.isFetchingAppwrite && !context.AuthServiceObject.isWalletLoggedIn()) {
+    return <Navigate to="/settings?page=anchor" replace />;
   }
 
   return props.children;
 };
 
 function App() {
-  let [userLoggedIn, setUserLoggedIn] = React.useState<UserContext | undefined>({ 
+  let [userLoggedIn, setUserLoggedIn] = React.useState<UserContext | undefined>({
     username: undefined,
     userId: undefined,
     isLoggedInAnchor: false,
     isFetchingAppwrite: true,
     email: undefined
-   });
+  });
 
   useEffect(() => {
     AuthServiceInstance.checkForSession().then((sessionWasLoaded) => {
-      if(sessionWasLoaded){
+      if (sessionWasLoaded) {
         console.log(AuthServiceInstance.account)
         setUserLoggedIn({
           userId: AuthServiceInstance.account?.$id,
@@ -109,10 +115,10 @@ function App() {
 
   return (
     <AppwriteContext.Provider value={{
-        userLoggedIn: userLoggedIn,
-        setUserLoggedIn: setUserLoggedIn,
-        AuthServiceObject: AuthServiceInstance
-      }
+      userLoggedIn: userLoggedIn,
+      setUserLoggedIn: setUserLoggedIn,
+      AuthServiceObject: AuthServiceInstance
+    }
     }>
       <ThemeProvider theme={theme}>
         <div className="App">
@@ -121,9 +127,12 @@ function App() {
             <Routes>
               <Route path="/" element={<Home />} />
               <Route path="/user_data" element={<ListTicketView />}>tickets</Route>
-              <Route path="/tickets" element={<UserTickets/>}></Route>
-              <Route path="/sign-in" element={<SignIn/>}></Route>
-              <Route path="/sign-up" element={<SignUp/>}></Route>
+              <Route path="/tickets" element={
+                <ProtectedRoute needAnchor={true}>
+                  <UserTickets />
+                </ProtectedRoute>}></Route>
+              <Route path="/sign-in" element={<SignIn />}></Route>
+              <Route path="/sign-up" element={<SignUp />}></Route>
               <Route path="/settings" element={<SettingsView />}></Route>
               <Route path="/create" element={
                 <ProtectedRoute needAnchor={true}>
@@ -132,7 +141,7 @@ function App() {
               } />
               <Route path="/testAnchor" element={<AnchorTests />}>AnchorTest</Route>
               <Route path="/events/:id" element={<EventView />} />
-              <Route path="/events/:id/buy/:ticketId" element={<BuyTicketView/>}/>
+              <Route path="/events/:id/buy/:ticketId" element={<BuyTicketView />} />
             </Routes>
           </BrowserRouter>
         </div>

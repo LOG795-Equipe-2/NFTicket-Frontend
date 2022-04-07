@@ -117,7 +117,17 @@ export default function BuyTicketView() {
         let validationResponse = await serviceNFT.validateBuyTicketFromCategory(
           transactionObject
         );
-        setPageStatus(PageState.REDIRECT_SUCCESS);
+        if (validationResponse.success) {
+          setPageStatus(PageState.REDIRECT_SUCCESS);
+        } else {
+          setSnackbarContent({
+            type: "error",
+            message:
+              "Une erreur s'est produite dans la transaction, veuillez réessayer plus tard.",
+          });
+          setPageStatus(PageState.AWAITING_CONFIRMATION);
+        }
+
       } catch (e: any) {
         console.log(e);
         setSnackbarContent({

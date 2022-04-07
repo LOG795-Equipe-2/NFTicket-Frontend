@@ -27,10 +27,12 @@ import AuthServiceSingleton from '../services/AuthService';
  */
 export class NFTicketTransactionService {
     urlApi: string;
-    urlTransactionsRoute = "/transactions"
-    urlTransactionsValidateRoute = "/validate"
-    urlTransactionsActionsRoute = "/actions"
-    urlTransactionsUtilityRoute = "/utility"
+    urlTransactionsRoute = "/transactions";
+    urlTransactionsValidateRoute = "/validate";
+    urlTransactionsActionsRoute = "/actions";
+    urlTransactionsUtilityRoute = "/utility";
+    urlAtomicAssetsRoutes = "/atomic-assets";
+    urlAppwriteRoute = "/appwrite";
     manager: AnchorBrowserManager | null = null;
 
     constructor(urlApi: string){
@@ -57,7 +59,7 @@ export class NFTicketTransactionService {
         });
 
         this.manager = new AnchorBrowserManager(chainId, blockchainUrl, appName)
-        this.manager.restoreSession();
+        await this.manager.restoreSession();
     }
 
     getManager(): AnchorBrowserManager {
@@ -225,9 +227,18 @@ export class NFTicketTransactionService {
 
         return response
     }
+
+    async getAssetsForUser(userName: string): Promise<any> {
+        const assets = await fetch(this.urlApi + this.urlAtomicAssetsRoutes + '/assets/' + userName).then(response => response.json());
+        const assetIds = assets.data.rows.map((row: any) => {
+            return row.asset_id;
+        });
+        const tickets = await fetch(this.urlApi + this.urlAppwriteRoute  + '/tickets?asset-ids=' + encodeURIComponent(JSON.stringify(assetIds))).then(response => response.json());
+        return tickets;
+    }
 }
 
 const NFTicketTransactionServiceInstance = new NFTicketTransactionService(process.env.REACT_APP_BACKEND_URL || 'http://localhost:3000');
-NFTicketTransactionServiceInstance.init();
+// NFTicketTransactionServiceInstance.init();
 
 export default NFTicketTransactionServiceInstance;
