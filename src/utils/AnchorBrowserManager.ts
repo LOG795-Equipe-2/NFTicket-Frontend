@@ -143,8 +143,7 @@ export class AnchorBrowserManager implements WalletManagerInterface {
         
                 throw err;
             });
-            console.log(resolvedSignature)
-            console.log(resolvedSignature.transaction.id)
+            console.log("Transaction has been signed with following ID: " + resolvedSignature.transaction.id)
             return resolvedSignature
         } else {
             throw new Error("User is not logged in");
