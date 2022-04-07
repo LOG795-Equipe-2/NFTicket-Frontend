@@ -17,6 +17,8 @@ import SignUp from "./components/Login/SignUp";
 import themeJSON from './theme.json';
 import AuthServiceInstance, { AuthService } from "./services/AuthService";
 import { Backdrop, CircularProgress } from "@mui/material";
+import WithNavbar from "./components/Wrapper/WithNavbar";
+import ValidatorView from "./components/ValidatorView/ValidatorView";
 
 
 const LinkBehavior = React.forwardRef<
@@ -123,25 +125,42 @@ function App() {
       <ThemeProvider theme={theme}>
         <div className="App">
           <BrowserRouter>
-            <Navigation></Navigation>
             <Routes>
-              <Route path="/" element={<Home />} />
+              <Route element={<WithNavbar />}>
+                <Route path="/" element={<Home />} />
+              </Route>
               <Route path="/user_data" element={<ListTicketView />}>tickets</Route>
-              <Route path="/tickets" element={
-                <ProtectedRoute needAnchor={true}>
-                  <UserTickets />
-                </ProtectedRoute>}></Route>
-              <Route path="/sign-in" element={<SignIn />}></Route>
-              <Route path="/sign-up" element={<SignUp />}></Route>
-              <Route path="/settings" element={<SettingsView />}></Route>
-              <Route path="/create" element={
-                <ProtectedRoute needAnchor={true}>
-                  <EventCreator />
-                </ProtectedRoute>
-              } />
+              <Route element={<WithNavbar />}>
+                <Route path="/tickets" element={
+                  <ProtectedRoute needAnchor={true}>
+                    <UserTickets />
+                  </ProtectedRoute>}>
+                </Route>
+              </Route>
+              <Route element={<WithNavbar />}>
+                <Route path="/sign-in" element={<SignIn />}></Route>
+              </Route>
+              <Route element={<WithNavbar />}>
+                <Route path="/sign-up" element={<SignUp />}></Route>
+              </Route>
+              <Route element={<WithNavbar />}>
+                <Route path="/settings" element={<SettingsView />}></Route>
+              </Route>
+              <Route element={<WithNavbar />}>
+                <Route path="/create" element={
+                  <ProtectedRoute needAnchor={true}>
+                    <EventCreator />
+                  </ProtectedRoute>
+                } />
+              </Route>
               <Route path="/testAnchor" element={<AnchorTests />}>AnchorTest</Route>
-              <Route path="/events/:id" element={<EventView />} />
-              <Route path="/events/:id/buy/:ticketId" element={<BuyTicketView />} />
+              <Route element={<WithNavbar />}>
+                <Route path="/events/:id" element={<EventView />} />
+              </Route>
+              <Route element={<WithNavbar />}>
+                <Route path="/events/:id/buy/:ticketId" element={<BuyTicketView />} />
+              </Route>  
+              <Route path="/validator/:eventId/:id" element={<ValidatorView/>} />
             </Routes>
           </BrowserRouter>
         </div>

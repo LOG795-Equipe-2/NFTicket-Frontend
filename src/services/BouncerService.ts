@@ -50,12 +50,27 @@ class BouncerService {
         return res.json();
     }
 
-    async validateBouncerUrl(eventId: string, bouncer: string) {
-        const res = await fetch(this.urlApi + `/bouncer/${eventId}/validate/${bouncer}`, {
-            method: 'POST',
+    async validateBouncerUrl(eventId: string, bouncerId: string) {
+        const res = await fetch(this.urlApi + `/bouncer/validate`, {
+            method: 'GET',
+            headers: {
+                "x-nfticket-event-id": eventId,
+                "x-nfticket-bouncer": bouncerId
+            }
         });
         
-        return res.json();
+        return res.status;
+    }
+
+    async validateAssetId(eventId: string, assetId: string, bouncerId: string, userName: string) {
+        const res = await fetch(this.urlApi + `/bouncer/controlTicket?assetId=${assetId}&userName=${userName}`, {
+            method: 'POST',
+            headers: {
+                "x-nfticket-event-id": eventId,
+                "x-nfticket-bouncer": bouncerId
+            }
+        })
+        return res.json()
     }
 }
 
