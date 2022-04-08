@@ -1,4 +1,12 @@
-import { Box, ButtonGroup, styled, Button, Collapse, Snackbar, Alert } from "@mui/material";
+import {
+  Box,
+  ButtonGroup,
+  styled,
+  Button,
+  Collapse,
+  Snackbar,
+  Alert,
+} from "@mui/material";
 import Carousel from "react-material-ui-carousel";
 import Event from "../../interfaces/Event";
 import TicketVisualiser from "../TicketVisualiser/TicketVisualiser";
@@ -7,14 +15,16 @@ import BookOnlineOutlinedIcon from "@mui/icons-material/BookOnlineOutlined";
 import "./UserTickets.scss";
 import EventCard from "../EventCard/EventCard";
 import React, { useEffect, useState, useContext } from "react";
-import NFTicketTransactionServiceInstance, { NFTicketTransactionService } from '../../services/NFTicketTransactionService';
+import NFTicketTransactionServiceInstance, {
+  NFTicketTransactionService,
+} from "../../services/NFTicketTransactionService";
 import { useSearchParams } from "react-router-dom";
 import { AppwriteContext } from "../../App";
 
 async function connectToBackend() {
   let service = NFTicketTransactionServiceInstance;
-  await service.init()
-  return service
+  await service.init();
+  return service;
 }
 
 const CssBox = styled(Box)(({ theme }) => ({
@@ -26,6 +36,7 @@ export default function UserTickets() {
   const [snackbarContent, setSnackbarContent] = useState<any>(null);
   const [searchParams, setSearchParams] = useSearchParams();
   const [tickets, setTickets] = useState([]);
+  const [selectedTicket, setSelectedTicket] = useState(0);
   const toggleEventDetails = () => {
     setShowEventDetails(!showEventDetails);
   };
@@ -33,17 +44,22 @@ export default function UserTickets() {
 
   useEffect(() => {
     const success = searchParams.get("success");
-    connectToBackend().then(service => {
+    connectToBackend().then((service) => {
       const accountName = service.getManager().getAccountName()?.toString();
       if (accountName && service.getManager().isUserLogged()) {
         service.getAssetsForUser(accountName).then((tickets) => {
           console.log(tickets);
           setTickets(tickets);
-        })
+          setSelectedTicket(0);
+        });
       }
-    })
+    });
     if (!!success) {
-      setSnackbarContent({ type: 'success', message: "Votre billet a été acheté avec succès! Vous pouvez le retrouver sur cette page." });
+      setSnackbarContent({
+        type: "success",
+        message:
+          "Votre billet a été acheté avec succès! Vous pouvez le retrouver sur cette page.",
+      });
     }
   }, []);
   return (
@@ -65,13 +81,23 @@ export default function UserTickets() {
             )}
           </Snackbar>
           <div className="UserTickets__ticketsCarousel">
-            <Carousel interval={10000} navButtonsAlwaysVisible animation="slide">
+            <Carousel
+              interval={10000}
+              navButtonsAlwaysVisible
+              animation="slide"
+              onChange={(e: number | undefined) => setSelectedTicket(e || 0)}
+            >
               {tickets.map((ticket: any, index) => (
                 <Box
                   key={"my_ticket_" + index}
                   className="UserTickets__ticketsCarousel__visualiserContainer"
                 >
-                  <TicketVisualiser size="large" event={ticket.event} ticket={ticket.category} />
+                  <TicketVisualiser
+                    size="large"
+                    event={ticket.event}
+                    ticket={ticket.category}
+                    assetId={ticket.assetId}
+                  />
                 </Box>
               ))}
             </Carousel>
@@ -88,13 +114,16 @@ export default function UserTickets() {
           </div>
           <div className="UserTickets__eventDetails">
             <Collapse sx={{ width: 400 }} in={showEventDetails}>
-              {/* <EventCard event={event} showLink={false} /> */}
+              {tickets[selectedTicket] && (
+                <EventCard
+                  event={(tickets[selectedTicket] as any).event}
+                  showLink={false}
+                />
+              )}
             </Collapse>
           </div>
         </React.Fragment>
-
       )}
-
     </CssBox>
   );
 }
