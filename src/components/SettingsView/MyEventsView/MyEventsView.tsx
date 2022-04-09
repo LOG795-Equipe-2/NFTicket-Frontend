@@ -261,7 +261,7 @@ export default function MyEventsView() {
               <Paper sx={{ marginBottom: '20px!important' }}>
                 <List>
                   <ListItemButton onClick={showBouncers}>
-                    <ListItemText primary="Bouncers" />
+                    <ListItemText primary="Validateurs" />
                     {openBouncers ? <ExpandLess /> : <ExpandMore />}
                   </ListItemButton>
                   <Collapse in={openBouncers} timeout="auto" unmountOnExit>
