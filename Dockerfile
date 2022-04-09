@@ -5,6 +5,9 @@ FROM node:16.14 AS builder
 
 WORKDIR /app
 
+ARG REACT_APP_BACKEND_URL
+ENV REACT_APP_BACKEND_URL=${REACT_APP_BACKEND_URL}
+
 COPY ["yarn.lock", "package.json", "./"]
 RUN yarn install --frozen-lockfile --network-timeout 1000000
 
