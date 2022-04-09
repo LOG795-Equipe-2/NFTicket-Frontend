@@ -14,6 +14,7 @@ import {
   DialogContent,
   DialogContentText,
   Alert,
+  Divider,
 } from "@mui/material";
 import { Navigate, useNavigate, useParams } from "react-router-dom";
 import ConfirmationNumber from "@mui/icons-material/ConfirmationNumber";
@@ -22,7 +23,8 @@ import ErrorIcon from "@mui/icons-material/Error";
 import React, { useEffect } from "react";
 import "./ValidatorView.scss";
 import BouncerService from "../../services/BouncerService";
-import Html5QrcodePlugin from "../Util/Html5QrCodePlugin";
+import QrContainer from "../QrContainer/QrContainer";
+import QrCodeScannerIcon from '@mui/icons-material/QrCodeScanner';
 
 const CssBox = styled(Box)(({ theme }) => ({
   backgroundColor: theme.palette.primary.dark,
@@ -61,13 +63,14 @@ export default function ValidatorView() {
   const { id, eventId } = useParams();
   const navigate = useNavigate();
   const [validatorState, setValidatorState] = React.useState(
-    ValidatorState.SUCCESS
+    ValidatorState.FETCHING
   );
   const [ticketID, setTicketID] = React.useState("");
   const [username, setUsername] = React.useState("");
   const [ticketValidationMessage, setTicketValidationMessage] =
     React.useState<ValidatorState | null>(null);
   const [closeSessionConfirm, setCloseSessionConfirm] = React.useState(false);
+  const [cameraOpen, setCameraOpen] = React.useState(false);
   useEffect(() => {
     // Check validator and event authenticity
     if (!id || !eventId) {
@@ -111,8 +114,24 @@ export default function ValidatorView() {
     );
   };
 
-  const handleResult = (text: any, result: any) => {
-      console.log(text, result);
+  const handleScanResult = (result: any) => {
+    const text = result.text;
+    const { username, assetId } = JSON.parse(text);
+    setCameraOpen(false);
+    // Check ticket authenticity
+    setTicketValidationMessage(ValidatorState.FETCHING);
+    BouncerService.validateAssetId(
+      eventId || "",
+      assetId,
+      id || "",
+      username
+    ).then((response) => {
+      if (response.success) {
+        setTicketValidationMessage(ValidatorState.SUCCESS);
+      } else {
+        setTicketValidationMessage(ValidatorState.ERROR);
+      }
+    });
   }
 
   return (
@@ -135,7 +154,9 @@ export default function ValidatorView() {
             ></ConfirmationNumber>
             NFTicket
           </Box>
-          <Html5QrcodePlugin qrCodeSuccessCallback={handleResult} />
+          {cameraOpen ? (<QrContainer handleScanResult={handleScanResult}/>) : (
+            <Button onClick={() => setCameraOpen(true)} variant="contained" color="info"><QrCodeScannerIcon/></Button>
+          )}
           <CssTextField
             value={ticketID}
             onChange={(e) => setTicketID(e.target.value)}

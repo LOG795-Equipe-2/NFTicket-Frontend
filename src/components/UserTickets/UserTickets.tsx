@@ -37,6 +37,7 @@ export default function UserTickets() {
   const [searchParams, setSearchParams] = useSearchParams();
   const [tickets, setTickets] = useState([]);
   const [selectedTicket, setSelectedTicket] = useState(0);
+  const [username, setUsername] = useState("");
   const toggleEventDetails = () => {
     setShowEventDetails(!showEventDetails);
   };
@@ -47,6 +48,7 @@ export default function UserTickets() {
     connectToBackend().then((service) => {
       const accountName = service.getManager().getAccountName()?.toString();
       if (accountName && service.getManager().isUserLogged()) {
+        setUsername(accountName);
         service.getAssetsForUser(accountName).then((tickets) => {
           console.log(tickets);
           setTickets(tickets);
@@ -97,6 +99,7 @@ export default function UserTickets() {
                     event={ticket.event}
                     ticket={ticket.category}
                     assetId={ticket.assetId}
+                    username={username}
                   />
                 </Box>
               ))}

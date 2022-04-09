@@ -10,6 +10,7 @@ type TicketVisualiserProps = {
   event: Event;
   size: string;
   assetId?: string;
+  username?: string;
 };
 
 type TicketVisualiserState = {};
@@ -116,7 +117,7 @@ class TicketVisualiser extends React.Component<
                 {this.props.ticket.type}
               </Typography>
             </div>
-            {this.props.assetId && this.props.event.$id && (
+            {this.props.assetId && this.props.username && (
               <div
                 className="ticket-code"
                 style={{
@@ -125,10 +126,10 @@ class TicketVisualiser extends React.Component<
               >
                 <QRCode
                   size={(sizes as any)[this.props.size].qrSize}
-                  fgColor={this.props.ticket.styling.primaryColor}
-                  bgColor="rgba(0,0,0,0)"
+                  fgColor="#000"
+                  bgColor={this.props.ticket.styling.primaryColor}
                   value={JSON.stringify({
-                    eventId: this.props.event.$id,
+                    username: this.props.username,
                     assetId: this.props.assetId
                   })}
                 />
