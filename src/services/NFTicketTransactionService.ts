@@ -248,6 +248,6 @@ export class NFTicketTransactionService {
 }
 
 const NFTicketTransactionServiceInstance = new NFTicketTransactionService(process.env.REACT_APP_BACKEND_URL || 'http://localhost:3000');
-// NFTicketTransactionServiceInstance.init();
+NFTicketTransactionServiceInstance.init();
 
 export default NFTicketTransactionServiceInstance;
