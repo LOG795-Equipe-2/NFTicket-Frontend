@@ -3,6 +3,7 @@ import './ProfileView.scss';
 import { AppwriteContext } from '../../../App';
 import { Navigate } from "react-router-dom";
 import React from "react";
+import { SnackbarMessage } from "../../../interfaces/MUIIntefaces";
 
 const CssBox = styled(Box)(({ theme }) => ({
   ".ProfileView": {
@@ -24,7 +25,7 @@ export default function ProfileView() {
   const [currentPassword, setCurrentPassword] = React.useState("");
   const [newPassword, setNewPassword] = React.useState("");
   const [confirmPassword, setConfirmPassword] = React.useState("");
-  const [snackbarContent, setSnackbarContent] = React.useState<any>(null);
+  const [snackbarContent, setSnackbarContent] = React.useState<SnackbarMessage | undefined>(undefined);
   const contextObject = React.useContext(AppwriteContext);
 
   const handleResetPasswordSubmit = (e: any, { currentPassword, newPassword, confirmPassword }: { currentPassword: string, newPassword: string, confirmPassword: string }) => {
@@ -62,9 +63,9 @@ export default function ProfileView() {
             <Navigate to="/" />
           ) : (
             <CssBox className="ProfileView">
-              <Snackbar open={!!snackbarContent} autoHideDuration={6000} onClose={() => setSnackbarContent(null)}>
+              <Snackbar open={!!snackbarContent} autoHideDuration={6000} onClose={() => setSnackbarContent(undefined)}>
                 {snackbarContent && (
-                  <Alert onClose={() => setSnackbarContent(null)} severity={snackbarContent.type}>{snackbarContent.message}</Alert>
+                  <Alert onClose={() => setSnackbarContent(undefined)} severity={snackbarContent.type}>{snackbarContent.message}</Alert>
                 )}
               </Snackbar>
               <Stack direction="column" spacing={4}>

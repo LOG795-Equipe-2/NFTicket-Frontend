@@ -43,7 +43,7 @@ const CssBox = styled(Box)(({ theme }) => ({
 function EventView() {
   const { id } = useParams();
   const event: Event = {
-    id: id || "1",
+    $id: id || "1",
     name: "A test event",
     description: "This event is a test event for NFTicket",
     locationAddress: "1100 Notre-Dame St W, Montreal, Quebec H3C 1K3",
@@ -52,8 +52,8 @@ function EventView() {
     dateTime: new Date(),
     ticketCategories: [
       {
-        id: "1",
-        type: "Standard",
+        id: "624efef31081b237db12",
+        name: "Standard",
         price: 20.00,
         initialAmount: 100,
         remainingAmount: 10,
@@ -66,8 +66,8 @@ function EventView() {
         }
       },
       {
-        id: "2",
-        type: "VIP",
+        id: "6243166810eaee472ab6",
+        name: "VIP",
         price: 30.00,
         initialAmount: 20,
         remainingAmount: 2,
@@ -100,14 +100,14 @@ function EventView() {
       <div className="EventView__tickets">
         <Typography className="header" variant="h3">Billets</Typography>
         {event.ticketCategories.map((ticketCategory) => (
-          <div className="EventView__tickets__ticket" key={"ticketCategory-" + ticketCategory.type}>
+          <div className="EventView__tickets__ticket" key={"ticketCategory-" + ticketCategory.name}>
             {ticketCategory.remainingAmount && ticketCategory.remainingAmount > 0 && (
               <React.Fragment>
                 <TicketVisualiser event={event} ticket={ticketCategory} size="small" />
                 <div className="rightSide">
                   <div className="description">
                     <div className="description__item">
-                      <Typography variant="h5">Type </Typography>{ticketCategory.type}
+                      <Typography variant="h5">Type </Typography>{ticketCategory.name}
                     </div>
                     <div className="description__item">
                       <Typography variant="h5">Prix </Typography>{ticketCategory.price.toFixed(2)} $

@@ -108,7 +108,7 @@ class EventCreator extends React.Component<
       // Find the template Id to save in the database, based on the response of the backend
       this.state.event.ticketCategories.forEach((category) => {
         category.atomicTemplateId = response.data.templates.find((template: any) => 
-          template.categoryName == category.type &&
+                  template.categoryName == category.name &&
                   template.originalPrice == category.price.toString() &&
                   template.locationName == this.state.event.locationName &&
                   template.name == this.state.event.name
@@ -131,7 +131,7 @@ class EventCreator extends React.Component<
     super(props);
     this.state = {
       event: {
-        id: "",
+        $id: "",
         locationName: "",
         name: "",
         description: "",
@@ -147,7 +147,6 @@ class EventCreator extends React.Component<
     this.updateTicketStyling = this.updateTicketStyling.bind(this);
     this.setCurrentStep = this.setCurrentStep.bind(this);
     this.createEvent = this.createEvent.bind(this);
-    NFTicketTransactionService.getManager().restoreSession();
   }
   render() {
     return (

@@ -1,9 +1,6 @@
 import {
   Box,
   styled,
-  TextField,
-  Typography,
-  Button,
   List,
   ListItem,
   ListItemButton,
@@ -15,18 +12,16 @@ import {
   Badge,
 } from "@mui/material";
 import { AppwriteContext } from "../../App";
-import React from "react";
 import { useEffect, useState, useContext } from "react";
 import NFTicketTransactionServiceInstance, {
   NFTicketTransactionService,
 } from "../../services/NFTicketTransactionService";
-import AuthService from "../../services/AuthService";
+import AnchorIcon from '@mui/icons-material/Anchor';
+import AccountCircleIcon from '@mui/icons-material/AccountCircleOutlined';
+import LogoutIcon from '@mui/icons-material/Logout';
+import './SettingsView.scss';
+import { Navigate, useSearchParams } from "react-router-dom";
 import EventSeatIcon from "@mui/icons-material/EventSeat";
-import AnchorIcon from "@mui/icons-material/Anchor";
-import AccountCircleIcon from "@mui/icons-material/AccountCircleOutlined";
-import LogoutIcon from "@mui/icons-material/Logout";
-import "./SettingsView.scss";
-import { Navigate } from "react-router-dom";
 import ProfileView from "./ProfileView/ProfileView";
 import AnchorWalletView from "./AnchorWalletView/AnchorWalletView";
 import MyEventsView from "./MyEventsView/MyEventsView";
@@ -57,6 +52,8 @@ function SettingsView(props: any) {
   }));
 
   const context = useContext(AppwriteContext);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [redirectReason, setRedirectReason] = useState<any>();
 
   const handleLogout = (appwriteContext: any) => {
     appwriteContext.setUserLoggedIn({ isFetchingAppwrite: true });
@@ -69,6 +66,25 @@ function SettingsView(props: any) {
     });
   };
 
+  useEffect(() => {
+    const page = searchParams.get("page")
+    switch(page) {
+      case "anchor":
+        setSelectedTab(SelectedTab.ANCHOR);
+        setRedirectReason({type: "warning", message: "No Anchor account is linked to this account"})
+      break;
+      case "profile": setSelectedTab(SelectedTab.PROFILE);
+      break;
+    }
+  }, []);
+
+  const changeTab = (tab: SelectedTab) => {
+    setRedirectReason(null);
+    setSelectedTab(tab);
+  }
+
+  
+
   return (
     <CssBox className="Settings">
       <div className="Settings__title">Paramètres</div>
@@ -79,7 +95,7 @@ function SettingsView(props: any) {
               <ListItem disablePadding={true}>
                 <ListItemButton
                   selected={selectedTab === SelectedTab.PROFILE}
-                  onClick={() => setSelectedTab(SelectedTab.PROFILE)}
+                  onClick={() => changeTab(SelectedTab.PROFILE)}
                 >
                   <ListItemIcon>
                     <AccountCircleIcon color="primary" />
@@ -90,7 +106,7 @@ function SettingsView(props: any) {
               <ListItem disablePadding={true}>
                 <ListItemButton
                   selected={selectedTab === SelectedTab.ANCHOR}
-                  onClick={() => setSelectedTab(SelectedTab.ANCHOR)}
+                  onClick={() => changeTab(SelectedTab.ANCHOR)}
                 >
                   <ListItemIcon>
                     <AnchorIcon color="primary" />
@@ -114,7 +130,7 @@ function SettingsView(props: any) {
               <ListItem disablePadding={true}>
                 <ListItemButton
                   selected={selectedTab === SelectedTab.MY_EVENTS}
-                  onClick={() => setSelectedTab(SelectedTab.MY_EVENTS)}
+                  onClick={() => changeTab(SelectedTab.MY_EVENTS)}
                 >
                   <ListItemIcon>
                     <EventSeatIcon color="primary" />
@@ -152,7 +168,7 @@ function SettingsView(props: any) {
         </div>
         <div className="Settings__content__window">
           {selectedTab === SelectedTab.PROFILE && <ProfileView />}
-          {selectedTab === SelectedTab.ANCHOR && <AnchorWalletView />}
+          {selectedTab === SelectedTab.ANCHOR && <AnchorWalletView snackbarContent={redirectReason}/>}
           {selectedTab === SelectedTab.MY_EVENTS && <MyEventsView />}
         </div>
       </div>

@@ -8,6 +8,8 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import CircularProgress from "@mui/material/CircularProgress";
 import TicketCategory from "../../../interfaces/TicketCategory";
 import Event from "../../../interfaces/Event";
+import { DateTimePicker, LocalizationProvider } from "@mui/lab";
+import DateAdapter from "@mui/lab/AdapterDateFns";
 
 type EventFormProps = {
   moveToNextStep: Function;
@@ -18,6 +20,7 @@ type EventFormState = {
   eventBase64Image: string;
   eventBlobImage: Blob;
   isSubmitting: boolean;
+  eventDate: Date;
 };
 
 class EventForm extends React.Component<EventFormProps, EventFormState> {
@@ -28,7 +31,7 @@ class EventForm extends React.Component<EventFormProps, EventFormState> {
     this.state = {
       ticketCategories: [
         {
-          type: "",
+          name: "",
           price: 0,
           initialAmount: 1,
           styling: {
@@ -46,6 +49,7 @@ class EventForm extends React.Component<EventFormProps, EventFormState> {
         tickets: [{}],
       },
       isSubmitting: false,
+      eventDate: new Date(),
     };
   }
 
@@ -56,7 +60,7 @@ class EventForm extends React.Component<EventFormProps, EventFormState> {
       ticketCategories: [
         ...ticketCategories,
         {
-          type: "",
+          name: "",
           price: 0,
           initialAmount: 1,
           styling: {
@@ -171,14 +175,14 @@ class EventForm extends React.Component<EventFormProps, EventFormState> {
   handleEventSubmit(e: React.SyntheticEvent) {
     e.preventDefault();
     const target = e.target as typeof e.target & {
-      name: { value: string };
+      eventName: { value: string };
       location: { value: string };
       description: { value: string };
       address: { value: string };
     };
     let errors = this.state.errors;
     let hasErrors = false;
-    const name = target.name.value;
+    const name = target.eventName.value;
     if (name.length === 0) {
       hasErrors = true;
       errors["event-name"] = "Le nom de l'événement est requis";
@@ -209,10 +213,12 @@ class EventForm extends React.Component<EventFormProps, EventFormState> {
       errors["event-image"] = "Une image pour l'événement est requise";
     }
 
+    const eventDate = this.state.eventDate || new Date();
+
     const tickets = this.state.ticketCategories;
 
     tickets.forEach((ticketCategory, index) => {
-      if (ticketCategory.type.length === 0) {
+      if (ticketCategory.name.length === 0) {
         hasErrors = true;
         errors.tickets[index].type = "La catégorie du billet est requise";
       }
@@ -238,8 +244,8 @@ class EventForm extends React.Component<EventFormProps, EventFormState> {
             description,
             image: this.state.eventBlobImage,
             ticketCategories: this.state.ticketCategories,
-            id: "",
-            dateTime: new Date()
+            $id: "",
+            dateTime: eventDate,
           };
           this.props.moveToNextStep(event);
           nextButton.click();
@@ -262,7 +268,7 @@ class EventForm extends React.Component<EventFormProps, EventFormState> {
               <TextField
                 id="event-name"
                 label="Nom de l'événement"
-                name="name"
+                name="eventName"
                 helperText={this.state.errors["event-name"]}
                 error={!!this.state.errors["event-name"]}
                 onChange={(e) => this.handleEventInputChange(e, "event-name")}
@@ -276,7 +282,9 @@ class EventForm extends React.Component<EventFormProps, EventFormState> {
                 name="location"
                 helperText={this.state.errors["event-location"]}
                 error={!!this.state.errors["event-location"]}
-                onChange={(e) => this.handleEventInputChange(e, "event-location")}
+                onChange={(e) =>
+                  this.handleEventInputChange(e, "event-location")
+                }
                 disabled={this.state.isSubmitting}
               />
             </div>
@@ -287,9 +295,22 @@ class EventForm extends React.Component<EventFormProps, EventFormState> {
                 name="address"
                 helperText={this.state.errors["event-address"]}
                 error={!!this.state.errors["event-address"]}
-                onChange={(e) => this.handleEventInputChange(e, "event-address")}
+                onChange={(e) =>
+                  this.handleEventInputChange(e, "event-address")
+                }
                 disabled={this.state.isSubmitting}
               />
+            </div>
+            <div className="EventCreator__form__input">
+              <LocalizationProvider dateAdapter={DateAdapter}>
+                <DateTimePicker
+                  label="Date et heure"
+                  onChange={(e: any) => this.setState({ eventDate: e })}
+                  renderInput={(params: any) => <TextField {...params} />}
+                  disabled={this.state.isSubmitting}
+                  value={this.state.eventDate}
+                />
+              </LocalizationProvider>
             </div>
             <div className="EventCreator__form__input">
               <TextField
@@ -319,13 +340,13 @@ class EventForm extends React.Component<EventFormProps, EventFormState> {
                   <TextField
                     className="small"
                     label="Catégorie"
-                    name="type"
+                    name="name"
                     onChange={(e) =>
-                      this.handleTicketTypeChange(index, e, "type")
+                      this.handleTicketTypeChange(index, e, "name")
                     }
-                    value={ticketCategory.type}
-                    helperText={this.state.errors.tickets[index].type}
-                    error={!!this.state.errors.tickets[index].type}
+                    value={ticketCategory.name}
+                    helperText={this.state.errors.tickets[index].name}
+                    error={!!this.state.errors.tickets[index].name}
                     disabled={this.state.isSubmitting}
                   />
                   <TextField
@@ -391,7 +412,8 @@ class EventForm extends React.Component<EventFormProps, EventFormState> {
                   (this.state.errors["event-image"] ? "error" : "")
                 }
                 style={{
-                  borderWidth: this.state.eventBase64Image === "" ? "2px" : "0px",
+                  borderWidth:
+                    this.state.eventBase64Image === "" ? "2px" : "0px",
                 }}
               >
                 {this.state.eventBase64Image === "" ? (

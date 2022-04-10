@@ -23,18 +23,20 @@ async function connectToBackend(){
 let serviceNFT:NFTicketTransactionService
 
 function AnchorTests() {
+    const urlApi = process.env.REACT_APP_BACKEND_URL || 'http://localhost:3000'
+
     const CssBox = styled(Box)(({ theme }) => ({}));
 
     async function getAssetsForUser(userName: string){
       if(serviceNFT.getManager().isUserLogged()){
         setLoading(true)
         
-        let responseAssets = await fetch('http://localhost:3000/atomic-assets/assets/' + userName).then(response => response.json())
+        let responseAssets = await fetch(urlApi + '/atomic-assets/assets/' + userName).then(response => response.json())
         
         for(const element of responseAssets.data.rows){
             /* Temp index for prevent spam */
             if(typeof(element.immutable_serialized_data) == "object"){
-              let dataTemplate = await fetch('http://localhost:3000/atomic-assets/templates/' + element.collection_name + '/' + element.template_id)
+              let dataTemplate = await fetch(urlApi + '/atomic-assets/templates/' + element.collection_name + '/' + element.template_id)
               .then(response => response.json())
 
               element.immutable_serialized_data.eventName = dataTemplate.data.rows[0].immutable_serialized_data.name
@@ -61,7 +63,7 @@ function AnchorTests() {
     let [ticketCategoryId, setTicketCategoryId] = useState("");
     let [ticketValidationNumber, setTicketValidationNumber] = useState("");    
 
-    let [ticketId, setTicketId] = useState("");    
+    let [ticketId, setTicketId] = useState("1099511627829");    
 
     useEffect(() => {
       connectToBackend().then((service) => {
@@ -70,6 +72,8 @@ function AnchorTests() {
           //   console.log("restored session?: " + value)
           // })
           serviceNFT = service
+          console.log("connected to backend: ")
+          console.log(service)
       });
     }, []); // checks for changes in the values in this array
  
@@ -138,18 +142,25 @@ function AnchorTests() {
       // Get the transactions
       let transactionsToSign = await serviceNFT.signTicket(userName + "", ticketId);
 
-      // Sign the transactions
-      let transactionResult = await serviceNFT.getManager().signTransactions(transactionsToSign.transactionsBody);
-      
-      // Adjust other parameters required for validation
-      transactionsToSign.signedTransactions = transactionResult;
-      transactionsToSign.transactionId = "0000000000";
-      // Add it here otherwise it dosen't seem to show up
-      transactionsToSign.serializedTransaction = transactionResult.resolved.serializedTransaction
+      if(transactionsToSign.success == true){
+        transactionsToSign = transactionsToSign.data
+        // Sign the transactions
+        let transactionResult = await serviceNFT.getManager().signTransactions(transactionsToSign.transactionsBody);
+        
+        // Adjust other parameters required for validation
+        transactionsToSign.signatures = transactionResult.signatures;
+        transactionsToSign.transactionId = transactionResult.transaction.id;
+        // Add it here otherwise it dosen't seem to show up
+        transactionsToSign.serializedTransaction = transactionResult.resolved.serializedTransaction
 
-      // Send to the backend
-      let response = await serviceNFT.validateSignTicket(transactionsToSign);
-      console.log(response)
+        // Send to the backend
+        let response = await serviceNFT.validateSignTicket(transactionsToSign);
+        console.log(response)
+
+        getAssetsForUser(serviceNFT.getManager().getAccountName() + "").then((data) => setAssets(data))
+      } else {
+        console.log(transactionsToSign)
+      }
     }
 
     function handleClearEvents(e: React.SyntheticEvent){

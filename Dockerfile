@@ -5,9 +5,11 @@ FROM node:16.14 AS builder
 
 WORKDIR /app
 
-# Copy yarn.lock to only restart that step when there are changes to the packages instead of the whole codebase.
-COPY ["yarn.lock", "./"]
-RUN yarn
+ARG REACT_APP_BACKEND_URL
+ENV REACT_APP_BACKEND_URL=${REACT_APP_BACKEND_URL}
+
+COPY ["yarn.lock", "package.json", "./"]
+RUN yarn install --frozen-lockfile --network-timeout 1000000
 
 # Copy source code
 COPY . .
@@ -20,6 +22,7 @@ FROM nginx:1.20
 
 WORKDIR /usr/share/nginx/html
 RUN rm -rf ./*
+COPY ./nginx.conf /etc/nginx/conf.d/default.conf
 COPY --from=builder /app/build .
 
 ENTRYPOINT ["nginx", "-g", "daemon off;"]

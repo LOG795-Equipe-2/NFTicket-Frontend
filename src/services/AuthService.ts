@@ -4,6 +4,7 @@ import { AnchorBrowserManager } from '../utils/AnchorBrowserManager';
 import { WalletManagerInterface } from '../utils/WalletManagerInterface';
 
 import appwrite from "../utils/AppwriteInstance"
+import { AppwriteJWT } from '../interfaces/Appwrite';
 
 export enum OauthProvider {
     GOOGLE = "google",
@@ -25,7 +26,7 @@ export class AuthService {
 
     private readonly SEPARATOR: string = " ---- ";
     private readonly ANCHORINFO_COLLECTION_ID: string = "621fcb8641b53f76bc95";
-    private readonly ON_OAUTH_SUCCESS: string = "http://localhost:3000";
+    private readonly ON_OAUTH_SUCCESS: string = this.urlApi;
 
     private walletManager: WalletManagerInterface;
 
@@ -37,14 +38,16 @@ export class AuthService {
 
     session: Models.Session | undefined = undefined;
 
+    jwt: AppwriteJWT | undefined = undefined;
+
     /**
      * checks if a User was already connected on this device when creating the Service
      * @constructor
      */
-    constructor() { 
+    constructor(private urlApi: string) { 
         this.walletManager = new AnchorBrowserManager(
             process.env.CHAIN_ID || '5d5bbe6bb403e5ca8b087d382946807246b4dee094c7f5961e2bebd88f8c9c51', 
-            process.env.REACT_APP_NODE_URL || 'http://eos1.anthonybrochu.com:8888/', 
+            process.env.REACT_APP_NODE_URL || 'http://eos1.anthonybrochu.com:8889', 
             process.env.APP_NAME || 'NFTicket');
     }
 
@@ -196,7 +199,27 @@ export class AuthService {
         }
         
     }
+    /**
+     * Returns a header containing an appwrite JWT
+     * @returns A header that can be appended to a request to be identified by the back-end
+     */
+    async createJwtHeader(): Promise<{ "nfticket-appwrite-jwt": string }> {
+        // Current Jwt stil valid
+        if(this.jwt && this.jwt.invalidAt.getTime() > new Date().getTime()) {
+            return { "nfticket-appwrite-jwt": this.jwt.jwt };
+        }
 
+        // Current Jwt expired, need to create a new one
+        const jwtModel = await appwrite.account.createJWT();
+
+        this.jwt = {
+            jwt: jwtModel.jwt,
+            // jwt expires in 15m so we ask for a new jwt after 14m to be safe
+            invalidAt: new Date(new Date().getTime() + 14 * 60000)
+        }
+
+        return { "nfticket-appwrite-jwt": this.jwt.jwt };
+    }
     /**
      * Saves the current anchorlink session info on the Backend so that it can be restored if the use reconnects on the same device
      * @returns void
@@ -296,4 +319,4 @@ export class AuthService {
     
 }
 
-export default new AuthService();
+export default new AuthService(process.env.REACT_APP_BACKEND_URL || 'http://localhost:3000');
