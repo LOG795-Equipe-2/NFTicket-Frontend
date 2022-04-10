@@ -1,0 +1,33 @@
+name: CD
+
+on:
+  pull_request:
+    branches:
+      - main
+    types: [closed]
+
+jobs:
+    deploy:
+      runs-on: ubuntu-latest
+      if: github.event.pull_request.merged == true
+
+      steps:
+        - name: Checkout repository
+          uses: actions/checkout@v2
+        
+        - name: Build Docker image
+          run: docker build -t registry.digitalocean.com/nfticket/nfticket-frontend .
+        
+        - name: Install doctl
+          uses: digitalocean/action-doctl@v2
+          with:
+            token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
+        
+        - name: Login to DO container registry
+          run: doctl registry login --expiry-seconds 600
+        
+        - name: Push to DigitalOcean
+          run: docker push registry.digitalocean.com/nfticket/nfticket-frontend:latest
+
+        - name: Deploy to App Platform
+          run: doctl apps create-deployment ${{ secrets.DIGITALOCEAN_APP_ID }}
