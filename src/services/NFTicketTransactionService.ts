@@ -1,7 +1,8 @@
 import Event from '../interfaces/Event';
-import { TicketCategoryTransaction } from '../interfaces/TicketCategory';
+import TicketCategory, { TicketCategoryModel, TicketCategoryTransaction } from '../interfaces/TicketCategory';
 import { AnchorBrowserManager } from '../utils/AnchorBrowserManager';
 import AuthServiceSingleton from '../services/AuthService';
+import appwrite from '../utils/AppwriteInstance';
 
 /**
  * To send the data as JSON.stringify without error
@@ -198,7 +199,7 @@ export class NFTicketTransactionService {
         const tickets: TicketCategoryTransaction[] = [];
 
         event.ticketCategories.forEach(tc => {
-            tickets.push(new TicketCategoryTransaction(event.name, event.locationName, event.dateTime.toString(), tc.price, tc.type, tc.initialAmount));
+            tickets.push(new TicketCategoryTransaction(event.name, event.locationName, event.dateTime.toString(), tc.price, tc.name, tc.initialAmount));
         })
         
         return tickets;
@@ -243,6 +244,13 @@ export class NFTicketTransactionService {
             return row.asset_id;
         });
         const tickets = await fetch(this.urlApi + this.urlAppwriteRoute  + '/tickets?asset-ids=' + encodeURIComponent(JSON.stringify(assetIds))).then(response => response.json());
+        tickets.forEach(async (ticket: any) => {
+            const backgroundImage = ticket.category.styling.backgroundImage;
+            if (backgroundImage) {
+                let image = await appwrite.storage.getFileView(backgroundImage);
+                ticket.category.styling.backgroundImage = image;
+            }
+        })
         return tickets;
     }
 }

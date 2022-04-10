@@ -1,7 +1,7 @@
 import { Models } from "appwrite";
 
 export default interface TicketCategory {
-  type: string;
+  name: string;
   price: number;
   styling: Styling;
   initialAmount: number;

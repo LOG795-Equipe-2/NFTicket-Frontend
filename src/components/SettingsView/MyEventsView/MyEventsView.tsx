@@ -59,7 +59,6 @@ export default function MyEventsView() {
       setSelectedEvent(0);
 
       if (response.documents.length > 0) {
-        console.log(response.documents[0].$id);
         fetchBouncers(response.documents[0].$id);
         EventService.getTicketCategoriesForEvent(
           (response.documents[0] as any)["$id"] as string

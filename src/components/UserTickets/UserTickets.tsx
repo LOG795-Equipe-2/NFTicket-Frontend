@@ -12,9 +12,13 @@ import Event from "../../interfaces/Event";
 import TicketVisualiser from "../TicketVisualiser/TicketVisualiser";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import BookOnlineOutlinedIcon from "@mui/icons-material/BookOnlineOutlined";
+import {
+  exportComponentAsPDF,
+  exportComponentAsPNG,
+} from "react-component-export-image";
 import "./UserTickets.scss";
 import EventCard from "../EventCard/EventCard";
-import React, { useEffect, useState, useContext } from "react";
+import React, { useEffect, useState, useContext, useRef } from "react";
 import NFTicketTransactionServiceInstance, {
   NFTicketTransactionService,
 } from "../../services/NFTicketTransactionService";
@@ -43,6 +47,8 @@ export default function UserTickets() {
   };
   const context = useContext(AppwriteContext);
 
+  let componentRef = useRef();
+
   useEffect(() => {
     const success = searchParams.get("success");
     connectToBackend().then((service) => {
@@ -50,9 +56,7 @@ export default function UserTickets() {
       if (accountName && service.getManager().isUserLogged()) {
         setUsername(accountName);
         service.getAssetsForUser(accountName).then((tickets) => {
-          console.log(tickets);
           setTickets(tickets);
-          setSelectedTicket(0);
         });
       }
     });
@@ -82,7 +86,10 @@ export default function UserTickets() {
               </Alert>
             )}
           </Snackbar>
-          <div className="UserTickets__ticketsCarousel">
+          <div
+            className="UserTickets__ticketsCarousel"
+            ref={componentRef as any}
+          >
             <Carousel
               interval={10000}
               navButtonsAlwaysVisible
@@ -107,8 +114,17 @@ export default function UserTickets() {
           </div>
           <div className="UserTickets__actions">
             <ButtonGroup>
-              <Button>
-                Utiliser le billet <BookOnlineOutlinedIcon />
+              <Button
+                onClick={() =>
+                  exportComponentAsPNG(componentRef as any, {
+                    fileName:
+                      (tickets[selectedTicket] as any).event.name +
+                      "_" +
+                      (tickets[selectedTicket] as any).assetId,
+                  })
+                }
+              >
+                Enregistrer le billet <BookOnlineOutlinedIcon />
               </Button>
               <Button onClick={toggleEventDetails}>
                 Voir l'événement <ExpandMoreIcon />
