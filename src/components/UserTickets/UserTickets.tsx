@@ -50,9 +50,7 @@ export default function UserTickets() {
       if (accountName && service.getManager().isUserLogged()) {
         setUsername(accountName);
         service.getAssetsForUser(accountName).then((tickets) => {
-          console.log(tickets);
           setTickets(tickets);
-          setSelectedTicket(0);
         });
       }
     });

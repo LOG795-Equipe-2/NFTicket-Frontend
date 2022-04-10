@@ -45,6 +45,7 @@ class TicketCustomizer extends React.Component<
           fr.onload = () => {
             if (!!fr.result) {
               ticketStyling[key] = fr.result as string;
+              (ticketStyling as any)["backgroundBlobImage"] = value[0];
               this.props.updateTicketStyling(
                 this.state.currentTicketSelected,
                 ticketStyling
@@ -82,7 +83,7 @@ class TicketCustomizer extends React.Component<
                     }
                     selected={index === this.state.currentTicketSelected}
                   >
-                    <ListItemText primary={ticketCategory.type}></ListItemText>
+                    <ListItemText primary={ticketCategory.name}></ListItemText>
                   </ListItemButton>
                 </React.Fragment>
               ))}

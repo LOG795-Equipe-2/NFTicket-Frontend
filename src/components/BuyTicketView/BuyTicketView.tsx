@@ -53,7 +53,7 @@ export default function BuyTicketView() {
     },
   }));
   const event: Event = {
-    $id: id || "1",
+    $id: "62523e055efa0443074e",
     name: "A test event",
     description: "This event is a test event for NFTicket",
     locationAddress: "1100 Notre-Dame St W, Montreal, Quebec H3C 1K3",
@@ -63,8 +63,8 @@ export default function BuyTicketView() {
     dateTime: new Date(),
     ticketCategories: [
       {
-        id: "624efef31081b237db12",
-        type: "Standard",
+        id: "62523e05f224f2d8cabc",
+        name: "Standard",
         price: 20.0,
         initialAmount: 100,
         remainingAmount: 10,
@@ -78,8 +78,8 @@ export default function BuyTicketView() {
         },
       },
       {
-        id: "6243166810eaee472ab6",
-        type: "VIP",
+        id: "62523e05f224f2d8cabc",
+        name: "VIP",
         price: 30.0,
         initialAmount: 20,
         remainingAmount: 2,

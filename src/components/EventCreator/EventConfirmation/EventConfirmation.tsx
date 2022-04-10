@@ -40,7 +40,7 @@ class EventConfirmation extends React.Component<
           </Typography>
 
           {this.props.event.ticketCategories.map((ticketCategory) => (
-            <div key={"confirm-" + ticketCategory.type} className="ticket">
+            <div key={"confirm-" + ticketCategory.name} className="ticket">
               <TicketVisualiser
                 event={this.props.event}
                 ticket={ticketCategory}

@@ -23,7 +23,7 @@ class TicketVisualiser extends React.Component<
       large: {
         width: "1000px",
         height: "400px",
-        qrSize: "180",
+        qrSize: 180,
         eventNameFont: "3rem",
         ticketTypeFont: "1.5rem",
         padding: "16px",
@@ -33,7 +33,7 @@ class TicketVisualiser extends React.Component<
       small: {
         width: "300px",
         height: "120px",
-        qrSize: "60",
+        qrSize: 60,
         eventNameFont: "1rem",
         ticketTypeFont: "0.7rem",
         padding: "5px",
@@ -43,7 +43,7 @@ class TicketVisualiser extends React.Component<
       normal: {
         width: "500px",
         height: "200px",
-        qrSize: "90",
+        qrSize: 90,
         eventNameFont: "1.5rem",
         ticketTypeFont: "0.75rem",
         padding: "8px",
@@ -114,7 +114,7 @@ class TicketVisualiser extends React.Component<
                 }}
                 variant="h5"
               >
-                {this.props.ticket.type}
+                {this.props.ticket.name}
               </Typography>
             </div>
             {this.props.assetId && this.props.username && (
