@@ -118,7 +118,7 @@ class EventService {
         description: event.description,
         imageId: imageFile.$id,
         userCreatorId: AuthService.account.$id as string,
-        eventTime: "0", //TODO ask for event time when creating new events
+        eventTime: event.dateTime.getTime(), //TODO ask for event time when creating new events
         atomicCollName: event.collName,
       };
 
