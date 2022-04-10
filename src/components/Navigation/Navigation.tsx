@@ -116,7 +116,7 @@ function Navigation() {
               ) : (typeof (value.userLoggedIn?.username) == "undefined" ?
                 <div className="navbar__right__login">
                   <CssLink href="sign-in" underline="none">
-                    Connexion/Inscription
+                    Test
                     <AccountCircleOutlinedIcon></AccountCircleOutlinedIcon>
                   </CssLink>
                 </div>
