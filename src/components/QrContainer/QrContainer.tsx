@@ -29,7 +29,7 @@ class QrContainer extends Component<QrContainerProps, QrContainerState> {
                     <QrReader
                         ViewFinder={ViewFinder}
                         videoId='videoId'
-                        constraints={{ facingMode: 'user' }}
+                        constraints={{ facingMode: 'environment' }}
                         onResult={(result, error) => {
                             if (!!result) {
                                 this.props.handleScanResult(result);
