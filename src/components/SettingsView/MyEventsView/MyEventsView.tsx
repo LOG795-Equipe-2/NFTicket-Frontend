@@ -136,7 +136,6 @@ export default function MyEventsView() {
       EventService.getTicketCategoriesForEvent(
         (events[newValue] as any)["$id"] as string
       ).then((categories) => {
-        console.log(categories);
         setTicketCategories(categories as any[]);
       });
     }
