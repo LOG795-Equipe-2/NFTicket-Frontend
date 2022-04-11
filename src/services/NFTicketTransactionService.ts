@@ -1,4 +1,4 @@
-import Event from '../interfaces/Event';
+import { newEventData } from '../interfaces/Event';
 import TicketCategory, { TicketCategoryModel, TicketCategoryTransaction } from '../interfaces/TicketCategory';
 import { AnchorBrowserManager } from '../utils/AnchorBrowserManager';
 import AuthServiceSingleton from '../services/AuthService';
@@ -195,11 +195,11 @@ export class NFTicketTransactionService {
         return response
     }
 
-    createTicketCategoryTransactionsFromEvent(event: Event): TicketCategoryTransaction[] {
+    createTicketCategoryTransactionsFromEvent(event: newEventData): TicketCategoryTransaction[] {
         const tickets: TicketCategoryTransaction[] = [];
 
         event.ticketCategories.forEach(tc => {
-            tickets.push(new TicketCategoryTransaction(event.name, event.locationName, event.dateTime.toString(), tc.price, tc.name, tc.initialAmount));
+            tickets.push(new TicketCategoryTransaction(event.name, event.locationName, event.dateTime.toString(), tc.price, tc.name, tc.initialQuantity));
         })
         
         return tickets;

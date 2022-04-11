@@ -1,5 +1,5 @@
 import testData from "../assets/testData.json";
-import Event, { EventModel } from "../interfaces/Event";
+import { Event, EventModel, newEventData } from "../interfaces/Event";
 import AuthService from "./AuthService";
 import { Styling, TicketCategoryModel } from "../interfaces/TicketCategory";
 import { AppwriteException, Models, Query } from "appwrite";
@@ -22,31 +22,21 @@ class EventService {
   async getCurrentFeaturedEvents(separator: number, maxEvents: number, city: string): Promise<Event[][]> {
 
 
-    const fetchedEventModels = await (await fetch(this.urlApi + '/appwrite/events/featured?city=' + city)).json() as EventModel[];
-    const formattedEvents: Event[] = await Promise.all(fetchedEventModels.map(async (e) => {
-        const img = await appwrite.storage.getFileView(e.imageId);
-        return {
-            $id: e.$id,
-            locationName: e.locationName,
-            locationAddress: e.locationAddress,
-            locationCity: e.locationCity,
-            name: e.name,
-            description: e.description,
-            image: img.href,
-            ticketCategories: [],
-            dateTime: new Date(e.eventTime),
-            collName: e.atomicCollName
-        } as Event;
-    }))
-    
-
+    const formattedEvents = await (await fetch(this.urlApi + '/appwrite/events/featured?city=' + city)).json() as Event[];
 
     // TODO:  Add call to back-end to fetch events based on criteria
     // This criteria could be the number of tickets sold in the past week, for example
     let events: Event[][] = [];
     let separatorCtr = 0;
+
+    if(separator > formattedEvents.length)
+        separator = formattedEvents.length;
+
+    if(formattedEvents.length < maxEvents)
+        maxEvents = formattedEvents.length
+
     let accumulator = [];
-    for (let i = 0; i < formattedEvents.length; i++) {
+    for (let i = 0; i < maxEvents; i++) {
         accumulator.push(formattedEvents[i] as any);
         separatorCtr++;
         if (separatorCtr % separator === 0) {
@@ -55,7 +45,6 @@ class EventService {
             separatorCtr = 0;
         }
     }
-    console.log(events)
     return events;
 }
 
@@ -115,12 +104,23 @@ class EventService {
     return documents;
   }
 
+  async getSingleEvent(eventId: string): Promise<Event> {
+    const event = await (await fetch(this.urlApi + '/appwrite/events/' + eventId)).json() as Event;
+
+    const imgUrl = await appwrite.storage.getFileView(event.imageUrl);
+
+    return {
+      ...event,
+      imageUrl: imgUrl.href
+    };
+  }
+
   /**
    * Creates a new event in Appwrite //TODO check if we need to do blockchain operations (and call backend endpoints)
    * @param event event Data
    * @returns true if the operation succedded, false otherwise
    */
-  async createNewEvent(event: Event): Promise<boolean> {
+  async createNewEvent(event: newEventData): Promise<boolean> {
     if (!AuthService.account)
       //TODO check that other fields are not missing (after demo)
       return false;
@@ -128,7 +128,7 @@ class EventService {
     try {
       // upload the event's image
       let f = new File([event.image], event.name);
-      let imageFile = await appwrite.storage.createFile("unique()", f);
+      let imageFile = await appwrite.storage.createFile("unique()", f, ["role:all"]);
 
       // Create the Event document
       const eventData = {
@@ -154,7 +154,7 @@ class EventService {
         // create the document for the ticket's style
         if ((c.styling as any).backgroundBlobImage) {
           let f = new File([(c.styling as any).backgroundBlobImage], c.name);
-          let imageFile = await appwrite.storage.createFile("unique()", f);
+          let imageFile = await appwrite.storage.createFile("unique()", f, ["role:all"]);
           c.styling.backgroundImage = imageFile.$id;
           (c.styling as any).backgroundBlobImage = undefined;
         }
@@ -171,8 +171,8 @@ class EventService {
           price: c.price,
           stylingId: styleDoc.$id,
           eventId: eventDoc.$id,
-          initialQuantity: c.initialAmount,
-          remainingQuantity: c.initialAmount,
+          initialQuantity: c.initialQuantity,
+          remainingQuantity: c.initialQuantity,
           atomicTemplateId: c.atomicTemplateId,
         };
 
@@ -185,7 +185,7 @@ class EventService {
         let categoryId = response.$id;
 
         // Create each tickets depending on the initial amount
-        for (let i = 1; i <= c.initialAmount; i++) {
+        for (let i = 1; i <= c.initialQuantity; i++) {
           const ticket = {
             ticketNumber: i,
             categoryId: categoryId,

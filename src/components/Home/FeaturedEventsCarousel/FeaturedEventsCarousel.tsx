@@ -3,14 +3,14 @@ import EventCard from "../../EventCard/EventCard";
 import { Box } from "@mui/material";
 import eventService from "../../../services/EventService";
 import { useEffect, useState } from "react";
-import Event from "../../../interfaces/Event";
+import { Event } from "../../../interfaces/Event";
 
 function FeaturedEventsCarousel() {
   const [events, setEvents] = useState<Event[][]>([]);
 
   useEffect(() => {
     async function fetchEvents() {
-      const fetchedEvents = await eventService.getCurrentFeaturedEvents(2, 12, "testCity");
+      const fetchedEvents = await eventService.getCurrentFeaturedEvents(4, 12, "testCity");
       setEvents(fetchedEvents);
     }
 

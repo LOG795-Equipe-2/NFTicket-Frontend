@@ -1,5 +1,5 @@
 import testData from '../assets/testData.json';
-import Event, { EventModel } from '../interfaces/Event';
+import { EventModel } from '../interfaces/Event';
 import AuthService from './AuthService';
 import { Styling, TicketCategoryModel } from "../interfaces/TicketCategory";
 import { AppwriteException, Models, Query } from "appwrite";

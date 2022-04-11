@@ -2,12 +2,12 @@ import React from "react";
 import Ticket from "../../interfaces/TicketCategory";
 import { Card, Typography } from "@mui/material";
 import "./TicketVisualiser.scss";
-import Event from "../../interfaces/Event";
+import { Event } from "../../interfaces/Event";
 import QRCode from "react-qr-code";
 
 type TicketVisualiserProps = {
   ticket: Ticket;
-  event: Event;
+  eventName: string;
   size: string;
   assetId?: string;
   username?: string;
@@ -51,7 +51,7 @@ class TicketVisualiser extends React.Component<
         borderSize: "3px",
       },
     };
-    return this.props.ticket && this.props.event ? (
+    return this.props.ticket && this.props.eventName ? (
       <Card
         raised
         className="TicketVisualiser"
@@ -101,7 +101,7 @@ class TicketVisualiser extends React.Component<
                 sx={{ fontSize: (sizes as any)[this.props.size].eventNameFont }}
                 variant="h3"
               >
-                {this.props.event.name}
+                {this.props.eventName}
               </Typography>
             </div>
             <div

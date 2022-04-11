@@ -8,18 +8,18 @@ import {
 } from "@mui/material";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import EventType from "../../interfaces/Event";
+import { Event } from "../../interfaces/Event";
 import "./EventCard.scss";
 
 function EventCard({
   event,
   showLink,
 }: {
-  event: EventType;
+  event: Event;
   showLink: boolean;
 }) {
-  let [imageToDisplay, setImageToDisplay] = useState(event.image);
-  if (typeof event.image === "object") {
+  let [imageToDisplay, setImageToDisplay] = useState(event.imageUrl);
+  if (typeof event.imageUrl === "object") {
     var reader = new FileReader();
 
     reader.onload = function (e) {
@@ -28,10 +28,10 @@ function EventCard({
       }
     };
 
-    reader.readAsDataURL(event.image);
+    reader.readAsDataURL(event.imageUrl);
   }
   useEffect(() => {
-    if (typeof event.image === "object") {
+    if (typeof event.imageUrl === "object") {
       var reader = new FileReader();
   
       reader.onload = function (e) {
@@ -40,9 +40,9 @@ function EventCard({
         }
       };
   
-      reader.readAsDataURL(event.image);
+      reader.readAsDataURL(event.imageUrl);
     } else {
-      setImageToDisplay(event.image);
+      setImageToDisplay(event.imageUrl);
     }
   }, [event])
   return (

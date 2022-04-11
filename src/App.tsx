@@ -158,7 +158,7 @@ function App() {
                 <Route path="/events/:id" element={<EventView />} />
               </Route>
               <Route element={<WithNavbar />}>
-                <Route path="/events/:id/buy/:ticketId" element={<BuyTicketView />} />
+                <Route path="/events/:id/buy/:ticketCategoryId" element={<BuyTicketView />} />
               </Route>  
               <Route path="/validator/:eventId/:id" element={<ValidatorView/>} />
             </Routes>

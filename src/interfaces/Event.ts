@@ -1,7 +1,7 @@
-import Ticket from "./TicketCategory";
+import TicketCategory from "./TicketCategory";
 import { Models } from "appwrite";
 
-export default interface Event {
+export interface newEventData {
     $id: string;
     locationName: string;
     locationAddress: string;
@@ -9,9 +9,21 @@ export default interface Event {
     name: string;
     description: string;
     image: Blob | string;
-    ticketCategories: Ticket[];
+    ticketCategories: TicketCategory[];
     dateTime: Date;
     collName?: string
+}
+
+export interface Event {
+    $id: string;
+    name: string;
+    locationName: string;
+    locationCity: string;
+    locationAddress: string;
+    description: string;
+    imageUrl: string;
+    eventTime: Date;
+    ticketCategories: TicketCategory[];
 }
 
 export interface EventModel extends Models.Document {
