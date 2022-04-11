@@ -95,7 +95,7 @@ class EventForm extends React.Component<EventFormProps, EventFormState> {
       valueAsNumber: number;
     };
     let ticketCategories = this.state.ticketCategories;
-    if (name === "price" || name == "initialAmount") {
+    if (name === "price" || name == "initialQuantity") {
       (ticketCategories[index] as any)[name] = target.valueAsNumber;
     } else {
       (ticketCategories[index] as any)[name] = target.value;
@@ -366,10 +366,10 @@ class EventForm extends React.Component<EventFormProps, EventFormState> {
                     label="Quantité"
                     type="number"
                     value={ticketCategory.initialQuantity}
-                    name="initialAmount"
+                    name="initialQuantity"
                     InputProps={{ inputProps: { min: 1 } }}
                     onChange={(e) =>
-                      this.handleTicketTypeChange(index, e, "initialAmount")
+                      this.handleTicketTypeChange(index, e, "initialQuantity")
                     }
                     disabled={this.state.isSubmitting}
                   />

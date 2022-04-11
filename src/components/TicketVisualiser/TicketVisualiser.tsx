@@ -127,7 +127,7 @@ class TicketVisualiser extends React.Component<
                 <QRCode
                   size={(sizes as any)[this.props.size].qrSize}
                   fgColor="#000"
-                  bgColor={this.props.ticket.styling.primaryColor}
+                  bgColor="#FFF"
                   value={JSON.stringify({
                     username: this.props.username,
                     assetId: this.props.assetId
