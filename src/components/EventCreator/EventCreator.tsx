@@ -4,7 +4,7 @@ import "./EventCreator.scss";
 import Carousel from "react-material-ui-carousel";
 import EventForm from "./EventForm/EventForm";
 import TicketCustomizer from "./TicketCustomizer/TicketCustomizer";
-import Event from "../../interfaces/Event";
+import { newEventData } from "../../interfaces/Event";
 import EventConfirmation from "./EventConfirmation/EventConfirmation";
 import EventService from "../../services/EventService";
 import { Navigate } from "react-router-dom";
@@ -13,7 +13,7 @@ import NFTicketTransactionService from "../../services/NFTicketTransactionServic
 type EventCreatorProps = {};
 type EventCreatorState = {
   currentStep: number;
-  event: Event;
+  event: newEventData;
   hasCompletedEventCreation: boolean;
 };
 const CssBox = styled(Box)(({ theme }) => ({
@@ -80,7 +80,7 @@ class EventCreator extends React.Component<
     this.setState({ currentStep: step });
   }
 
-  handleEventFormSubmit(event: Event) {
+  handleEventFormSubmit(event: newEventData) {
     this.setState({ event, currentStep: 1 });
     let nextButton = document.querySelector(
       '[aria-label="carousel indicator 2"]'

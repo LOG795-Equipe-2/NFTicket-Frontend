@@ -8,7 +8,7 @@ import {
 } from "@mui/material";
 import { Box } from "@mui/system";
 import { Link, Navigate, useParams } from "react-router-dom";
-import Event from "../../interfaces/Event";
+import { Event } from "../../interfaces/Event";
 import TicketVisualiser from "../TicketVisualiser/TicketVisualiser";
 import NFTicketTransactionServiceInstance, {
   NFTicketTransactionService,
@@ -17,6 +17,9 @@ import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import "./BuyTicketView.scss";
 import { useEffect } from "react";
 import React from "react";
+import EventService from "../../services/EventService";
+import TicketCategory from "../../interfaces/TicketCategory";
+import { AppwriteContext } from "../../App";
 
 let serviceNFT: NFTicketTransactionService;
 
@@ -34,10 +37,13 @@ enum PageState {
 
 export default function BuyTicketView() {
   const [snackbarContent, setSnackbarContent] = React.useState<any>(null);
-  const { id, ticketId } = useParams();
+  const { id, ticketCategoryId } = useParams();
   const [pageStatus, setPageStatus] = React.useState<PageState>(
     PageState.AWAITING_CONFIRMATION
   );
+  const [ticket, setTicket] = React.useState<TicketCategory | undefined>(undefined);
+  const [event, setEvent] = React.useState<Event | undefined>(undefined);
+
   const CssBox = styled(Box)(({ theme }) => ({
     ".BuyTicket": {
       "&__content": {
@@ -52,49 +58,15 @@ export default function BuyTicketView() {
       },
     },
   }));
-  const event: Event = {
-    $id: "62523e055efa0443074e",
-    name: "A test event",
-    description: "This event is a test event for NFTicket",
-    locationAddress: "1100 Notre-Dame St W, Montreal, Quebec H3C 1K3",
-    locationName: "École de technologie supérieure",
-    image:
-      "https://images.unsplash.com/photo-1505373877841-8d25f7d46678?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2912&q=80",
-    dateTime: new Date(),
-    ticketCategories: [
-      {
-        id: "62523e05f224f2d8cabc",
-        name: "Standard",
-        price: 20.0,
-        initialAmount: 100,
-        remainingAmount: 10,
-        styling: {
-          useBorder: false,
-          primaryColor: "#FFFFFF",
-          secondaryColor: "#FFFFFF",
-          backgroundColor: "#141414",
-          backgroundImage:
-            "https://images.unsplash.com/photo-1501281668745-f7f57925c3b4?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1740&q=80",
-        },
-      },
-      {
-        id: "62523e05f224f2d8cabc",
-        name: "VIP",
-        price: 30.0,
-        initialAmount: 20,
-        remainingAmount: 2,
-        styling: {
-          useBorder: true,
-          primaryColor: "#FFFFFF",
-          secondaryColor: "#bb8d48",
-          backgroundColor: "#141414",
-          backgroundImage:
-            "https://images.unsplash.com/photo-1501281668745-f7f57925c3b4?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1740&q=80",
-        },
-      },
-    ],
-  };
+  
   useEffect(() => {
+    if(id) {
+      EventService.getSingleEvent(id).then(e => {
+        setTicket(e.ticketCategories.find(ticketCategory => ticketCategory.$id === ticketCategoryId))
+        setEvent(e);
+      })
+    }
+
     connectToBackend().then((service) => {
       // Try to restore the session at beginning.
       // service.getManager().restoreSession().then((value) => {
@@ -103,16 +75,14 @@ export default function BuyTicketView() {
       serviceNFT = service;
     });
   }, []); // checks for changes in the values in this array
-  const ticket = event.ticketCategories.find(
-    (ticketCategory) => ticketCategory.id === ticketId
-  );
+
   const processTicketTransaction = async () => {
     // TODO: Call Anchor API, update remaining QTY on success
-    if (!!ticketId) {
+    if (!!ticketCategoryId) {
       setPageStatus(PageState.FETCHING);
       try {
         let transactionObject = await serviceNFT.buyTicketFromCategory(
-          ticketId
+          ticketCategoryId
         );
         let validationResponse = await serviceNFT.validateBuyTicketFromCategory(
           transactionObject
@@ -129,7 +99,6 @@ export default function BuyTicketView() {
         }
 
       } catch (e: any) {
-        console.log(e);
         setSnackbarContent({
           type: "error",
           message:
@@ -139,10 +108,10 @@ export default function BuyTicketView() {
       }
     }
   };
-  return ticket ? (
+  return ticket && event ? (
     <CssBox className="BuyTicket">
       {pageStatus === PageState.REDIRECT_SUCCESS && (
-        <Navigate to={`/tickets?success=${ticketId}`} />
+        <Navigate to={`/tickets?success=${ticketCategoryId}`} />
       )}
       <Snackbar
         open={!!snackbarContent}
@@ -166,7 +135,7 @@ export default function BuyTicketView() {
             </Link>
           </Button>
         </div>
-        <TicketVisualiser ticket={ticket} event={event} size="large" />
+        <TicketVisualiser ticket={ticket} eventName={event.name} size="large" />
         <div className="cost">
           <Typography className="header" variant="h3">
             Coût de la transaction

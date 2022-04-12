@@ -23,7 +23,7 @@ import {
   DialogActions,
 } from "@mui/material";
 import React, { useEffect } from "react";
-import Event from "../../../interfaces/Event";
+import { Event } from "../../../interfaces/Event";
 import TicketCategoryModel from "../../../interfaces/TicketCategory";
 import BouncerService from "../../../services/BouncerService";
 import EventService from "../../../services/EventService";
@@ -188,7 +188,7 @@ export default function MyEventsView() {
                     <Stack key={category["$id"]} spacing={2} direction="row">
                       <TicketVisualiser
                         size="small"
-                        event={events[selectedEvent]}
+                        eventName={events[selectedEvent].name}
                         ticket={category}
                       />
                       <Stack spacing={2} direction="column">

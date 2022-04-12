@@ -4,9 +4,9 @@ export default interface TicketCategory {
   name: string;
   price: number;
   styling: Styling;
-  initialAmount: number;
-  remainingAmount?: number;
-  id?: string;
+  initialQuantity: number;
+  remainingQuantity?: number;
+  $id?: string;
   atomicTemplateId?: number;
 }
 

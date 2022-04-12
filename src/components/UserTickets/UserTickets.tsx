@@ -8,7 +8,6 @@ import {
   Alert,
 } from "@mui/material";
 import Carousel from "react-material-ui-carousel";
-import Event from "../../interfaces/Event";
 import TicketVisualiser from "../TicketVisualiser/TicketVisualiser";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import BookOnlineOutlinedIcon from "@mui/icons-material/BookOnlineOutlined";
@@ -103,7 +102,7 @@ export default function UserTickets() {
                 >
                   <TicketVisualiser
                     size="large"
-                    event={ticket.event}
+                    eventName={ticket.event.name}
                     ticket={ticket.category}
                     assetId={ticket.assetId}
                     username={username}

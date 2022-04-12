@@ -7,7 +7,7 @@ import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import DeleteIcon from "@mui/icons-material/Delete";
 import CircularProgress from "@mui/material/CircularProgress";
 import TicketCategory from "../../../interfaces/TicketCategory";
-import Event from "../../../interfaces/Event";
+import { newEventData } from "../../../interfaces/Event";
 import { DateTimePicker, LocalizationProvider } from "@mui/lab";
 import DateAdapter from "@mui/lab/AdapterDateFns";
 
@@ -33,7 +33,7 @@ class EventForm extends React.Component<EventFormProps, EventFormState> {
         {
           name: "",
           price: 0,
-          initialAmount: 1,
+          initialQuantity: 1,
           styling: {
             primaryColor: "#FFFFFF",
             secondaryColor: "#FFFFFF",
@@ -62,7 +62,7 @@ class EventForm extends React.Component<EventFormProps, EventFormState> {
         {
           name: "",
           price: 0,
-          initialAmount: 1,
+          initialQuantity: 1,
           styling: {
             primaryColor: "#FFFFFF",
             secondaryColor: "#FFFFFF",
@@ -95,7 +95,7 @@ class EventForm extends React.Component<EventFormProps, EventFormState> {
       valueAsNumber: number;
     };
     let ticketCategories = this.state.ticketCategories;
-    if (name === "price" || name == "initialAmount") {
+    if (name === "price" || name == "initialQuantity") {
       (ticketCategories[index] as any)[name] = target.valueAsNumber;
     } else {
       (ticketCategories[index] as any)[name] = target.value;
@@ -237,7 +237,7 @@ class EventForm extends React.Component<EventFormProps, EventFormState> {
           this.setState({
             isSubmitting: false,
           });
-          const event: Event = {
+          const event: newEventData = {
             locationName: location,
             locationAddress: adress,
             name,
@@ -365,11 +365,11 @@ class EventForm extends React.Component<EventFormProps, EventFormState> {
                     className="small"
                     label="Quantité"
                     type="number"
-                    value={ticketCategory.initialAmount}
-                    name="initialAmount"
+                    value={ticketCategory.initialQuantity}
+                    name="initialQuantity"
                     InputProps={{ inputProps: { min: 1 } }}
                     onChange={(e) =>
-                      this.handleTicketTypeChange(index, e, "initialAmount")
+                      this.handleTicketTypeChange(index, e, "initialQuantity")
                     }
                     disabled={this.state.isSubmitting}
                   />

@@ -1,4 +1,4 @@
-import Event from '../interfaces/Event';
+import { newEventData } from '../interfaces/Event';
 import TicketCategory, { TicketCategoryModel, TicketCategoryTransaction } from '../interfaces/TicketCategory';
 import { AnchorBrowserManager } from '../utils/AnchorBrowserManager';
 import AuthServiceSingleton from '../services/AuthService';
@@ -195,11 +195,11 @@ export class NFTicketTransactionService {
         return response
     }
 
-    createTicketCategoryTransactionsFromEvent(event: Event): TicketCategoryTransaction[] {
+    createTicketCategoryTransactionsFromEvent(event: newEventData): TicketCategoryTransaction[] {
         const tickets: TicketCategoryTransaction[] = [];
 
         event.ticketCategories.forEach(tc => {
-            tickets.push(new TicketCategoryTransaction(event.name, event.locationName, event.dateTime.toString(), tc.price, tc.name, tc.initialAmount));
+            tickets.push(new TicketCategoryTransaction(event.name, event.locationName, event.dateTime.toString(), tc.price, tc.name, tc.initialQuantity));
         })
         
         return tickets;
@@ -243,7 +243,7 @@ export class NFTicketTransactionService {
         const assetIds = assets.data.rows.map((row: any) => {
             return row.asset_id;
         });
-        const tickets = await fetch(this.urlApi + this.urlAppwriteRoute  + '/tickets?asset-ids=' + encodeURIComponent(JSON.stringify(assetIds))).then(response => response.json());
+        const tickets = await fetch(this.urlApi + this.urlAppwriteRoute  + '/tickets?asset-ids=' + assetIds.join("&asset-ids=")).then(response => response.json());
         tickets.forEach(async (ticket: any) => {
             const backgroundImage = ticket.category.styling.backgroundImage;
             if (backgroundImage) {

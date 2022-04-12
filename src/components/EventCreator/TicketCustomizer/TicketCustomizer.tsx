@@ -11,11 +11,11 @@ import {
   Button,
 } from "@mui/material";
 import TicketVisualiser from "../../TicketVisualiser/TicketVisualiser";
-import Event from "../../../interfaces/Event";
+import { newEventData } from "../../../interfaces/Event";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 
 type TicketCustomizerProps = {
-  event: Event;
+  event: newEventData;
   updateTicketStyling: Function;
   confirmTicketStyling: Function;
 };
@@ -93,7 +93,7 @@ class TicketCustomizer extends React.Component<
         <div className="EventCreator__customizeTickets__editor">
           <TicketVisualiser
             size={innerWidth < 1500 ? "normal" : "large" }
-            event={this.props.event}
+            eventName={this.props.event.name}
             ticket={this.props.event.ticketCategories[this.state.currentTicketSelected]}
           />
           <div className="EventCreator__customizeTickets__editor__fields">
