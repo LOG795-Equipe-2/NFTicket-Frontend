@@ -78,7 +78,7 @@ class EventService {
     );
     events.documents.forEach(async (document: any) => {
       const image = await appwrite.storage.getFileView(document.imageId);
-      document.image = image.href;
+      document.imageUrl = image.href;
     });
     return events;
   }

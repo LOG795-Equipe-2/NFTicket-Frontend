@@ -250,6 +250,11 @@ export class NFTicketTransactionService {
                 let image = await appwrite.storage.getFileView(backgroundImage);
                 ticket.category.styling.backgroundImage = image;
             }
+            const eventImage = ticket.event.imageId;
+            if (eventImage) {
+                let image = await appwrite.storage.getFileView(eventImage);
+                ticket.event.imageUrl = image.href;
+            }
         })
         return tickets;
     }

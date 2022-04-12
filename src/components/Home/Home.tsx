@@ -57,14 +57,14 @@ function Home() {
           <FeaturedEventsCarousel></FeaturedEventsCarousel>
         </div>
       </div>
-      {/*<div className="home__search">
+      <div className="home__search">
         <div className="home__search__title">Recherche d'événements</div>
         <SearchBox />
       </div>
-      <div className="home__nearbyEvents">
+      {/* <div className="home__nearbyEvents">
         <div className="home__nearbyEvents__title">Événements à proximité</div>
         <NearbyEventsCarousel />
-      </div>*/}
+      </div> */}
       <div className="home__createEvent">
         <div className="home__createEvent__title">Créer un événement</div>
 
