@@ -242,6 +242,7 @@ function AnchorTests() {
                   <th>Original Price</th>
                   <th>Category Name</th>
                   <th>Signed</th>
+                  <th>Used</th>
                 </tr>
               </thead>
               <tbody>
@@ -258,6 +259,7 @@ function AnchorTests() {
                         <td>{element.immutable_serialized_data?.originalPrice }</td>
                         <td>{element.immutable_serialized_data?.categoryName }</td>
                         <td>{element.mutable_serialized_data?.signed }</td>
+                        <td>{element.mutable_serialized_data?.used }</td>
                       </tr>
                     )
                   })
