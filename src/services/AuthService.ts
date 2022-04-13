@@ -28,7 +28,14 @@ export class AuthService {
     private readonly ANCHORINFO_COLLECTION_ID: string = "621fcb8641b53f76bc95";
     private readonly ON_OAUTH_SUCCESS: string = this.urlApi;
 
-    private walletManager: WalletManagerInterface;
+    private walletManager: WalletManagerInterface | null;
+
+    urlTransactionsRoute = "/transactions";
+    urlTransactionsValidateRoute = "/validate";
+    urlTransactionsActionsRoute = "/actions";
+    urlTransactionsUtilityRoute = "/utility";
+    urlAtomicAssetsRoutes = "/atomic-assets";
+    urlAppwriteRoute = "/appwrite";
 
     /**
      * The account of the currently logged-in User
@@ -44,11 +51,33 @@ export class AuthService {
      * checks if a User was already connected on this device when creating the Service
      * @constructor
      */
-    constructor(private urlApi: string) { 
+    constructor(private urlApi: string) {
+        this.walletManager = null
+    }
+
+    /* this blocks need to be async, and we have to execute it when we create the singleton */
+    async init(){
+        let chainId = ''
+        let blockchainUrl = ''
+        let appName = ''
+
+        await fetch(this.urlApi + this.urlTransactionsRoute + this.urlTransactionsUtilityRoute + '/init')
+        // TODO: HTTP Error management if error
+        .then(response => response.json())
+        .then(response => {
+            // Receive chainId, server , and appName
+            chainId = response.data.chainId
+            blockchainUrl = response.data.blockchainUrl
+            appName = response.data.appName
+        })
+        .catch(error => {
+            console.log("An error prevented connection to the wallet manager.")
+            console.log(error)
+        });
+
         this.walletManager = new AnchorBrowserManager(
-            process.env.CHAIN_ID || '5d5bbe6bb403e5ca8b087d382946807246b4dee094c7f5961e2bebd88f8c9c51', 
-            process.env.REACT_APP_NODE_URL || 'http://eos1.anthonybrochu.com:8889', 
-            process.env.APP_NAME || 'NFTicket');
+            chainId, blockchainUrl, appName);
+        console.log('Auth component initialized correctly.')
     }
 
     listeners: any[] = [];
@@ -68,7 +97,7 @@ export class AuthService {
         }
 
         try{
-            const hasRestoredSession = await this.walletManager.restoreSession();
+            const hasRestoredSession = await this.walletManager!.restoreSession();
 
             if(!hasRestoredSession){
                 let sessionLocalStorage = await this.getAnchorLinkSessionLocalStorage();
@@ -101,7 +130,7 @@ export class AuthService {
      * Calls the login method for the wallet manager
      */
     async loginWallet(): Promise<boolean> {
-        let success = await this.walletManager.login();
+        let success = await this.walletManager!.login();
         if(success){
             this.saveAnchorLinkInfosForCurrentSession();
             return true;
@@ -113,7 +142,7 @@ export class AuthService {
      * Calls the login method for the wallet manager
      */
      async logoutWallet(): Promise<boolean> {
-        let success = await this.walletManager.logout();
+        let success = await this.walletManager!.logout();
         if(success){
             await this.deleteAnchorLinkInfosForCurrentSession();
             return true;
@@ -125,14 +154,14 @@ export class AuthService {
      * Checks if the user is logged in within
      */
     isWalletLoggedIn(): boolean {
-        return this.walletManager.isUserLogged();
+        return this.walletManager!.isUserLogged();
     }
 
     /** 
      * Get Anchor username
      */
     getWalletUserName(): string {
-        return this.walletManager.getAccountName();
+        return this.walletManager!.getAccountName();
     }
 
     /**
@@ -151,7 +180,7 @@ export class AuthService {
     async logout(session = 'current'): Promise<void> {
         await appwrite.account.deleteSession(session);
         this.account = undefined;
-        this.walletManager.logout();
+        this.walletManager!.logout();
         window.localStorage.clear();
     }
 
@@ -287,7 +316,7 @@ export class AuthService {
         let siInfo = anchorInfo.sessionsInfo.split(this.SEPARATOR);
         window.localStorage.setItem(siInfo[0], siInfo[1]);
 
-        return await this.walletManager.restoreSession();
+        return await this.walletManager!.restoreSession();
     }
 
     /**
@@ -330,4 +359,7 @@ export class AuthService {
     
 }
 
-export default new AuthService(process.env.REACT_APP_BACKEND_URL || 'http://localhost:3000');
+let authServiceSingleton = new AuthService(process.env.REACT_APP_BACKEND_URL || 'http://localhost:3000');
+authServiceSingleton.init()
+
+export default authServiceSingleton
