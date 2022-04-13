@@ -53,6 +53,13 @@ export default function UserTickets() {
         let transactionObject = await serviceNFT.signTicket(username, ticketId);
         let validationResponse = await serviceNFT.validateSignTicket(transactionObject);
         if (validationResponse.success) {
+          // Update UI to complete signing of ticket.
+          let copyTickets = [...tickets];
+          let updatedTicket = copyTickets.find((ticket) => (ticket as any).assetId == ticketId);
+          if(!!updatedTicket) {
+            (updatedTicket as any).signed = 1;
+            setTickets(copyTickets);
+          }
           setSnackbarContent({
             type: "success",
             message:
