@@ -149,10 +149,6 @@ function Navigation() {
                         'aria-labelledby': 'menu-button'
                       }}
                       onClose={handleMenuClose}
-                      sx={{
-                        marginLeft: '10px',
-                        marginTop: '10px'
-                      }}
                     >
                       <MenuItem>
                         <Link href="settings" underline="none" onClick={handleMenuClose}>
