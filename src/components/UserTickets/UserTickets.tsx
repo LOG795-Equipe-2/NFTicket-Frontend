@@ -6,6 +6,8 @@ import {
   Collapse,
   Snackbar,
   Alert,
+  Backdrop,
+  CircularProgress,
 } from "@mui/material";
 import Carousel from "react-material-ui-carousel";
 import TicketVisualiser from "../TicketVisualiser/TicketVisualiser";
@@ -39,6 +41,7 @@ const CssBox = styled(Box)(({ theme }) => ({
 }));
 
 export default function UserTickets() {
+  const [isFetching, setIsFetching] = useState(true);
   const [showEventDetails, setShowEventDetails] = useState(false);
   const [snackbarContent, setSnackbarContent] = useState<any>(null);
   const [searchParams, setSearchParams] = useSearchParams();
@@ -50,6 +53,7 @@ export default function UserTickets() {
   };
   const triggerSignTicket = async (ticketId: string) => {
     if (!!ticketId) {
+      setIsFetching(true);
       try {
         let transactionObject = await serviceNFT.signTicket(username, ticketId);
         let validationResponse = await serviceNFT.validateSignTicket(
@@ -65,12 +69,14 @@ export default function UserTickets() {
             (updatedTicket as any).signed = 1;
             setTickets(copyTickets);
           }
+          setIsFetching(false);
           setSnackbarContent({
             type: "success",
             message:
               "Votre billet a été signé avec succès! Il peut désormais être utilisé pour accéder à l'événement.",
           });
         } else {
+          setIsFetching(false);
           setSnackbarContent({
             type: "error",
             message:
@@ -78,6 +84,7 @@ export default function UserTickets() {
           });
         }
       } catch (e: any) {
+        setIsFetching(false);
         setSnackbarContent({
           type: "error",
           message:
@@ -100,6 +107,7 @@ export default function UserTickets() {
         setUsername(accountName);
         service.getAssetsForUser(accountName).then((tickets) => {
           setTickets(tickets);
+          setIsFetching(false);
         });
       }
     });
@@ -113,6 +121,9 @@ export default function UserTickets() {
   }, []);
   return (
     <CssBox className="UserTickets">
+      <Backdrop open={isFetching} sx={{ zIndex: 99 }}>
+        <CircularProgress size={50} />
+      </Backdrop>
       {tickets.length > 0 && (
         <React.Fragment>
           <Snackbar
