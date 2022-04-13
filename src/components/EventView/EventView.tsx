@@ -84,7 +84,7 @@ function EventView() {
                         <Typography variant="h5">Type </Typography>{ticketCategory.name}
                       </div>
                       <div className="description__item">
-                        <Typography variant="h5">Prix </Typography>{ticketCategory.price.toFixed(2)} $
+                        <Typography variant="h5">Prix </Typography>{ticketCategory.price.toFixed(2)} EOS
                       </div>
                     </div>
 

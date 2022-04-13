@@ -66,7 +66,7 @@ class EventConfirmation extends React.Component<
                     Prix
                   </Typography>
                   <Typography variant="body1">
-                    {ticketCategory.price.toFixed(2)}$
+                    {ticketCategory.price.toFixed(2)} EOS
                   </Typography>
                 </div>
                 <div className="ticket__description__item">

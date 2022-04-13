@@ -352,7 +352,7 @@ class EventForm extends React.Component<EventFormProps, EventFormState> {
                   <TextField
                     value={ticketCategory.price}
                     className="small"
-                    label="Prix ($)"
+                    label="Prix (EOS)"
                     type="number"
                     name="price"
                     InputProps={{ inputProps: { min: 0, step: "0.01" } }}

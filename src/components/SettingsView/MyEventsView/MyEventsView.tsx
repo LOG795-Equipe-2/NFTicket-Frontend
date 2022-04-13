@@ -223,7 +223,7 @@ export default function MyEventsView() {
                                 (category.remainingQuantity || 0)) *
                               category.price
                             ).toFixed(2)}
-                            $
+                            {" EOS" }
                           </Typography>
                         </Box>
                       </Stack>

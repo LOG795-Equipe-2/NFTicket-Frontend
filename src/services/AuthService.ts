@@ -128,6 +128,13 @@ export class AuthService {
         return this.walletManager.isUserLogged();
     }
 
+    /** 
+     * Get Anchor username
+     */
+    getWalletUserName(): string {
+        return this.walletManager.getAccountName();
+    }
+
     /**
      * Login a User using the Oauth protocol
      * !! Be careful !! this will redirect the User to the login page of the provider
