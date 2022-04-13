@@ -322,6 +322,10 @@ export class AuthService {
     changePassword(currentPassword: string, newPassword: string) {
         return appwrite.account.updatePassword(newPassword, currentPassword);     
     }
+
+    getWalletManager(){
+        return this.walletManager
+    }
     
     
 }
