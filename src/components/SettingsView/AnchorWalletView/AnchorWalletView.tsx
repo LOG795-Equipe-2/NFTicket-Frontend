@@ -77,7 +77,7 @@ export default function AnchorWalletView(props: { snackbarContent: SnackbarMessa
             <Stack direction="column" spacing={4} alignItems="center">
               {context.userLoggedIn?.isLoggedInAnchor ? (
                 <React.Fragment>
-                  <Typography sx={{ display: 'flex', alignItems: 'center' }} color="primary.dark" variant="h5">Vous êtes connecté à Anchor Wallet <CheckIcon sx={{ marginLeft: '5px' }} color="success" /></Typography>
+                  <Typography sx={{ display: 'flex', alignItems: 'center' }} color="primary.dark" variant="h5">Vous êtes connecté à Anchor Wallet en tant que&nbsp;<b>{value.AuthServiceObject.getWalletUserName().toString()}</b> <CheckIcon sx={{ marginLeft: '5px' }} color="success" /></Typography>
                   <Button
                     sx={{ width: 300 }}
                     variant="outlined"

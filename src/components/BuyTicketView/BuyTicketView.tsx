@@ -141,7 +141,7 @@ export default function BuyTicketView() {
             Coût de la transaction
           </Typography>
           <Typography className="text" variant="h4">
-            {ticket.price.toFixed(2)} $
+            {ticket.price.toFixed(2)} EOS
           </Typography>
         </div>
         <div className="confirm">
