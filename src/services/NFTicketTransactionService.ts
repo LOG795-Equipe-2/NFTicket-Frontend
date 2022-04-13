@@ -34,7 +34,6 @@ export class NFTicketTransactionService {
     urlTransactionsUtilityRoute = "/utility";
     urlAtomicAssetsRoutes = "/atomic-assets";
     urlAppwriteRoute = "/appwrite";
-    manager: AnchorBrowserManager | null = null;
 
     constructor(urlApi: string){
         this.urlApi = urlApi;
@@ -59,12 +58,12 @@ export class NFTicketTransactionService {
             appName = response.data.appName
         });
 
-        this.manager = new AnchorBrowserManager(chainId, blockchainUrl, appName)
-        await this.manager.restoreSession();
+        
+        await this.getManager().restoreSession();
     }
 
     getManager(): AnchorBrowserManager {
-        return this.manager as AnchorBrowserManager;
+        return AuthServiceSingleton.getWalletManager() as AnchorBrowserManager;
     }
 
     /**
