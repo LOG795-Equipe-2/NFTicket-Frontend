@@ -204,7 +204,27 @@ export class NFTicketTransactionService {
         return tickets;
     }
 
-    async signTicket(userName: string, ticketId: string): Promise<any>{
+    async signTicket(userName: string, ticketId: string): Promise<any> {
+        let transactionsToSign = await this.getSignTicketTransactions(userName + "", ticketId);
+
+        if(transactionsToSign.success == true){
+          transactionsToSign = transactionsToSign.data
+          // Sign the transactions
+          let transactionResult = await this.getManager().signTransactions(transactionsToSign.transactionsBody);
+          
+          // Adjust other parameters required for validation
+          transactionsToSign.signatures = transactionResult.signatures;
+          transactionsToSign.transactionId = transactionResult.transaction.id;
+          // Add it here otherwise it dosen't seem to show up
+          transactionsToSign.serializedTransaction = transactionResult.resolved.serializedTransaction
+  
+        } else {
+            throw new Error(transactionsToSign.errorMessage)
+        }
+        return transactionsToSign;
+    }
+
+    async getSignTicketTransactions(userName: string, ticketId: string): Promise<any>{
         const options = {
             method: 'POST',
             body: '',
@@ -244,6 +264,7 @@ export class NFTicketTransactionService {
         });
         const tickets = await fetch(this.urlApi + this.urlAppwriteRoute  + '/tickets?asset-ids=' + assetIds.join("&asset-ids=")).then(response => response.json());
         tickets.forEach(async (ticket: any) => {
+            ticket.signed = assets.data.rows.find((row: any) => row.asset_id == ticket.assetId).mutable_serialized_data.signed;
             const backgroundImage = ticket.category.styling.backgroundImage;
             if (backgroundImage) {
                 let image = await appwrite.storage.getFileView(backgroundImage);

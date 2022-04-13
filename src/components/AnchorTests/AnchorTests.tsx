@@ -140,7 +140,7 @@ function AnchorTests() {
       let userName = serviceNFT.getManager().getAccountName();
 
       // Get the transactions
-      let transactionsToSign = await serviceNFT.signTicket(userName + "", ticketId);
+      let transactionsToSign = await serviceNFT.getSignTicketTransactions(userName + "", ticketId);
 
       if(transactionsToSign.success == true){
         transactionsToSign = transactionsToSign.data
