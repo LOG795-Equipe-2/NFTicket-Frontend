@@ -6,6 +6,8 @@ import {
   Collapse,
   Snackbar,
   Alert,
+  Backdrop,
+  CircularProgress,
 } from "@mui/material";
 import Carousel from "react-material-ui-carousel";
 import TicketVisualiser from "../TicketVisualiser/TicketVisualiser";
@@ -24,6 +26,7 @@ import NFTicketTransactionServiceInstance, {
 import { useSearchParams } from "react-router-dom";
 import { AppwriteContext } from "../../App";
 import { AssignmentInd } from "@mui/icons-material";
+import CheckIcon from "@mui/icons-material/Check";
 
 let serviceNFT: NFTicketTransactionService;
 
@@ -38,6 +41,7 @@ const CssBox = styled(Box)(({ theme }) => ({
 }));
 
 export default function UserTickets() {
+  const [isFetching, setIsFetching] = useState(true);
   const [showEventDetails, setShowEventDetails] = useState(false);
   const [snackbarContent, setSnackbarContent] = useState<any>(null);
   const [searchParams, setSearchParams] = useSearchParams();
@@ -49,31 +53,38 @@ export default function UserTickets() {
   };
   const triggerSignTicket = async (ticketId: string) => {
     if (!!ticketId) {
+      setIsFetching(true);
       try {
         let transactionObject = await serviceNFT.signTicket(username, ticketId);
-        let validationResponse = await serviceNFT.validateSignTicket(transactionObject);
+        let validationResponse = await serviceNFT.validateSignTicket(
+          transactionObject
+        );
         if (validationResponse.success) {
           // Update UI to complete signing of ticket.
           let copyTickets = [...tickets];
-          let updatedTicket = copyTickets.find((ticket) => (ticket as any).assetId == ticketId);
-          if(!!updatedTicket) {
+          let updatedTicket = copyTickets.find(
+            (ticket) => (ticket as any).assetId == ticketId
+          );
+          if (!!updatedTicket) {
             (updatedTicket as any).signed = 1;
             setTickets(copyTickets);
           }
+          setIsFetching(false);
           setSnackbarContent({
             type: "success",
             message:
               "Votre billet a été signé avec succès! Il peut désormais être utilisé pour accéder à l'événement.",
           });
         } else {
+          setIsFetching(false);
           setSnackbarContent({
             type: "error",
             message:
               "Une erreur s'est produite dans la transaction, veuillez réessayer plus tard.",
           });
         }
-
       } catch (e: any) {
+        setIsFetching(false);
         setSnackbarContent({
           type: "error",
           message:
@@ -81,7 +92,7 @@ export default function UserTickets() {
         });
       }
     }
-  }
+  };
   const context = useContext(AppwriteContext);
 
   let componentRef = useRef();
@@ -96,6 +107,7 @@ export default function UserTickets() {
         setUsername(accountName);
         service.getAssetsForUser(accountName).then((tickets) => {
           setTickets(tickets);
+          setIsFetching(false);
         });
       }
     });
@@ -109,6 +121,9 @@ export default function UserTickets() {
   }, []);
   return (
     <CssBox className="UserTickets">
+      <Backdrop open={isFetching} sx={{ zIndex: 99 }}>
+        <CircularProgress size={50} />
+      </Backdrop>
       {tickets.length > 0 && (
         <React.Fragment>
           <Snackbar
@@ -153,6 +168,19 @@ export default function UserTickets() {
           </div>
           <div className="UserTickets__actions">
             <ButtonGroup>
+              {(tickets[selectedTicket] as any).signed !== 1 ? (
+                <Button
+                  onClick={() =>
+                    triggerSignTicket((tickets[selectedTicket] as any).assetId)
+                  }
+                >
+                  Signer le billet <AssignmentInd />
+                </Button>
+              ) : (
+                <Button color="success" disabled>
+                  Signé <CheckIcon sx={{ marginLeft: "5px" }} />
+                </Button>
+              )}
               <Button
                 onClick={() =>
                   exportComponentAsPNG(componentRef as any, {
@@ -165,11 +193,6 @@ export default function UserTickets() {
               >
                 Enregistrer le billet <BookOnlineOutlinedIcon />
               </Button>
-              { (tickets[selectedTicket] as any).signed != 1 && ( 
-                <Button onClick={() => triggerSignTicket((tickets[selectedTicket] as any).assetId)}>
-                  Signer le billet <AssignmentInd />
-                </Button>
-              )}
               <Button onClick={toggleEventDetails}>
                 Voir l'événement <ExpandMoreIcon />
               </Button>
