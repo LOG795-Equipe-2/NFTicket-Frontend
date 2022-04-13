@@ -40,25 +40,7 @@ export class NFTicketTransactionService {
     }
 
     async init() {
-        let chainId = ''
-        let blockchainUrl = ''
-        let appName = ''
-
-        const options = {
-            headers: await AuthServiceSingleton.createJwtHeader()
-        }
-
-        await fetch(this.urlApi + this.urlTransactionsRoute + this.urlTransactionsUtilityRoute + '/init', options)
-        // TODO: HTTP Error management if error
-        .then(response => response.json())
-        .then(response => {
-            // Receive chainId, server , and appName
-            chainId = response.data.chainId
-            blockchainUrl = response.data.blockchainUrl
-            appName = response.data.appName
-        });
-
-        
+       
         await this.getManager().restoreSession();
     }
 
