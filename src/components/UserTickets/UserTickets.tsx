@@ -32,7 +32,6 @@ let serviceNFT: NFTicketTransactionService;
 
 async function connectToBackend() {
   let service = NFTicketTransactionServiceInstance;
-  await service.init();
   return service;
 }
 

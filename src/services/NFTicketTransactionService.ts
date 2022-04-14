@@ -24,7 +24,6 @@ import appwrite from '../utils/AppwriteInstance';
 /**
  * Frontend class service to send and validate transactions
  * 
- * Call init() to intialize the class properly.
  */
 export class NFTicketTransactionService {
     urlApi: string;
@@ -37,9 +36,6 @@ export class NFTicketTransactionService {
 
     constructor(urlApi: string){
         this.urlApi = urlApi;
-    }
-
-    async init() {
     }
 
     getManager(): AnchorBrowserManager {
@@ -261,6 +257,5 @@ export class NFTicketTransactionService {
 }
 
 const NFTicketTransactionServiceInstance = new NFTicketTransactionService(process.env.REACT_APP_BACKEND_URL || 'http://localhost:3000');
-NFTicketTransactionServiceInstance.init();
 
 export default NFTicketTransactionServiceInstance;

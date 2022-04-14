@@ -44,7 +44,6 @@ function ListTicketView(){
 
     async function connectToBackend(){
         let service = NFTicketTransactionServiceInstance;
-        await service.init()
         return service
     }
   
