@@ -16,7 +16,6 @@ import { Query } from "appwrite"
 
 async function connectToBackend(){
   let service = NFTicketTransactionServiceInstance;
-  await service.init()
   return service
 }
 
