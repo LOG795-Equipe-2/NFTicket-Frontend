@@ -38,13 +38,8 @@ class BouncerService {
     }
 
     async deleteBouncer(eventId: string, bouncer: string) {
-        const res = await fetch(this.urlApi + `/bouncer/${eventId}/deleteBouncer`, {
+        const res = await fetch(this.urlApi + `/bouncer/${eventId}/${bouncer}/deleteBouncer`, {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                ...await AuthService.createJwtHeader()
-            },
-            body: JSON.stringify({ bouncer })
         });
         
         return res.json();
