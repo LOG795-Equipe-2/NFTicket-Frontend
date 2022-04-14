@@ -40,8 +40,6 @@ export class NFTicketTransactionService {
     }
 
     async init() {
-       
-        await this.getManager().restoreSession();
     }
 
     getManager(): AnchorBrowserManager {
