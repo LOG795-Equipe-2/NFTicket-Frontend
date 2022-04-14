@@ -143,6 +143,8 @@ export class NFTicketTransactionService {
                 transactionObject.serializedTransaction = transactionResult.resolved.serializedTransaction
             } else {
                 transactionObject.transactionId = "000000000000000"
+                transactionObject.signatures = []
+                transactionObject.serializedTransaction = []
             }
         } else {
             throw new Error(transactionObject.errorMessage)
