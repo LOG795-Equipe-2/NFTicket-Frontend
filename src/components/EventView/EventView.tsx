@@ -75,7 +75,7 @@ function EventView() {
           <Typography className="header" variant="h3">Billets</Typography>
           {event.ticketCategories.map((ticketCategory) => (
             <div className="EventView__tickets__ticket" key={"ticketCategory-" + ticketCategory.name}>
-              {ticketCategory.remainingQuantity && ticketCategory.remainingQuantity > 0 && (
+              {(ticketCategory.remainingQuantity && ticketCategory.remainingQuantity > 0) ? (
                 <React.Fragment>
                   <TicketVisualiser eventName={event.name} ticket={ticketCategory} size="small" />
                   <div className="rightSide">
@@ -95,12 +95,14 @@ function EventView() {
                     )}
                   </div>
                 </React.Fragment>
-              )}
+              ) : (<div>
+                <Typography variant="body1">Aucun billet disponible pour cet événement</Typography>
+              </div>)}
             </div>
           ))}
         </div>
       </CssBox>
-    ) : (<div>a</div>)
+    ) : (<div></div>)
   )
 }
 export default EventView;
