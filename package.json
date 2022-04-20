@@ -2,6 +2,7 @@
   "name": "nfticket-frontend",
   "version": "0.1.0",
   "private": true,
+  "license": "MIT",
   "dependencies": {
     "@date-io/date-fns": "^2.13.1",
     "@emotion/react": "^11.7.1",
