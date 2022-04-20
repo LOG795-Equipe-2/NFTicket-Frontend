@@ -1,7 +1,16 @@
 
 # NFTicket-Frontend
 
-Front-end repository for NFTicket
+Front-end repository for NFTicket. This repo needs to have a backend in order to run properly.
+
+## Environment variables
+
+Environment variables can be set in the .env file, and are the following:
+
+```
+PORT # Port on which the app will run
+REACT_APP_BACKEND_URL # URL to connect to the backend.
+```
 
 ## Using Anchor Browser Link
 
